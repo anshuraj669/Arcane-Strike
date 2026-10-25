@@ -112,3 +112,16 @@ InitTestScene*.unity*
 
 # Auto-generated cache in Assets folder
 /[Aa]ssets/[Ss]ceneDependencyCache*
+
+# --- Arcane Strike additions ---
+.vscode/
+# Unity crash-recovery scenes
+/[Aa]ssets/_Recovery/
+/[Aa]ssets/_Recovery.meta
+# Art source files live in Google Drive (ArcaneStrike_Source), not Git
+*.blend
+*.blend.meta
+*.kra
+*.kra.meta
+*.psd
+*.psd.meta

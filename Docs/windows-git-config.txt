@@ -1,0 +1,17 @@
+# Arcane Strike — Windows art laptop Git setup (Stage 5 of WINDOWS_ART_SETUP.pdf)
+# Run in Git Bash, one line at a time. Replace the name/email with your own.
+
+git config --global user.name  "Your Name"
+git config --global user.email "you@example.com"
+
+git config --global init.defaultBranch main
+git config --global core.autocrlf false
+git config --global core.longpaths true
+
+git config --global merge.unityyamlmerge.name "Unity SmartMerge"
+U="C:/Program Files/Unity/Hub/Editor/6000.3.27f1/Editor/Data/Tools/UnityYAMLMerge.exe"
+git config --global merge.unityyamlmerge.driver "'$U' merge -p %O %B %A %A"
+git config --global merge.unityyamlmerge.recursive binary
+
+# Check:
+git config --global --list | grep -E "user|unityyamlmerge|autocrlf|longpaths"
