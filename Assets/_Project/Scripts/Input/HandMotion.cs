@@ -69,6 +69,9 @@ namespace ArcaneStrike.HandInput
         [SerializeField] bool logStrikes = true;
 
         public event Action<StrikeEvent> OnStrike;
+
+        // Webcams see pushes toward the camera poorly, so punches need less forward speed there. No effect on Quest.
+        float PunchSpeed => input != null && input.ActiveSource is WebcamHandSource ? punchSpeed * 0.6f : punchSpeed;
         public StrikeEvent? LastStrike { get; private set; }
 
         struct Sample { public float T; public Vector3 Palm; }
@@ -125,7 +128,7 @@ namespace ArcaneStrike.HandInput
             float forward = Vector3.Dot(t.Velocity, head.forward);
             float sideways = Vector3.Dot(t.Velocity, head.right);
 
-            if (now - t.LastFist < fistMemory && !IsOpen(f) && forward > punchSpeed)
+            if (now - t.LastFist < fistMemory && !IsOpen(f) && forward > PunchSpeed)
             {
                 Raise(t, StrikeType.Punch, f.Side, f.PalmCenter, t.Velocity.normalized, t.Velocity.magnitude, now);
             }

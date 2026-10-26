@@ -81,12 +81,24 @@ namespace ArcaneStrike.HandInput
         [SerializeField] float circleWindow = 1.5f;
         [SerializeField] float sunwheelSync = 0.6f;
 
+        [Header("Webcam testing")]
+        [Tooltip("While the webcam bridge is the hand source, relax the gestures webcams see badly " +
+                 "(pushes toward the camera, palm-up hands, fast timing). No effect with Quest hands.")]
+        [SerializeField] bool relaxForWebcam = true;
+
         [Header("Debug")]
         [Tooltip("Keys 1-6 and G cast gestures without hands. Editor and development builds only.")]
         [SerializeField] bool keyboardFallback = true;
         [SerializeField] bool logGestures = true;
 
         public event Action<GestureEvent> OnGesture;
+
+        bool Relaxed => relaxForWebcam && input != null && input.ActiveSource is WebcamHandSource;
+        float FireboltSpeed => Relaxed ? fireboltSpeed * 0.6f : fireboltSpeed;
+        float VoltWindow => Relaxed ? Mathf.Max(voltOpenWindow, 0.6f) : voltOpenWindow;
+        float LumenFacing => Relaxed ? Mathf.Min(lumenFacing, 0.35f) : lumenFacing;
+        float CircleCoverage => Relaxed ? Mathf.Min(circleCoverageDegrees, 260f) : circleCoverageDegrees;
+        float SunwheelSync => Relaxed ? Mathf.Max(sunwheelSync, 1.2f) : sunwheelSync;
         public GestureEvent? LastGesture { get; private set; }
 
         struct Sample { public float T; public Vector3 IndexTip; }
@@ -161,10 +173,10 @@ namespace ArcaneStrike.HandInput
             }
 
             // Volt Burst: open hand shortly after a real fist (but not right after a punch)
-            if (pose == "open" && now - s.LastFistEnd < voltOpenWindow)
+            if (pose == "open" && now - s.LastFistEnd < VoltWindow)
             {
                 s.LastFistEnd = -10f;
-                bool wasPunch = motion != null && now - motion.LastStrikeTime(f.Side) < voltOpenWindow + 0.1f;
+                bool wasPunch = motion != null && now - motion.LastStrikeTime(f.Side) < VoltWindow + 0.1f;
                 if (!wasPunch) Raise(GestureType.VoltBurst, f.Side, f.PalmCenter, f.HandForward);
             }
 
@@ -172,7 +184,7 @@ namespace ArcaneStrike.HandInput
             if (pose == "point" && held && now - s.LastFirebolt > fireboltRefractory)
             {
                 Vector3 v = Velocity(s, 0.08f);
-                if (Vector3.Dot(v, head.forward) > fireboltSpeed)
+                if (Vector3.Dot(v, head.forward) > FireboltSpeed)
                 {
                     s.LastFirebolt = now;
                     Vector3 dir = (f[HandJoint.IndexTip] - f[HandJoint.IndexProximal]).normalized;
@@ -183,7 +195,7 @@ namespace ArcaneStrike.HandInput
             // Lumen: open palm up, raised high
             Vector3 n = f.PalmNormal;
             if (pose == "open" && held && now - s.LastLumen > 1f &&
-                Vector3.Dot(n, Vector3.up) > lumenFacing && f.Wrist.y > head.position.y + lumenHeight)
+                Vector3.Dot(n, Vector3.up) > LumenFacing && f.Wrist.y > head.position.y + lumenHeight)
             {
                 s.LastLumen = now;
                 Raise(GestureType.Lumen, f.Side, f.PalmCenter, Vector3.up);
@@ -287,7 +299,7 @@ namespace ArcaneStrike.HandInput
                 if (i > 0) sweep += Vector2.SignedAngle(pts[i - 1] - centre, pts[i] - centre);
             }
             float roundness = Mathf.Sqrt(variance / count) / meanR;
-            return roundness < 0.35f && Mathf.Abs(sweep) >= circleCoverageDegrees;
+            return roundness < 0.35f && Mathf.Abs(sweep) >= CircleCoverage;
         }
 
         // ---------------------------------------------------------------- two hands
@@ -313,7 +325,7 @@ namespace ArcaneStrike.HandInput
         void UpdateSunwheel(Transform head, float now)
         {
             float l = state[0].CircleDoneAt, r = state[1].CircleDoneAt;
-            if (now - lastSunwheel > 1f && now - l < sunwheelSync && now - r < sunwheelSync)
+            if (now - lastSunwheel > 1f && now - l < SunwheelSync && now - r < SunwheelSync)
             {
                 lastSunwheel = now;
                 state[0].CircleDoneAt = state[1].CircleDoneAt = -10f;

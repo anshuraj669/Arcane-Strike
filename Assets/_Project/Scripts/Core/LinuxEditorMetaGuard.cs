@@ -18,6 +18,7 @@ namespace ArcaneStrike.Core
         {
             "OVRManager",
             "Meta.XR.MRUtilityKit.MRUK",
+            "Meta.XR.MRUtilityKit.MRUKGlobalContext", // hidden DontDestroyOnLoad object MRUK creates itself
             "Meta.XR.EnvironmentDepth.EnvironmentDepthManager",
             "MetaXRAudioRoomAcousticProperties",
             "MetaXRAudioSource",
@@ -30,9 +31,25 @@ namespace ArcaneStrike.Core
             SceneManager.sceneLoaded -= OnSceneLoaded;
             SceneManager.sceneLoaded += OnSceneLoaded;
             DisableBlocked();
+
+            // Meta's audio SDK creates its "Temporary Room" in its own AfterSceneLoad hook, which can run
+            // after this one, so check again on the first frames.
+            var go = new GameObject(nameof(LinuxEditorMetaGuard)) { hideFlags = HideFlags.HideAndDontSave };
+            go.AddComponent<LateCheck>();
         }
 
         static void OnSceneLoaded(Scene scene, LoadSceneMode mode) => DisableBlocked();
+
+        class LateCheck : MonoBehaviour
+        {
+            int frames;
+
+            void Update()
+            {
+                DisableBlocked();
+                if (++frames >= 3) Destroy(gameObject);
+            }
+        }
 
         static void DisableBlocked()
         {

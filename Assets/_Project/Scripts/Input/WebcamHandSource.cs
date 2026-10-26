@@ -14,7 +14,7 @@ namespace ArcaneStrike.HandInput
     /// without a headset. It is never used in device builds.
     /// </summary>
     [DefaultExecutionOrder(-100)]
-    public class WebcamHandSource : MonoBehaviour, IHandSource
+    public class WebcamHandSource : MonoBehaviour, IHandSource, IUpperBodySource
     {
         [Tooltip("Must match --port in hand_bridge.py.")]
         [SerializeField] int port = 5065;
@@ -41,14 +41,40 @@ namespace ArcaneStrike.HandInput
         [Tooltip("A hand counts as lost after this many seconds without data.")]
         [SerializeField] float timeout = 0.25f;
 
+        [Tooltip("Calibrate automatically after you've been tracked for a second, so you don't have to press C. " +
+                 "Press C any time to recalibrate (e.g. after moving closer or further).")]
+        [SerializeField] bool autoCalibrate = true;
+
+        [Tooltip("Where your eyes are relative to your nose (the bridge tracks the nose), in bridge space.")]
+        [SerializeField] Vector3 eyeFromNose = new Vector3(0f, 0.04f, 0.03f);
+
 #pragma warning disable 0649 // filled by JsonUtility
-        [Serializable] class Packet { public float t; public HandPacket[] hands; }
+        [Serializable] class Packet { public float t; public HandPacket[] hands; public BodyPacket body; }
         [Serializable] class HandPacket { public string side; public float score; public float[] p; }
+        [Serializable] class BodyPacket { public float score; public float[] p; public float[] v; }
 #pragma warning restore 0649
 
         readonly HandFrame[] hands = { new HandFrame { Side = HandSide.Left }, new HandFrame { Side = HandSide.Right } };
         readonly float[] lastSeen = { -1f, -1f };
         readonly Vector3[][] rawDepth = { new Vector3[HandFrame.JointCount], new Vector3[HandFrame.JointCount] };
+
+        readonly UpperBodyFrame body = new UpperBodyFrame();
+        readonly Vector3[] rawBody = new Vector3[UpperBodyFrame.JointCount];
+        float bodyLastSeen = -1f;
+        float trackedSince = -1f;
+
+        // After calibration, webcam space is pinned to where the head was at that moment, so moving
+        // the head (e.g. WebcamHeadDriver following your real head) doesn't drag the hands along.
+        Matrix4x4 anchor;
+        bool anchored;
+        Vector3 handsOnlyHeadOffset;
+
+        /// <summary>Increases every time C calibrates. Lets other components react to a new calibration.</summary>
+        public int CalibrationCount { get; private set; }
+        /// <summary>True when the last calibration used the tracked body (hands sit at their real offset from your head).</summary>
+        public bool CalibratedFromBody { get; private set; }
+        /// <summary>World position of the tracked nose at the moment of the last body calibration.</summary>
+        public Vector3 CalibratedBodyHead { get; private set; }
 
         UdpClient udp;
         Thread thread;
@@ -59,6 +85,8 @@ namespace ArcaneStrike.HandInput
 
         public bool IsActive => lastPacketTime >= 0f && Time.time - lastPacketTime < 0.5f;
         public int Port => port;
+
+        void Awake() => handsOnlyHeadOffset = headOffset;
 
         void OnEnable()
         {
@@ -113,6 +141,25 @@ namespace ArcaneStrike.HandInput
 
             for (int i = 0; i < 2; i++)
                 hands[i].IsTracked = lastSeen[i] >= 0f && Time.time - lastSeen[i] < timeout;
+            body.IsTracked = bodyLastSeen >= 0f && Time.time - bodyLastSeen < timeout;
+            if (autoCalibrate && CalibrationCount == 0) AutoCalibrate();
+        }
+
+        // Without calibration, someone standing back from the webcam gets their hands placed behind the camera.
+        void AutoCalibrate()
+        {
+            bool ready = (body.IsTracked && body.Visibility[(int)UpperBodyJoint.Head] >= 0.5f) ||
+                         hands[0].IsTracked || hands[1].IsTracked;
+            if (!ready) trackedSince = -1f;
+            else if (trackedSince < 0f) trackedSince = Time.time;
+            else if (Time.time - trackedSince > 1f) Calibrate();
+        }
+
+        /// <summary>Bridge space (x right, y up, z = distance from the webcam) → world.</summary>
+        Vector3 ToWorld(Vector3 raw)
+        {
+            Vector3 local = new Vector3(raw.x, raw.y, cameraDistance - raw.z) + headOffset;
+            return anchored ? anchor.MultiplyPoint3x4(local) : head.TransformPoint(local);
         }
 
         void Apply(string json)
@@ -134,8 +181,7 @@ namespace ArcaneStrike.HandInput
                 if (!fresh)
                 {
                     // Smooth jitter when the hand is still, but let fast movement through.
-                    var rawWrist = new Vector3(hp.p[0], hp.p[1], hp.p[2]);
-                    Vector3 target = head.TransformPoint(new Vector3(rawWrist.x, rawWrist.y, cameraDistance - rawWrist.z) + headOffset);
+                    Vector3 target = ToWorld(new Vector3(hp.p[0], hp.p[1], hp.p[2]));
                     float moved = Vector3.Distance(target, frame.Joints[(int)HandJoint.Wrist]);
                     k *= Mathf.Clamp01(1f - moved / fastMove);
                 }
@@ -145,20 +191,59 @@ namespace ArcaneStrike.HandInput
                     // Bridge space: x = player's right, y = up, z = distance from the webcam.
                     var raw = new Vector3(hp.p[j * 3], hp.p[j * 3 + 1], hp.p[j * 3 + 2]);
                     rawDepth[i][j] = raw;
-                    Vector3 local = new Vector3(raw.x, raw.y, cameraDistance - raw.z) + headOffset;
-                    Vector3 world = head.TransformPoint(local);
-                    frame.Joints[j] = Vector3.Lerp(world, frame.Joints[j], k);
+                    frame.Joints[j] = Vector3.Lerp(ToWorld(raw), frame.Joints[j], k);
                 }
 
                 frame.Confidence = hp.score;
                 frame.Time = Time.time;
                 lastSeen[i] = Time.time;
             }
+
+            if (packet.body != null && packet.body.p != null && packet.body.p.Length >= UpperBodyFrame.JointCount * 3)
+                ApplyBody(packet.body);
         }
 
-        /// <summary>Makes the hands' current webcam distance map to <see cref="calibratedReach"/> in front of the head.</summary>
+        void ApplyBody(BodyPacket bp)
+        {
+            bool fresh = !(bodyLastSeen >= 0f && Time.time - bodyLastSeen < timeout);
+            float k = fresh ? 0f : smoothing;
+            for (int j = 0; j < UpperBodyFrame.JointCount; j++)
+            {
+                var raw = new Vector3(bp.p[j * 3], bp.p[j * 3 + 1], bp.p[j * 3 + 2]);
+                rawBody[j] = raw;
+                Vector3 world = ToWorld(raw);
+                // Same rule as the hands: smooth jitter, but let fast movement (punches, dodges) through.
+                float kj = fresh ? 0f : k * Mathf.Clamp01(1f - Vector3.Distance(world, body.Joints[j]) / fastMove);
+                body.Joints[j] = Vector3.Lerp(world, body.Joints[j], kj);
+                body.Visibility[j] = bp.v != null && j < bp.v.Length ? bp.v[j] : 1f;
+            }
+            body.Confidence = bp.score;
+            body.Time = Time.time;
+            bodyLastSeen = Time.time;
+        }
+
+        /// <summary>
+        /// With the upper body visible: maps your real eyes onto the game head, so hands, arms and head line up
+        /// at whatever distance you stand. Otherwise: makes the hands' webcam distance map to
+        /// <see cref="calibratedReach"/> in front of the head.
+        /// </summary>
         public void Calibrate()
         {
+            if (head == null) return;
+            if (body.IsTracked && body.Visibility[(int)UpperBodyJoint.Head] >= 0.5f)
+            {
+                Vector3 eye = rawBody[(int)UpperBodyJoint.Head] + eyeFromNose;
+                cameraDistance = eye.z;
+                headOffset = new Vector3(-eye.x, -eye.y, 0f);
+                anchor = head.localToWorldMatrix;
+                anchored = true;
+                CalibratedFromBody = true;
+                CalibratedBodyHead = ToWorld(rawBody[(int)UpperBodyJoint.Head]);
+                CalibrationCount++;
+                Debug.Log($"[WebcamHandSource] Calibrated from body: you are {eye.z:F2} m from the webcam. Hands and arms now line up with your head.");
+                return;
+            }
+
             float sum = 0f;
             int count = 0;
             for (int i = 0; i < 2; i++)
@@ -173,7 +258,19 @@ namespace ArcaneStrike.HandInput
                 return;
             }
             cameraDistance = sum / count + calibratedReach;
-            Debug.Log($"[WebcamHandSource] Calibrated: cameraDistance = {cameraDistance:F2} m");
+            headOffset = handsOnlyHeadOffset;
+            anchor = head.localToWorldMatrix;
+            anchored = true;
+            CalibratedFromBody = false;
+            CalibrationCount++;
+            Debug.Log($"[WebcamHandSource] Calibrated: cameraDistance = {cameraDistance:F2} m (hands only; step back so your upper body is visible for full calibration)");
+        }
+
+        public bool TryGetBody(UpperBodyFrame frame)
+        {
+            if (!body.IsTracked) return false;
+            frame.CopyFrom(body);
+            return true;
         }
 
         public bool TryGetHand(HandSide side, HandFrame frame)

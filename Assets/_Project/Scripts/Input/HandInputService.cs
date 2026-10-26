@@ -30,6 +30,15 @@ namespace ArcaneStrike.HandInput
         public HandFrame Right => frames[1];
         public HandFrame Get(HandSide side) => frames[(int)side];
 
+        readonly UpperBodyFrame body = new UpperBodyFrame();
+
+        /// <summary>
+        /// Upper body (shoulders, elbows, wrists, hips) when the active source provides it: the webcam bridge
+        /// in the editor. Not available from Quest hands yet (Movement SDK body tracking could add it), so
+        /// core gameplay should rely on the head and hands and treat this as optional.
+        /// </summary>
+        public UpperBodyFrame Body => body;
+
         void Awake()
         {
             if (questSource == null) questSource = GetComponent<QuestHandSource>();
@@ -54,6 +63,7 @@ namespace ArcaneStrike.HandInput
                 f.IsTracked = ActiveSource != null && ActiveSource.TryGetHand((HandSide)i, f);
                 f.Side = (HandSide)i;
             }
+            body.IsTracked = ActiveSource is IUpperBodySource bodySource && bodySource.TryGetBody(body);
         }
 
         IHandSource PickSource()
