@@ -1,0 +1,241 @@
+using System.Collections;
+using ArcaneStrike.HandInput;
+using ArcaneStrike.Props;
+using Meta.XR.MRUtilityKit;
+using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.InputSystem;
+using UnityEngine.XR;
+
+namespace ArcaneStrike.Story
+{
+    /// <summary>
+    /// Runs the attic opening in story order:
+    /// open the chest → find the lantern → pick it up → clean it (dust, soft hum, golden glow, runes, louder hum)
+    /// → finger cut → blood touches the lantern → <see cref="LanternAwakening"/> (blue burst, whispers,
+    /// books float, the attic shakes, the portal opens) → the player steps through.
+    /// Each step only listens for the player once the previous one is done. Put this on the attic set's root:
+    /// the set is laid out with the player at its origin facing +Z, and is moved in front of the player at start.
+    /// </summary>
+    public class AtticGameManager : MonoBehaviour
+    {
+        public enum Beat { ChestClosed, LanternFound, LanternHeld, Cleaning, Cleaned, FingerCut, Awakening, PortalOpen, Done }
+
+        [SerializeField] HandInputService input;
+        public ChestOpen chest;
+        [SerializeField] LanternPickup pickup;
+        [SerializeField] LanternCleaning cleaning;
+        [SerializeField] FingerCutEvent fingerCut;
+        public LanternAwakening awakening;
+        [SerializeField] PortalController portal;
+
+        public enum Placement { Auto, RoomScale, Desk }
+
+        [Header("Placement")]
+        [Tooltip("Move the set in front of the player at start.")]
+        [SerializeField] bool placeInFrontOfPlayer = true;
+        [Tooltip("RoomScale: the set stands on the real floor (headset). Desk: the chest is raised to just below the eyes " +
+                 "and pulled close, so a seated webcam tester can see it and reach it. " +
+                 "Auto: Desk when no headset is running or the hands come from the webcam bridge.")]
+        [SerializeField] Placement placement = Placement.Auto;
+        [Tooltip("Desk: how far below the eyes the set's floor goes (m). 0.6 puts the chest lid just below eye level.")]
+        [SerializeField] float deskFloorBelowEyes = 0.6f;
+        [Tooltip("Desk: distance from the eyes to the chest (m), within reach of webcam hands.")]
+        [SerializeField] float deskChestDistance = 0.6f;
+        [Tooltip("RoomScale without room data: assumed eye height above the floor (m).")]
+        [SerializeField] float standingEyeHeight = 1.6f;
+        [Tooltip("Wait this long for the headset pose (and the room) before placing the set.")]
+        [SerializeField] float placeDelay = 0.75f;
+
+        [Header("Debug")]
+        [Tooltip("Editor / debug builds: N does the current step for you (open, pick up, clean, cut, skip ahead, enter). " +
+                 "H places the set in front of you again.")]
+        [SerializeField] bool keyboardFallback = true;
+
+        [Tooltip("Fired on every new beat with its name: hook narration, Ember's lines or subtitles here.")]
+        [SerializeField] UnityEvent<string> onBeat;
+
+        public Beat Current { get; private set; } = Beat.ChestClosed;
+
+        void Awake()
+        {
+            if (input == null) input = FindAnyObjectByType<HandInputService>();
+        }
+
+        void OnEnable()
+        {
+            if (pickup != null) pickup.OnPickedUp += HandlePickedUp;
+            if (cleaning != null)
+            {
+                cleaning.OnStarted += HandleCleaningStarted;
+                cleaning.OnCleaned += HandleCleaned;
+            }
+            if (fingerCut != null)
+            {
+                fingerCut.OnCut += HandleCut;
+                fingerCut.OnBloodTouched += HandleBloodTouched;
+            }
+            if (awakening != null) awakening.OnPortalOpened += HandlePortalOpened;
+            if (portal != null) portal.OnEntered += HandleEntered;
+        }
+
+        void OnDisable()
+        {
+            if (pickup != null) pickup.OnPickedUp -= HandlePickedUp;
+            if (cleaning != null)
+            {
+                cleaning.OnStarted -= HandleCleaningStarted;
+                cleaning.OnCleaned -= HandleCleaned;
+            }
+            if (fingerCut != null)
+            {
+                fingerCut.OnCut -= HandleCut;
+                fingerCut.OnBloodTouched -= HandleBloodTouched;
+            }
+            if (awakening != null) awakening.OnPortalOpened -= HandlePortalOpened;
+            if (portal != null) portal.OnEntered -= HandleEntered;
+        }
+
+        IEnumerator Start()
+        {
+            SetBeat(Beat.ChestClosed);
+            if (!placeInFrontOfPlayer) yield break;
+
+            yield return new WaitForSeconds(placeDelay);
+            // Give MRUK a moment to load the room, so the set can sit on the real floor.
+            MRUK mruk = MRUK.Instance;
+            for (float t = 0f; mruk != null && mruk.isActiveAndEnabled && !mruk.IsInitialized && t < 3f; t += Time.deltaTime)
+                yield return null;
+            PlaceInFrontOfPlayer(mruk);
+        }
+
+        public void PlaceInFrontOfPlayer() => PlaceInFrontOfPlayer(MRUK.Instance);
+
+        void PlaceInFrontOfPlayer(MRUK mruk)
+        {
+            Transform head = StoryFx.Head(input);
+            if (head == null) return;
+
+            bool desk = placement == Placement.Desk ||
+                        (placement == Placement.Auto && (!XRSettings.isDeviceActive || (input != null && input.ActiveSource is WebcamHandSource)));
+            Vector3 forward = StoryFx.Flat(head.forward);
+            float floorY;
+            float pullBack = 0f;
+            string how;
+
+            MRUKRoom room = mruk != null && mruk.isActiveAndEnabled && mruk.IsInitialized ? mruk.GetCurrentRoom() : null;
+            if (desk)
+            {
+                floorY = head.position.y - deskFloorBelowEyes;
+                if (chest != null) pullBack = chest.transform.localPosition.z - deskChestDistance;
+                how = "desk mode (chest raised and within reach)";
+            }
+            else if (room != null && room.FloorAnchors.Count > 0)
+            {
+                floorY = room.FloorAnchors[0].transform.position.y;
+                how = "on the room's floor";
+            }
+            else
+            {
+                // Floor-level tracking puts the floor at the tracking space; fall back to an average eye height.
+                Transform space = head.parent;
+                float aboveSpace = space != null ? head.position.y - space.position.y : 0f;
+                floorY = aboveSpace > 0.8f && aboveSpace < 2.2f ? space.position.y : head.position.y - standingEyeHeight;
+                how = "on the estimated floor";
+            }
+
+            Vector3 origin = new Vector3(head.position.x, floorY, head.position.z) - forward * pullBack;
+            transform.SetPositionAndRotation(origin, Quaternion.LookRotation(forward));
+            Debug.Log($"[Attic] Set placed in front of the player, {how} (floor y = {floorY:F2}). H places it again.");
+        }
+
+        void Update()
+        {
+            if (Current == Beat.ChestClosed && chest != null && chest.IsOpen) HandleChestOpened();
+
+            if (!keyboardFallback || !(Application.isEditor || Debug.isDebugBuild) || Keyboard.current == null) return;
+            if (Keyboard.current.nKey.wasPressedThisFrame) DoCurrentStep();
+            if (Keyboard.current.hKey.wasPressedThisFrame) PlaceInFrontOfPlayer();
+        }
+
+        /// <summary>Debug: performs the step the player is currently expected to do.</summary>
+        public void DoCurrentStep()
+        {
+            switch (Current)
+            {
+                case Beat.ChestClosed: if (chest != null) chest.OpenChest(); break;
+                case Beat.LanternFound: if (pickup != null) pickup.PickUp(HandSide.Right); break;
+                case Beat.LanternHeld:
+                case Beat.Cleaning: if (cleaning != null) cleaning.CompleteNow(); break;
+                case Beat.Cleaned: if (fingerCut != null) fingerCut.Cut(HandSide.Right); break;
+                case Beat.FingerCut:
+                case Beat.Awakening: if (awakening != null) awakening.Skip(); break;
+                case Beat.PortalOpen: if (portal != null) portal.Enter(); break;
+            }
+        }
+
+        // ---------------------------------------------------------------- story
+
+        void HandleChestOpened()
+        {
+            SetBeat(Beat.LanternFound);
+            if (pickup != null) pickup.Reveal();
+        }
+
+        void HandlePickedUp()
+        {
+            if (Current == Beat.ChestClosed) HandleChestOpened(); // picked up via debug before the chest check ran
+            SetBeat(Beat.LanternHeld);
+            if (cleaning != null) cleaning.Begin();
+        }
+
+        void HandleCleaningStarted() => SetBeat(Beat.Cleaning);
+
+        void HandleCleaned()
+        {
+            SetBeat(Beat.Cleaned);
+            if (fingerCut != null) fingerCut.Begin();
+        }
+
+        void HandleCut() => SetBeat(Beat.FingerCut);
+
+        void HandleBloodTouched()
+        {
+            SetBeat(Beat.Awakening);
+            if (awakening != null) awakening.TriggerAwakening();
+        }
+
+        void HandlePortalOpened() => SetBeat(Beat.PortalOpen);
+
+        void HandleEntered() => SetBeat(Beat.Done);
+
+        // Kept from the first version, for UnityEvents that call it.
+        public void OpenChestSequence()
+        {
+            if (chest != null) chest.OpenChest();
+        }
+
+        public void BloodTouchLantern() => HandleBloodTouched();
+
+        void SetBeat(Beat beat)
+        {
+            if (beat == Current && beat != Beat.ChestClosed) return;
+            Current = beat;
+            Debug.Log($"[Attic] ▶ {beat}{Hint(beat)}");
+            onBeat?.Invoke(beat.ToString());
+        }
+
+        static string Hint(Beat beat)
+        {
+            switch (beat)
+            {
+                case Beat.ChestClosed: return ": reach to the front of the chest lid and lift (E or N)";
+                case Beat.LanternFound: return ": close a fist around the lantern's top ring (N)";
+                case Beat.LanternHeld: return ": rub the lantern with your other hand (N)";
+                case Beat.Cleaned: return ": touch the glinting edge with a fingertip (N)";
+                case Beat.PortalOpen: return ": walk up to the portal (Enter or N)";
+                default: return "";
+            }
+        }
+    }
+}
