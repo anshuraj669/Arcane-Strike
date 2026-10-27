@@ -110,6 +110,7 @@ namespace ArcaneStrike.VFX
             if (GetComponent<AegisShield>() == null) gameObject.AddComponent<AegisShield>();
             if (GetComponent<SparkBlade>() == null) gameObject.AddComponent<SparkBlade>();
             if (GetComponent<SkyhammerShockwave>() == null) gameObject.AddComponent<SkyhammerShockwave>();
+            if (GetComponent<FireboltProjectiles>() == null) gameObject.AddComponent<FireboltProjectiles>();
         }
 
         void OnEnable()
