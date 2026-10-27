@@ -18,6 +18,15 @@ namespace ArcaneStrike.Story
         [Tooltip("How quickly the lantern follows the hand. Lower is smoother on a jittery webcam.")]
         [SerializeField] float followSharpness = 12f;
 
+        [Header("Reveal")]
+        [Tooltip("When the chest opens, the lantern rises this far (m) out of it and hovers, turning slowly, until it is taken.")]
+        [SerializeField] float revealRise = 0.2f;
+        [Tooltip("Wait for the lid to swing out of the way first (s).")]
+        [SerializeField] float revealDelay = 0.6f;
+        [SerializeField] float revealTime = 1.2f;
+        [Tooltip("Degrees per second while it hovers.")]
+        [SerializeField] float revealSpin = 25f;
+
         public bool IsAvailable { get; private set; }
         public bool IsPickedUp { get; private set; }
         public HandSide HeldBy { get; private set; } = HandSide.Right;
@@ -26,6 +35,10 @@ namespace ArcaneStrike.Story
         Vector3 handleOffset;  // handle relative to the lantern origin, captured at pickup
         Vector3 lastTarget;
         bool hasTarget;
+        bool hovering;
+        float revealedAt;
+        Vector3 revealFrom;
+        Quaternion revealRot;
 
         Vector3 HandlePoint => handle != null ? handle.position : transform.position + Vector3.up * 0.25f;
 
@@ -35,7 +48,15 @@ namespace ArcaneStrike.Story
         }
 
         /// <summary>The chest is open: the lantern can be taken.</summary>
-        public void Reveal() => IsAvailable = true;
+        public void Reveal()
+        {
+            IsAvailable = true;
+            if (IsPickedUp || hovering) return;
+            hovering = true;
+            revealedAt = Time.time + revealDelay;
+            revealFrom = transform.localPosition;
+            revealRot = transform.localRotation;
+        }
 
         public void PickUp(HandSide side)
         {
@@ -43,6 +64,7 @@ namespace ArcaneStrike.Story
             IsAvailable = true;
             IsPickedUp = true;
             HeldBy = side;
+            hovering = false;
             handleOffset = HandlePoint - transform.position;
             transform.SetParent(null, true); // leave the chest, so the chest shaking later doesn't move it
             Debug.Log($"[Attic] Lantern picked up ({side} hand)");
@@ -54,10 +76,12 @@ namespace ArcaneStrike.Story
         {
             IsPickedUp = false;
             IsAvailable = false;
+            hovering = false;
         }
 
         void Update()
         {
+            if (hovering) Hover();
             if (!IsAvailable || input == null) return;
             if (!IsPickedUp)
             {
@@ -73,6 +97,18 @@ namespace ArcaneStrike.Story
                 return;
             }
             Follow();
+        }
+
+        // Found: the lantern lifts out of the chest, then bobs and turns, waiting to be taken.
+        void Hover()
+        {
+            float t = Time.time - revealedAt;
+            if (t < 0f) return;
+            float u = Mathf.Clamp01(t / Mathf.Max(revealTime, 0.01f));
+            float eased = 1f - (1f - u) * (1f - u) * (1f - u);
+            float bob = Mathf.Sin(t * 2f) * 0.01f * u;
+            transform.localPosition = revealFrom + Vector3.up * (revealRise * eased + bob);
+            transform.localRotation = revealRot * Quaternion.Euler(0f, t * revealSpin * u, 0f);
         }
 
         void Follow()

@@ -25,6 +25,22 @@ namespace ArcaneStrike.Props
         [Tooltip("Degrees per second.")]
         [SerializeField] float openSpeed = 220f;
 
+        [Header("Motion")]
+        [Tooltip("Code-driven lid motion. Untick when an Animator clip opens the lid instead (see StoryAnimations).")]
+        [SerializeField] bool animateLid = true;
+
+        [Tooltip("Something inside knocks: the closed lid jumps a little about every this many seconds (0 = never).")]
+        [SerializeField] float idleRattleEvery = 5f;
+
+        [Tooltip("Degrees the lid jumps when it rattles.")]
+        [SerializeField] float rattleAngle = 4f;
+
+        [Tooltip("The lid jiggles this long (s) before it swings open.")]
+        [SerializeField] float rattleTime = 0.3f;
+
+        [Tooltip("How far the lid swings past open before it settles back (0 = no bounce).")]
+        [SerializeField] float overshoot = 1.4f;
+
         [Tooltip("A palm closer than this to the handle (m) counts as holding the lid. Webcam depth is rough, so keep it generous.")]
         [SerializeField] float reach = 0.25f;
 
@@ -39,6 +55,7 @@ namespace ArcaneStrike.Props
         Quaternion closedRot;
         Quaternion openRot;
         bool opening;
+        float openedAt, nextRattle, rattleStart = float.NegativeInfinity;
         readonly float[] holdStartY = { float.NaN, float.NaN };
 
         public bool IsOpen { get; private set; }
@@ -55,13 +72,15 @@ namespace ArcaneStrike.Props
             if (handle == null) handle = lid;
             closedRot = lid.localRotation;
             openRot = closedRot * Quaternion.Euler(openAngle, 0f, 0f);
+            nextRattle = Time.time + idleRattleEvery;
         }
 
         public void OpenChest()
         {
             if (IsOpen || lid == null) return;
             IsOpen = true;
-            opening = true;
+            opening = animateLid;
+            openedAt = Time.time;
             Debug.Log($"[ChestOpen] {name} opened");
             onOpened?.Invoke();
         }
@@ -70,6 +89,7 @@ namespace ArcaneStrike.Props
         {
             if (opening) AnimateLid();
             if (IsOpen) return;
+            if (animateLid) IdleRattle();
 
             if (input != null)
                 for (int i = 0; i < 2; i++) UpdateHand(input.Get((HandSide)i), i);
@@ -93,14 +113,45 @@ namespace ArcaneStrike.Props
             else if (y - holdStartY[i] >= liftDistance) OpenChest();
         }
 
+        // Knock, knock: every few seconds the closed lid jumps twice, as if something inside wants out.
+        void IdleRattle()
+        {
+            if (idleRattleEvery <= 0f) return;
+            float now = Time.time;
+            if (now >= nextRattle)
+            {
+                rattleStart = now;
+                nextRattle = now + idleRattleEvery * Random.Range(0.7f, 1.3f);
+            }
+            float t = now - rattleStart;
+            lid.localRotation = t < 0.25f ? Lifted(rattleAngle * 0.6f * Mathf.Abs(Mathf.Sin(t * 25f))) : closedRot;
+        }
+
+        // A quick jiggle, then the lid swings open, overshoots and settles.
         void AnimateLid()
         {
-            lid.localRotation = Quaternion.RotateTowards(lid.localRotation, openRot, openSpeed * Time.deltaTime);
-            if (Quaternion.Angle(lid.localRotation, openRot) < 0.1f)
+            float t = Time.time - openedAt;
+            if (t < rattleTime)
+            {
+                lid.localRotation = Lifted(rattleAngle * Mathf.Abs(Mathf.Sin(t * 45f)));
+                return;
+            }
+            float u = Mathf.Clamp01((t - rattleTime) * openSpeed / Mathf.Max(Mathf.Abs(openAngle), 1f));
+            lid.localRotation = Quaternion.SlerpUnclamped(closedRot, openRot, EaseOutBack(u));
+            if (u >= 1f)
             {
                 lid.localRotation = openRot;
                 opening = false;
             }
+        }
+
+        // The closed lid raised by this many degrees, in the opening direction.
+        Quaternion Lifted(float degrees) => closedRot * Quaternion.Euler(Mathf.Sign(openAngle) * degrees, 0f, 0f);
+
+        float EaseOutBack(float u)
+        {
+            float k = overshoot, v = u - 1f;
+            return 1f + (k + 1f) * v * v * v + k * v * v;
         }
     }
 }

@@ -36,6 +36,10 @@ namespace ArcaneStrike.Story
         [SerializeField] float openTime = 1.5f;
         [SerializeField] Color edgeColor = new Color(0.31f, 0.89f, 1f, 1f);   // Volt cyan #4FE3FF
         [SerializeField] Color innerColor = new Color(0.42f, 0.25f, 0.85f, 0.55f); // Hollow violet #6B3FD9
+        [Tooltip("Degrees per second the portal (and a prefab visual) turns around its facing axis.")]
+        [SerializeField] float spinSpeed = 40f;
+        [Tooltip("How much the portal breathes in and out once open.")]
+        [SerializeField] float pulse = 0.04f;
 
         [Header("Entering")]
         [SerializeField] float enterDistance = 0.6f;
@@ -50,6 +54,8 @@ namespace ArcaneStrike.Story
         bool entered;
         Transform visual;
         ParticleSystem swirl;
+        Material innerMaterial;
+        static readonly int BaseColorId = Shader.PropertyToID("_BaseColor");
 
         public void Open()
         {
@@ -68,6 +74,9 @@ namespace ArcaneStrike.Story
             BuildVisual();
             IsOpen = true;
             openedAt = Time.time;
+            // It tears open with a flash of sparks.
+            StoryFx.Burst(swirl, transform.position, 120, 1.6f, 0.05f, 0.9f, edgeColor);
+            StoryFx.Burst(swirl, transform.position, 40, 0.5f, 0.2f, 0.6f, StoryFx.WithAlpha(Color.white, 0.8f));
             Debug.Log($"[Attic] Portal opens {(onWall ? "on the room wall" : "at its scene position")}");
             OnOpened?.Invoke();
         }
@@ -123,7 +132,8 @@ namespace ArcaneStrike.Story
             disc.transform.SetParent(visual, false);
             disc.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
             disc.transform.localScale = new Vector3(radius * 2f, 0.002f, radius * 2f);
-            disc.GetComponent<Renderer>().sharedMaterial = AegisShield.CreateFaceMaterial(innerColor);
+            innerMaterial = AegisShield.CreateFaceMaterial(innerColor);
+            disc.GetComponent<Renderer>().sharedMaterial = innerMaterial;
             swirl = StoryFx.CreateParticles(transform, "Swirl", true, 0f, 1200);
         }
 
@@ -132,7 +142,14 @@ namespace ArcaneStrike.Story
             if (!IsOpen) return;
             float grow = Mathf.Clamp01((Time.time - openedAt) / Mathf.Max(openTime, 0.01f));
             float eased = 1f - (1f - grow) * (1f - grow);
-            if (visual != null) visual.localScale = Vector3.one * eased;
+            float age = Time.time - openedAt;
+            if (visual != null)
+            {
+                visual.localScale = Vector3.one * eased * (1f + pulse * Mathf.Sin(age * 3f));
+                visual.localRotation = Quaternion.Euler(0f, 0f, -age * spinSpeed);
+            }
+            if (innerMaterial != null)
+                innerMaterial.SetColor(BaseColorId, StoryFx.WithAlpha(innerColor, innerColor.a * (0.8f + 0.2f * Mathf.Sin(age * 5f))));
             EmitSwirl(eased);
 
             if (entered) return;

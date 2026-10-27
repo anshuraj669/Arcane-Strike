@@ -172,6 +172,7 @@ namespace ArcaneStrike.EditorTools
             Set(manager, "cleaning", cleaning);
             Set(manager, "fingerCut", cut);
             Set(manager, "portal", portal);
+            root.AddComponent<StoryAnimations>(); // the artist's Animator clips, cued by story beat
 
             // The attic starts with no powers (chapter 0); the portal moves on to the next chapter.
             if (Object.FindAnyObjectByType<PowerUnlocks>() == null)

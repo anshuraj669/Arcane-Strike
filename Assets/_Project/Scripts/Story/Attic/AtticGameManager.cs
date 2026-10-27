@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using ArcaneStrike.HandInput;
 using ArcaneStrike.Props;
@@ -56,6 +57,8 @@ namespace ArcaneStrike.Story
         [SerializeField] UnityEvent<string> onBeat;
 
         public Beat Current { get; private set; } = Beat.ChestClosed;
+        /// <summary>Raised on every new beat (StoryAnimations plays the artist's clips from this).</summary>
+        public event Action<Beat> OnBeatChanged;
 
         void Awake()
         {
@@ -223,6 +226,7 @@ namespace ArcaneStrike.Story
             Current = beat;
             Debug.Log($"[Attic] ▶ {beat}{Hint(beat)}");
             onBeat?.Invoke(beat.ToString());
+            OnBeatChanged?.Invoke(beat);
         }
 
         static string Hint(Beat beat)

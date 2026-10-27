@@ -15,6 +15,8 @@ namespace ArcaneStrike.Story
         public float minIntensity = 0.5f;
         public float maxIntensity = 3f;
         public float pulseSpeed = 2f;
+        [Tooltip("Candle-like flicker on top of the pulse (0 = steady).")]
+        [Range(0f, 1f)] public float flicker = 0.25f;
         [SerializeField] float range = 2.5f;
         [SerializeField] float haloSize = 0.55f;
         [Tooltip("Lantern centre, relative to its origin.")]
@@ -70,17 +72,18 @@ namespace ArcaneStrike.Story
             flash = Mathf.MoveTowards(flash, 0f, dt * 2f * Mathf.Max(1f, flash));
 
             float pulse = (Mathf.Sin(Time.time * pulseSpeed) + 1f) * 0.5f;
+            float flame = 1f + flicker * (Mathf.PerlinNoise(Time.time * 8f, 0.37f) * 2f - 1f);
             Color c = Color.Lerp(color, flashColor, Mathf.Clamp01(flash));
             if (lanternLight != null)
             {
-                lanternLight.intensity = Mathf.Lerp(minIntensity, maxIntensity, pulse) * level + flash * maxIntensity;
+                lanternLight.intensity = Mathf.Lerp(minIntensity, maxIntensity, pulse) * level * flame + flash * maxIntensity;
                 lanternLight.color = c;
             }
 
             float strength = Mathf.Max(level, Mathf.Clamp01(flash));
             if (strength > 0.01f)
                 StoryFx.Emit(halo, transform.TransformPoint(centerOffset), Vector3.zero,
-                             haloSize * (0.7f + 0.3f * pulse) * (0.5f + strength) * (1f + flash * 0.5f), 0.06f,
+                             haloSize * (0.7f + 0.3f * pulse) * flame * (0.5f + strength) * (1f + flash * 0.5f), 0.06f,
                              StoryFx.WithAlpha(c, 0.25f + 0.5f * strength));
         }
     }

@@ -16,11 +16,13 @@ namespace ArcaneStrike.Story
         public float speed = 2f;
         [Tooltip("Slow turn while floating (degrees per second).")]
         [SerializeField] float spin = 15f;
+        [Tooltip("Flutter: tips back and forth by up to this many degrees while floating.")]
+        [SerializeField] float wobble = 6f;
         [SerializeField] bool activateOnStart;
 
         Vector3 startPos, hoverPos;
-        float activatedAt = -1f, phase;
-        Quaternion spinAxis;
+        float activatedAt = -1f, phase, spun;
+        Quaternion spinAxis, startRot;
 
         public bool IsFloating => activatedAt >= 0f;
 
@@ -33,6 +35,8 @@ namespace ArcaneStrike.Story
         {
             if (IsFloating) return;
             startPos = transform.position;
+            startRot = transform.rotation;
+            spun = 0f;
             hoverPos = startPos + Vector3.up * liftHeight + Random.insideUnitSphere * 0.1f;
             phase = Random.value * Mathf.PI * 2f;
             spinAxis = Quaternion.Euler(Random.Range(-20f, 20f), 0f, Random.Range(-20f, 20f));
@@ -46,7 +50,11 @@ namespace ArcaneStrike.Story
             float eased = t * t * (3f - 2f * t);
             Vector3 bob = Vector3.up * Mathf.Sin(Time.time * speed + phase) * height * eased;
             transform.position = Vector3.Lerp(startPos, hoverPos, eased) + bob;
-            transform.rotation = Quaternion.AngleAxis(spin * Time.deltaTime * eased, spinAxis * Vector3.up) * transform.rotation;
+            spun += spin * Time.deltaTime * eased;
+            float w = wobble * eased;
+            Quaternion flutter = Quaternion.Euler(Mathf.Sin(Time.time * speed * 1.7f + phase) * w, 0f,
+                                                  Mathf.Sin(Time.time * speed * 1.3f + phase * 2f) * w);
+            transform.rotation = Quaternion.AngleAxis(spun, spinAxis * Vector3.up) * startRot * flutter;
         }
     }
 }
