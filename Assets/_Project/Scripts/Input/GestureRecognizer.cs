@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ArcaneStrike.Core;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -537,6 +538,8 @@ namespace ArcaneStrike.HandInput
 
         void Raise(GestureType type, HandSide hand, Vector3 position, Vector3 direction, bool fromKeyboard = false)
         {
+            if (!PowerUnlocks.Allows(type)) return; // not learned yet in this chapter
+
             var e = new GestureEvent
             {
                 Type = type, Hand = hand, Position = position, Direction = direction,

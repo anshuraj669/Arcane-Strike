@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ArcaneStrike.Core;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -181,6 +182,8 @@ namespace ArcaneStrike.HandInput
         void Raise(Track t, StrikeType type, HandSide hand, Vector3 position, Vector3 direction, float speed, float now,
                    bool fromKeyboard = false)
         {
+            if (!PowerUnlocks.Allows(Power.Strikes)) return; // not learned yet in this chapter
+
             t.LastStrike = now;
             var e = new StrikeEvent
             {

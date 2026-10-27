@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using ArcaneStrike.Core;
 using ArcaneStrike.HandInput;
 using UnityEngine;
 
@@ -58,7 +59,7 @@ namespace ArcaneStrike.Combat
         void OnTriggerEnter(Collider other)
         {
             var target = other.GetComponentInParent<IHittable>();
-            if (target == null || motion == null) return;
+            if (target == null || motion == null || !PowerUnlocks.Allows(Power.Strikes)) return;
 
             float speed = motion.Speed(side);
             if (speed < minHitSpeed) return;
