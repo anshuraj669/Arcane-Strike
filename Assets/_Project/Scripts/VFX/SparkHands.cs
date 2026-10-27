@@ -106,6 +106,10 @@ namespace ArcaneStrike.VFX
             if (input == null) input = FindAnyObjectByType<HandInputService>();
             if (motion == null) motion = FindAnyObjectByType<HandMotion>();
             if (recognizer == null) recognizer = FindAnyObjectByType<GestureRecognizer>();
+            // Summoned spell effects belong with the hands; adding them here gives existing scenes them without re-running setup.
+            if (GetComponent<AegisShield>() == null) gameObject.AddComponent<AegisShield>();
+            if (GetComponent<SparkBlade>() == null) gameObject.AddComponent<SparkBlade>();
+            if (GetComponent<SkyhammerShockwave>() == null) gameObject.AddComponent<SkyhammerShockwave>();
         }
 
         void OnEnable()
@@ -309,7 +313,7 @@ namespace ArcaneStrike.VFX
 
         void HandleGesture(GestureEvent e)
         {
-            if (e.Type == GestureType.AegisEnd || e.Type == GestureType.GrabEnd) return;
+            if (e.Type == GestureType.AegisEnd || e.Type == GestureType.GrabEnd || e.Type == GestureType.BladeEnd) return;
             HandRig rig = rigs[(int)e.Hand];
             rig.Flash = 1f;
             rig.FlashColor = GestureColor(e.Type);
@@ -334,6 +338,8 @@ namespace ArcaneStrike.VFX
                 case GestureType.VoltBurst: return new Color(0.31f, 0.89f, 1f);  // Volt cyan #4FE3FF
                 case GestureType.Seal: return new Color(0.42f, 0.25f, 0.85f);    // Hollow violet #6B3FD9
                 case GestureType.Lumen: return Color.white;
+                case GestureType.BladeStart: return new Color(1f, 0.79f, 0.29f);  // Spark gold #FFC94A
+                case GestureType.Skyhammer: return new Color(0.31f, 0.89f, 1f);   // Volt cyan #4FE3FF
                 default: return new Color(1f, 0.85f, 0.45f);
             }
         }

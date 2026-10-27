@@ -31,13 +31,15 @@ Tips: webcam at chest height, light in front of you (not a bright window or tube
 
 | Spell | Gesture | Key |
 |---|---|---|
-| Firebolt | index + middle out, flick towards the camera | 1 |
-| Aegis | open palm facing the camera, hold | 2 (hold) |
+| Firebolt | index + middle out, point them at the camera for a moment (or flick towards it) | 1 |
+| Aegis | fist with the palm side towards you, raise it, then bring it down; the shield stays while you hold the fist | 2 (hold) |
 | Seal | both hands together, then pull apart sideways | 3 |
 | Volt Burst | fist, then burst open | 4 |
 | Lumen | open palm up, hand raised (set `lumenHeight` to about -0.1 for webcams) | 5 |
 | Sunwheel | both index fingers draw a circle | 6 |
 | Grab (Tether) | fist | G (hold) |
+| Spark Blade | fist at your hip, draw it up fast like a sword from its sheath; the sword stays while you hold the fist, swing it to hit | 7 (hold) |
+| Skyhammer | both fists together, raise them to head height, slam them down; shockwave on the floor | 8 |
 
 Thresholds are on the `GestureRecognizer` component. Webcam depth is approximate,
 so do the final tuning on a real Quest.

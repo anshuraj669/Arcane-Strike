@@ -16,6 +16,9 @@ namespace ArcaneStrike.HandInput
         Sunwheel,
         GrabStart, // fist closed: Tether uses this when an enemy is gaze-locked
         GrabEnd,
+        BladeStart, // Spark Blade: sword drawn from the hip, held while the fist stays closed
+        BladeEnd,
+        Skyhammer,  // both fists together overhead, slammed down: shockwave
     }
 
     public struct GestureEvent
@@ -53,13 +56,46 @@ namespace ArcaneStrike.HandInput
         [SerializeField] float ignoreNearHead = 0.15f;
         [SerializeField] float minConfidence = 0.5f;
 
-        [Header("Firebolt: index + middle out, flick forward")]
+        [Header("Firebolt: index + middle out, aim forward (or flick forward)")]
+        [Tooltip("Pointing both fingers forward for this long fires one bolt. Aim away or change the pose to fire again.")]
+        [SerializeField] float fireboltAimHold = 0.2f;
+        [Tooltip("How straight ahead the fingers must point (1 = exactly forward, at the camera).")]
+        [SerializeField] float fireboltAimFacing = 0.6f;
+        [Tooltip("A forward flick faster than this fires at once, without the aim hold.")]
         [SerializeField] float fireboltSpeed = 1.2f;
         [SerializeField] float fireboltRefractory = 0.3f;
 
-        [Header("Aegis: open palm facing forward, hold")]
-        [SerializeField] float aegisFacing = 0.6f;
-        [SerializeField] float aegisReleaseGrace = 0.15f;
+        [Header("Aegis: fist facing you, raise it, then bring it down (a warrior lifting a shield)")]
+        [Tooltip("How much the palm side of the fist must face the player. Webcam hands skip this check.")]
+        [SerializeField] float aegisFistFacing = 0.2f;
+        [Tooltip("How far the fist must rise (m).")]
+        [SerializeField] float aegisRise = 0.1f;
+        [Tooltip("How far it must come back down after rising (m).")]
+        [SerializeField] float aegisDrop = 0.06f;
+        [Tooltip("The rise and drop must both happen within this time (s).")]
+        [SerializeField] float aegisWindow = 1.5f;
+        [Tooltip("The shield stays up while the fist is held; it drops this long after the fist opens or is lost.")]
+        [SerializeField] float aegisReleaseGrace = 0.25f;
+
+        [Header("Spark Blade: fist at the hip, draw it up fast like a sword from its sheath")]
+        [Tooltip("The draw must start at least this far below the head (m): hip / waist height.")]
+        [SerializeField] float bladeStartBelowHead = 0.4f;
+        [Tooltip("How far the fist must rise during the draw (m).")]
+        [SerializeField] float bladeDrawRise = 0.25f;
+        [Tooltip("The rise must happen within this time (s).")]
+        [SerializeField] float bladeDrawTime = 0.8f;
+        [Tooltip("The sword stays while the fist is held; it vanishes this long after the fist opens or is lost.")]
+        [SerializeField] float bladeReleaseGrace = 0.3f;
+
+        [Header("Skyhammer: both fists together overhead, then slam them down")]
+        [Tooltip("Fists closer than this (m) count as holding one hammer.")]
+        [SerializeField] float hammerTogether = 0.2f;
+        [Tooltip("Fists must be raised to at least this height relative to the head (m). Negative = below the head.")]
+        [SerializeField] float hammerRaiseHeight = -0.1f;
+        [Tooltip("How far the fists must come down (m), within Hammer Slam Time.")]
+        [SerializeField] float hammerDrop = 0.35f;
+        [SerializeField] float hammerSlamTime = 0.6f;
+        [SerializeField] float hammerCooldown = 1.5f;
 
         [Header("Volt Burst: fist, then burst open")]
         [SerializeField] float voltOpenWindow = 0.35f;
@@ -87,7 +123,7 @@ namespace ArcaneStrike.HandInput
         [SerializeField] bool relaxForWebcam = true;
 
         [Header("Debug")]
-        [Tooltip("Keys 1-6 and G cast gestures without hands. Editor and development builds only.")]
+        [Tooltip("Keys 1-8 and G cast gestures without hands. Editor and development builds only.")]
         [SerializeField] bool keyboardFallback = true;
         [SerializeField] bool logGestures = true;
 
@@ -95,6 +131,10 @@ namespace ArcaneStrike.HandInput
 
         bool Relaxed => relaxForWebcam && input != null && input.ActiveSource is WebcamHandSource;
         float FireboltSpeed => Relaxed ? fireboltSpeed * 0.6f : fireboltSpeed;
+        float AegisRise => Relaxed ? Mathf.Min(aegisRise, 0.07f) : aegisRise;
+        float BladeDrawRise => Relaxed ? Mathf.Min(bladeDrawRise, 0.2f) : bladeDrawRise;
+        // A webcam can't see above your head, so the hammer only has to reach about shoulder height.
+        float HammerRaiseHeight => Relaxed ? Mathf.Min(hammerRaiseHeight, -0.25f) : hammerRaiseHeight;
         float VoltWindow => Relaxed ? Mathf.Max(voltOpenWindow, 0.6f) : voltOpenWindow;
         float LumenFacing => Relaxed ? Mathf.Min(lumenFacing, 0.35f) : lumenFacing;
         float CircleCoverage => Relaxed ? Mathf.Min(circleCoverageDegrees, 260f) : circleCoverageDegrees;
@@ -111,13 +151,23 @@ namespace ArcaneStrike.HandInput
             public float LastFirebolt = -10f, LastLumen = -10f, LastFistEnd = -10f;
             public bool FistQualified, Aegis, Grab;
             public float AegisLostAt = -1f;
+            public bool FireboltArmed = true;
+            public float AimSince;
+            public bool AegisTracking, AegisRose;
+            public float AegisTrackStart, AegisLow, AegisHigh;
+            public bool Blade, BladeTracking;
+            public float BladeLostAt = -1f, BladeLowY, BladeLowAt;
             public float CircleDoneAt = -10f;
         }
 
         readonly HandState[] state = { new HandState(), new HandState() };
         readonly List<Vector2> circlePoints = new List<Vector2>(256);
         float lastTogether = -10f, lastSeal = -10f, lastSunwheel = -10f;
-        bool keyboardAegis, keyboardGrab;
+        bool keyboardAegis, keyboardGrab, keyboardBlade;
+
+        // Both fists held together: one two-handed hammer grip, so single-fist spells (Aegis, Blade) stay quiet.
+        bool hammerGrip;
+        float lastHammerGrip = -10f, hammerHighY, hammerHighAt = -10f, lastSkyhammer = -10f;
 
         void Awake()
         {
@@ -132,9 +182,15 @@ namespace ArcaneStrike.HandInput
             if (head == null) return;
 
             float now = Time.time;
+            HandFrame l = input.Left, r = input.Right;
+            hammerGrip = l.IsTracked && r.IsTracked && Classify(l) == "fist" && Classify(r) == "fist" &&
+                         Vector3.Distance(l.PalmCenter, r.PalmCenter) < hammerTogether;
+            if (hammerGrip) lastHammerGrip = now;
+
             for (int i = 0; i < 2; i++) UpdateHand(input.Get((HandSide)i), state[i], head, now);
             UpdateSeal(head, now);
             UpdateSunwheel(head, now);
+            UpdateSkyhammer(head, now);
             if (keyboardFallback && (Application.isEditor || Debug.isDebugBuild)) UpdateKeyboard(head, now);
         }
 
@@ -147,6 +203,8 @@ namespace ArcaneStrike.HandInput
             if (!usable)
             {
                 Reset(f.Side, s, head, now);
+                if (s.Aegis) UpdateHeldSpell(f.Side, ref s.Aegis, ref s.AegisLostAt, false, aegisReleaseGrace, GestureType.AegisEnd, head.position, head, now);
+                if (s.Blade) UpdateHeldSpell(f.Side, ref s.Blade, ref s.BladeLostAt, false, bladeReleaseGrace, GestureType.BladeEnd, head.position, head, now);
                 return;
             }
 
@@ -159,13 +217,14 @@ namespace ArcaneStrike.HandInput
                 if (s.Pose == "fist" && s.FistQualified) s.LastFistEnd = now;
                 s.Pose = pose;
                 s.PoseSince = now;
+                s.AimSince = now;
                 s.FistQualified = false;
             }
             bool held = now - s.PoseSince >= minPoseHold;
 
-            // Fist: grab / Volt Burst charge
+            // Fist: grab / Volt Burst charge (a fist holding a shield, sword or hammer is not a charge)
             bool fist = pose == "fist" && held;
-            if (fist) s.FistQualified = true;
+            if (fist && !s.Aegis && !s.Blade && !hammerGrip) s.FistQualified = true;
             if (fist != s.Grab)
             {
                 s.Grab = fist;
@@ -180,14 +239,22 @@ namespace ArcaneStrike.HandInput
                 if (!wasPunch) Raise(GestureType.VoltBurst, f.Side, f.PalmCenter, f.HandForward);
             }
 
-            // Firebolt: two-finger point + fast flick along the head's forward
-            if (pose == "point" && held && now - s.LastFirebolt > fireboltRefractory)
+            // Firebolt: two-finger point aimed forward for a moment (easy for webcams), or a fast forward flick
+            if (pose != "point") s.FireboltArmed = true;
+            else if (held && now - s.LastFirebolt > fireboltRefractory)
             {
-                Vector3 v = Velocity(s, 0.08f);
-                if (Vector3.Dot(v, head.forward) > FireboltSpeed)
+                Vector3 dir = (f[HandJoint.IndexTip] - f[HandJoint.IndexProximal]).normalized;
+                bool aimed = Vector3.Dot(dir, head.forward) > fireboltAimFacing;
+                if (!aimed)
+                {
+                    s.FireboltArmed = true;
+                    s.AimSince = now;
+                }
+                bool flicked = Vector3.Dot(Velocity(s, 0.08f), head.forward) > FireboltSpeed;
+                if (flicked || (aimed && s.FireboltArmed && now - s.AimSince >= fireboltAimHold))
                 {
                     s.LastFirebolt = now;
-                    Vector3 dir = (f[HandJoint.IndexTip] - f[HandJoint.IndexProximal]).normalized;
+                    s.FireboltArmed = false;
                     Raise(GestureType.Firebolt, f.Side, f[HandJoint.IndexTip], dir);
                 }
             }
@@ -201,27 +268,15 @@ namespace ArcaneStrike.HandInput
                 Raise(GestureType.Lumen, f.Side, f.PalmCenter, Vector3.up);
             }
 
-            // Aegis: open palm facing forward, in front of the body, while held
-            bool aegisPose = pose == "open" && held && Vector3.Dot(n, head.forward) > aegisFacing &&
-                             Vector3.Dot(f.PalmCenter - head.position, head.forward) > ignoreNearHead;
-            if (aegisPose)
-            {
-                s.AegisLostAt = -1f;
-                if (!s.Aegis)
-                {
-                    s.Aegis = true;
-                    Raise(GestureType.AegisStart, f.Side, f.PalmCenter, n);
-                }
-            }
-            else if (s.Aegis)
-            {
-                if (s.AegisLostAt < 0f) s.AegisLostAt = now;
-                else if (now - s.AegisLostAt > aegisReleaseGrace)
-                {
-                    s.Aegis = false;
-                    Raise(GestureType.AegisEnd, f.Side, f.PalmCenter, n);
-                }
-            }
+            // Spark Blade: a fist drawn up fast from the hip. Checked before Aegis, whose small lift it would otherwise also make.
+            if (s.Blade) UpdateHeldSpell(f.Side, ref s.Blade, ref s.BladeLostAt, fist, bladeReleaseGrace, GestureType.BladeEnd, f.PalmCenter, head, now);
+            else if (fist && !s.Aegis && !hammerGrip) TrackBladeDraw(f, s, head, now);
+            else s.BladeTracking = false;
+
+            // Aegis: fist with the palm side towards you, raised, then brought down. The shield stays while the fist is held.
+            if (s.Aegis) UpdateHeldSpell(f.Side, ref s.Aegis, ref s.AegisLostAt, fist, aegisReleaseGrace, GestureType.AegisEnd, f.PalmCenter, head, now);
+            else if (fist && !s.Blade && !hammerGrip && AegisFistReady(f, head)) TrackAegisLift(f, s, head, now);
+            else s.AegisTracking = false;
 
             // Circle tracking for Sunwheel (index finger out)
             if (f.Straightness(Finger.Index) > curledThreshold && DetectCircle(s, head))
@@ -236,8 +291,83 @@ namespace ArcaneStrike.HandInput
             s.History.Clear();
             s.Pose = "none";
             s.FistQualified = false;
+            s.AegisTracking = false;
+            s.BladeTracking = false;
             if (s.Grab) { s.Grab = false; Raise(GestureType.GrabEnd, side, head.position, head.forward); }
-            if (s.Aegis) { s.Aegis = false; Raise(GestureType.AegisEnd, side, head.position, head.forward); }
+            // Aegis and Blade are not dropped here: UpdateHeldSpell gives them a grace period, so a tracking flicker doesn't drop them.
+        }
+
+        void TrackBladeDraw(HandFrame f, HandState s, Transform head, float now)
+        {
+            float y = f.Wrist.y;
+            // Remember the lowest point of the fist in the last Blade Draw Time; the draw is measured from there.
+            if (!s.BladeTracking || y < s.BladeLowY || now - s.BladeLowAt > bladeDrawTime)
+            {
+                s.BladeTracking = true;
+                s.BladeLowY = y;
+                s.BladeLowAt = now;
+            }
+
+            bool startedLow = s.BladeLowY < head.position.y - bladeStartBelowHead;
+            if (startedLow && y - s.BladeLowY >= BladeDrawRise)
+            {
+                s.Blade = true;
+                s.BladeLostAt = -1f;
+                s.BladeTracking = false;
+                s.AegisTracking = false;
+                s.FistQualified = false;
+                Raise(GestureType.BladeStart, f.Side, f.PalmCenter, head.forward);
+            }
+        }
+
+        bool AegisFistReady(HandFrame f, Transform head)
+        {
+            if (Vector3.Dot(f.PalmCenter - head.position, head.forward) <= ignoreNearHead) return false;
+            if (Relaxed) return true; // webcams read palm direction badly
+            return Vector3.Dot(f.PalmNormal, (head.position - f.PalmCenter).normalized) > aegisFistFacing;
+        }
+
+        void TrackAegisLift(HandFrame f, HandState s, Transform head, float now)
+        {
+            float y = f.Wrist.y;
+            if (!s.AegisTracking || now - s.AegisTrackStart > aegisWindow)
+            {
+                s.AegisTracking = true;
+                s.AegisRose = false;
+                s.AegisTrackStart = now;
+                s.AegisLow = s.AegisHigh = y;
+            }
+
+            if (!s.AegisRose && y < s.AegisLow) s.AegisLow = s.AegisHigh = y; // the lift is measured from the lowest point
+            s.AegisHigh = Mathf.Max(s.AegisHigh, y);
+            if (s.AegisHigh - s.AegisLow >= AegisRise) s.AegisRose = true;
+
+            if (s.AegisRose && s.AegisHigh - y >= aegisDrop)
+            {
+                s.Aegis = true;
+                s.AegisLostAt = -1f;
+                s.AegisTracking = false;
+                s.FistQualified = false;
+                Raise(GestureType.AegisStart, f.Side, f.PalmCenter, head.forward);
+            }
+        }
+
+        /// <summary>Keeps a held spell (Aegis, Blade) active while <paramref name="holding"/>, ending it after a grace period.</summary>
+        void UpdateHeldSpell(HandSide side, ref bool active, ref float lostAt, bool holding, float grace,
+                             GestureType endType, Vector3 position, Transform head, float now)
+        {
+            if (holding)
+            {
+                lostAt = -1f;
+                return;
+            }
+            if (lostAt < 0f) lostAt = now;
+            else if (now - lostAt > grace)
+            {
+                active = false;
+                lostAt = -1f;
+                Raise(endType, side, position, head.forward);
+            }
         }
 
         string Classify(HandFrame f)
@@ -336,6 +466,36 @@ namespace ArcaneStrike.HandInput
             }
         }
 
+        void UpdateSkyhammer(Transform head, float now)
+        {
+            // Fast slams blur on webcams and can break the grip for a few frames, so allow short gaps.
+            if (now - lastHammerGrip > 0.25f || now - lastSkyhammer < hammerCooldown)
+            {
+                hammerHighAt = -10f;
+                return;
+            }
+            HandFrame l = input.Left, r = input.Right;
+            if (!l.IsTracked || !r.IsTracked) return;
+
+            float y = (l.Wrist.y + r.Wrist.y) * 0.5f;
+            bool raised = y > head.position.y + HammerRaiseHeight;
+            if (hammerGrip && raised && (now - hammerHighAt > hammerSlamTime || y > hammerHighY))
+            {
+                hammerHighY = y;
+                hammerHighAt = now;
+            }
+
+            if (now - hammerHighAt <= hammerSlamTime && hammerHighY - y >= hammerDrop)
+            {
+                lastSkyhammer = now;
+                hammerHighAt = -10f;
+                lastTogether = -10f; // pulling the fists apart afterwards must not count as Seal
+                state[0].FistQualified = state[1].FistQualified = false;
+                Vector3 centre = (l.PalmCenter + r.PalmCenter) * 0.5f;
+                Raise(GestureType.Skyhammer, HandSide.Right, centre, Vector3.down);
+            }
+        }
+
         // ---------------------------------------------------------------- keyboard fallback
 
         void UpdateKeyboard(Transform head, float now)
@@ -351,6 +511,14 @@ namespace ArcaneStrike.HandInput
             if (kb.digit4Key.wasPressedThisFrame) Raise(GestureType.VoltBurst, HandSide.Right, pos, fwd, true);
             if (kb.digit5Key.wasPressedThisFrame) Raise(GestureType.Lumen, HandSide.Right, pos + Vector3.up * 0.5f, Vector3.up, true);
             if (kb.digit6Key.wasPressedThisFrame) Raise(GestureType.Sunwheel, HandSide.Right, pos, fwd, true);
+            if (kb.digit8Key.wasPressedThisFrame) Raise(GestureType.Skyhammer, HandSide.Right, pos, Vector3.down, true);
+
+            bool blade = kb.digit7Key.isPressed;
+            if (blade != keyboardBlade)
+            {
+                keyboardBlade = blade;
+                Raise(blade ? GestureType.BladeStart : GestureType.BladeEnd, HandSide.Right, pos, fwd, true);
+            }
 
             bool aegis = kb.digit2Key.isPressed;
             if (aegis != keyboardAegis)
