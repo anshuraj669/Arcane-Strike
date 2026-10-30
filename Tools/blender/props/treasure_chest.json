@@ -1,0 +1,51 @@
+{
+ "name": "treasure_chest",
+ "size": [
+  0.9602625370025635,
+  0.5232470035552979,
+  0.6186948418617249
+ ],
+ "triangles": 12395,
+ "materials": [
+  {
+   "name": "M_Prop_treasure_chest",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/treasure_chest/M_Prop_treasure_chest_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/treasure_chest/M_Prop_treasure_chest_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/treasure_chest/M_Prop_treasure_chest_MetalSmooth.png"
+  }
+ ],
+ "objects": [
+  {
+   "name": "treasure_chest_Body",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "name": "treasure_chest_Lid",
+   "pivot": [
+    0.00012359023094177246,
+    0.2616235017776489,
+    0.41813403367996216
+   ]
+  }
+ ]
+}

@@ -137,7 +137,7 @@ namespace ArcaneStrike.HandInput
             lock (pendingLock) { json = pendingJson; pendingJson = null; }
             if (json != null) Apply(json);
 
-            if (Keyboard.current != null && Keyboard.current.cKey.wasPressedThisFrame) Calibrate();
+            if (GameInput.Pressed(GameAction.CalibrateWebcam)) Calibrate();
 
             for (int i = 0; i < 2; i++)
                 hands[i].IsTracked = lastSeen[i] >= 0f && Time.time - lastSeen[i] < timeout;

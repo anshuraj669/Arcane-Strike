@@ -192,7 +192,7 @@ namespace ArcaneStrike.HandInput
             UpdateSeal(head, now);
             UpdateSunwheel(head, now);
             UpdateSkyhammer(head, now);
-            if (keyboardFallback && (Application.isEditor || Debug.isDebugBuild)) UpdateKeyboard(head, now);
+            if (keyboardFallback) UpdateKeyboard(head, now);
         }
 
         // ---------------------------------------------------------------- one hand
@@ -501,34 +501,31 @@ namespace ArcaneStrike.HandInput
 
         void UpdateKeyboard(Transform head, float now)
         {
-            Keyboard kb = Keyboard.current;
-            if (kb == null) return;
-
             Vector3 pos = head.position + head.forward * 0.4f - head.up * 0.15f;
             Vector3 fwd = head.forward;
 
-            if (kb.digit1Key.wasPressedThisFrame) Raise(GestureType.Firebolt, HandSide.Right, pos, fwd, true);
-            if (kb.digit3Key.wasPressedThisFrame) Raise(GestureType.Seal, HandSide.Right, pos, fwd, true);
-            if (kb.digit4Key.wasPressedThisFrame) Raise(GestureType.VoltBurst, HandSide.Right, pos, fwd, true);
-            if (kb.digit5Key.wasPressedThisFrame) Raise(GestureType.Lumen, HandSide.Right, pos + Vector3.up * 0.5f, Vector3.up, true);
-            if (kb.digit6Key.wasPressedThisFrame) Raise(GestureType.Sunwheel, HandSide.Right, pos, fwd, true);
-            if (kb.digit8Key.wasPressedThisFrame) Raise(GestureType.Skyhammer, HandSide.Right, pos, Vector3.down, true);
+            if (GameInput.Pressed(GameAction.Firebolt)) Raise(GestureType.Firebolt, HandSide.Right, pos, fwd, true);
+            if (GameInput.Pressed(GameAction.Seal)) Raise(GestureType.Seal, HandSide.Right, pos, fwd, true);
+            if (GameInput.Pressed(GameAction.VoltBurst)) Raise(GestureType.VoltBurst, HandSide.Right, pos, fwd, true);
+            if (GameInput.Pressed(GameAction.Lumen)) Raise(GestureType.Lumen, HandSide.Right, pos + Vector3.up * 0.5f, Vector3.up, true);
+            if (GameInput.Pressed(GameAction.Sunwheel)) Raise(GestureType.Sunwheel, HandSide.Right, pos, fwd, true);
+            if (GameInput.Pressed(GameAction.Skyhammer)) Raise(GestureType.Skyhammer, HandSide.Right, pos, Vector3.down, true);
 
-            bool blade = kb.digit7Key.isPressed;
+            bool blade = GameInput.Held(GameAction.SparkBlade);
             if (blade != keyboardBlade)
             {
                 keyboardBlade = blade;
                 Raise(blade ? GestureType.BladeStart : GestureType.BladeEnd, HandSide.Right, pos, fwd, true);
             }
 
-            bool aegis = kb.digit2Key.isPressed;
+            bool aegis = GameInput.Held(GameAction.Aegis);
             if (aegis != keyboardAegis)
             {
                 keyboardAegis = aegis;
                 Raise(aegis ? GestureType.AegisStart : GestureType.AegisEnd, HandSide.Left, pos, fwd, true);
             }
 
-            bool grab = kb.gKey.isPressed;
+            bool grab = GameInput.Held(GameAction.Grab);
             if (grab != keyboardGrab)
             {
                 keyboardGrab = grab;

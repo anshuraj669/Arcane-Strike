@@ -1,0 +1,43 @@
+{
+ "name": "vintage_wooden_drawer_01",
+ "size": [
+  1.7151139974594116,
+  1.0069129467010498,
+  1.0908392667770386
+ ],
+ "triangles": 5184,
+ "materials": [
+  {
+   "name": "M_Prop_vintage_wooden_drawer_01",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/vintage_wooden_drawer_01/M_Prop_vintage_wooden_drawer_01_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/vintage_wooden_drawer_01/M_Prop_vintage_wooden_drawer_01_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/vintage_wooden_drawer_01/M_Prop_vintage_wooden_drawer_01_MetalSmooth.png"
+  }
+ ],
+ "objects": [
+  {
+   "name": "vintage_wooden_drawer_01",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  }
+ ]
+}

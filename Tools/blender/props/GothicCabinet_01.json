@@ -1,0 +1,43 @@
+{
+ "name": "GothicCabinet_01",
+ "size": [
+  1.7222180366516113,
+  1.1165391206741333,
+  2.359988212585449
+ ],
+ "triangles": 4867,
+ "materials": [
+  {
+   "name": "M_Prop_GothicCabinet_01",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/GothicCabinet_01/M_Prop_GothicCabinet_01_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/GothicCabinet_01/M_Prop_GothicCabinet_01_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/GothicCabinet_01/M_Prop_GothicCabinet_01_MetalSmooth.png"
+  }
+ ],
+ "objects": [
+  {
+   "name": "GothicCabinet_01",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  }
+ ]
+}

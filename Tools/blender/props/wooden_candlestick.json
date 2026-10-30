@@ -1,0 +1,43 @@
+{
+ "name": "wooden_candlestick",
+ "size": [
+  0.0983029305934906,
+  0.09987896680831909,
+  0.21974407136440277
+ ],
+ "triangles": 3328,
+ "materials": [
+  {
+   "name": "M_Prop_wooden_candlestick",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 1.0,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/wooden_candlestick/M_Prop_wooden_candlestick_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/wooden_candlestick/M_Prop_wooden_candlestick_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/wooden_candlestick/M_Prop_wooden_candlestick_MetalSmooth.png"
+  }
+ ],
+ "objects": [
+  {
+   "name": "wooden_candlestick",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  }
+ ]
+}

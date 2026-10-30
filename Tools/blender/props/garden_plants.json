@@ -1,0 +1,43 @@
+{
+ "name": "garden_plants",
+ "size": [
+  0.9916268587112427,
+  0.9582882523536682,
+  0.9358557462692261
+ ],
+ "triangles": 5999,
+ "materials": [
+  {
+   "name": "M_Prop_garden_plants",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.19999998807907104,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/garden_plants/M_Prop_garden_plants_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/garden_plants/M_Prop_garden_plants_Normal.jpg",
+   "maskMap": ""
+  }
+ ],
+ "objects": [
+  {
+   "name": "garden_plants",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  }
+ ]
+}

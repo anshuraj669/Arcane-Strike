@@ -1,0 +1,59 @@
+{
+ "name": "large_castle_door",
+ "size": [
+  2.012115716934204,
+  0.29632624983787537,
+  2.964752435684204
+ ],
+ "triangles": 12640,
+ "materials": [
+  {
+   "name": "M_Prop_large_castle_door",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/large_castle_door/M_Prop_large_castle_door_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/large_castle_door/M_Prop_large_castle_door_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/large_castle_door/M_Prop_large_castle_door_MetalSmooth.png"
+  }
+ ],
+ "objects": [
+  {
+   "name": "large_castle_door_Frame",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "name": "large_castle_door_Left",
+   "pivot": [
+    -0.9648890495300293,
+    0.041284289211034775,
+    0.06728589534759521
+   ]
+  },
+  {
+   "name": "large_castle_door_Right",
+   "pivot": [
+    0.9621491432189941,
+    -0.015023618936538696,
+    0.06728589534759521
+   ]
+  }
+ ]
+}

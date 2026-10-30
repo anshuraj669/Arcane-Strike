@@ -1,0 +1,43 @@
+{
+ "name": "ClassicNightstand_01",
+ "size": [
+  0.5677522420883179,
+  0.424192875623703,
+  0.6999650001525879
+ ],
+ "triangles": 2002,
+ "materials": [
+  {
+   "name": "M_Prop_ClassicNightstand_01",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/ClassicNightstand_01/M_Prop_ClassicNightstand_01_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/ClassicNightstand_01/M_Prop_ClassicNightstand_01_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/ClassicNightstand_01/M_Prop_ClassicNightstand_01_MetalSmooth.png"
+  }
+ ],
+ "objects": [
+  {
+   "name": "ClassicNightstand_01",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  }
+ ]
+}

@@ -1,0 +1,43 @@
+{
+ "name": "CoffeeTable_01",
+ "size": [
+  1.5400111675262451,
+  0.972847044467926,
+  0.5232720375061035
+ ],
+ "triangles": 5202,
+ "materials": [
+  {
+   "name": "M_Prop_CoffeeTable_01",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/CoffeeTable_01/M_Prop_CoffeeTable_01_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/CoffeeTable_01/M_Prop_CoffeeTable_01_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/CoffeeTable_01/M_Prop_CoffeeTable_01_MetalSmooth.png"
+  }
+ ],
+ "objects": [
+  {
+   "name": "CoffeeTable_01",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  }
+ ]
+}

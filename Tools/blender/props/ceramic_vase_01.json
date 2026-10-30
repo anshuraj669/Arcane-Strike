@@ -1,0 +1,43 @@
+{
+ "name": "ceramic_vase_01",
+ "size": [
+  0.20487193763256073,
+  0.20637670159339905,
+  0.40137979388237
+ ],
+ "triangles": 2548,
+ "materials": [
+  {
+   "name": "M_Prop_ceramic_vase_01",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/ceramic_vase_01/M_Prop_ceramic_vase_01_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/ceramic_vase_01/M_Prop_ceramic_vase_01_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/ceramic_vase_01/M_Prop_ceramic_vase_01_MetalSmooth.png"
+  }
+ ],
+ "objects": [
+  {
+   "name": "ceramic_vase_01",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  }
+ ]
+}

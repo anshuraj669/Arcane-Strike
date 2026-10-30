@@ -49,7 +49,7 @@ namespace ArcaneStrike.Story
         [SerializeField] float placeDelay = 0.75f;
 
         [Header("Debug")]
-        [Tooltip("Editor / debug builds: N does the current step for you (open, pick up, clean, cut, skip ahead, enter). " +
+        [Tooltip("Keyboard (GameInput): E or N does the current step for you (open, pick up, clean, cut, skip ahead, enter). " +
                  "H places the set in front of you again.")]
         [SerializeField] bool keyboardFallback = true;
 
@@ -78,7 +78,11 @@ namespace ArcaneStrike.Story
                 fingerCut.OnCut += HandleCut;
                 fingerCut.OnBloodTouched += HandleBloodTouched;
             }
-            if (awakening != null) awakening.OnPortalOpened += HandlePortalOpened;
+            if (awakening != null)
+            {
+                awakening.OnPortalOpened += HandlePortalOpened;
+                awakening.OnPulledIn += HandlePulledIn;
+            }
             if (portal != null) portal.OnEntered += HandleEntered;
         }
 
@@ -95,7 +99,11 @@ namespace ArcaneStrike.Story
                 fingerCut.OnCut -= HandleCut;
                 fingerCut.OnBloodTouched -= HandleBloodTouched;
             }
-            if (awakening != null) awakening.OnPortalOpened -= HandlePortalOpened;
+            if (awakening != null)
+            {
+                awakening.OnPortalOpened -= HandlePortalOpened;
+                awakening.OnPulledIn -= HandlePulledIn;
+            }
             if (portal != null) portal.OnEntered -= HandleEntered;
         }
 
@@ -149,17 +157,52 @@ namespace ArcaneStrike.Story
 
             Vector3 origin = new Vector3(head.position.x, floorY, head.position.z) - forward * pullBack;
             transform.SetPositionAndRotation(origin, Quaternion.LookRotation(forward));
-            Debug.Log($"[Attic] Set placed in front of the player, {how} (floor y = {floorY:F2}). H places it again.");
+            Debug.Log($"[Attic] Set placed in front of the player, {how} (floor y = {floorY:F2}). H places it again.\n" +
+                      $"Eyes at {transform.InverseTransformPoint(head.position):F2} in the set, looking {transform.InverseTransformDirection(head.forward):F2}; " +
+                      $"camera {(Camera.main != null ? Camera.main.name : "none")} at {(Camera.main != null ? transform.InverseTransformPoint(Camera.main.transform.position).ToString("F2") : "-")}; " +
+                      $"straight ahead: {WhatIsAhead(head)}");
+        }
+
+        // Debug: the nearest visible thing along the view, to tell "looking at a wall" from "the set is somewhere else".
+        static string WhatIsAhead(Transform head)
+        {
+            var ray = new Ray(head.position, head.forward);
+            Renderer best = null;
+            float bestDistance = float.MaxValue;
+            foreach (Renderer r in FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+            {
+                if (!r.enabled || !r.gameObject.activeInHierarchy || r is ParticleSystemRenderer) continue;
+                if (r.bounds.Contains(head.position)) continue; // the room around us, not what we look at
+                if (r.bounds.IntersectRay(ray, out float d) && d < bestDistance)
+                {
+                    best = r;
+                    bestDistance = d;
+                }
+            }
+            return best != null ? $"{best.name} ({bestDistance:F2} m)" : "nothing";
         }
 
         void Update()
         {
             if (Current == Beat.ChestClosed && chest != null && chest.IsOpen) HandleChestOpened();
 
-            if (!keyboardFallback || !(Application.isEditor || Debug.isDebugBuild) || Keyboard.current == null) return;
-            if (Keyboard.current.nKey.wasPressedThisFrame) DoCurrentStep();
-            if (Keyboard.current.hKey.wasPressedThisFrame) PlaceInFrontOfPlayer();
+            if (!keyboardFallback) return;
+            if (!introSearched)
+            {
+                // Once: a scene without the intro must not search the whole scene every frame.
+                intro = FindAnyObjectByType<AtticIntro>();
+                introSearched = true;
+            }
+            if (intro != null && intro.IsPlaying) return; // E / N skip the intro walk itself
+            // E does the step you're on (open the chest, take the lantern, clean it, touch the edge, enter the rift);
+            // N does it too (and skips Ember's lines).
+            if (GameInput.Pressed(GameAction.Interact) || GameInput.Pressed(GameAction.Skip)) DoCurrentStep();
+            // H re-places a movable set; the house version stands where it was built, so H does nothing there.
+            if (placeInFrontOfPlayer && GameInput.Pressed(GameAction.ReplaceSet)) PlaceInFrontOfPlayer();
         }
+
+        AtticIntro intro;
+        bool introSearched;
 
         /// <summary>Debug: performs the step the player is currently expected to do.</summary>
         public void DoCurrentStep()
@@ -169,11 +212,21 @@ namespace ArcaneStrike.Story
                 case Beat.ChestClosed: if (chest != null) chest.OpenChest(); break;
                 case Beat.LanternFound: if (pickup != null) pickup.PickUp(HandSide.Right); break;
                 case Beat.LanternHeld:
-                case Beat.Cleaning: if (cleaning != null) cleaning.CompleteNow(); break;
+                case Beat.Cleaning:
+                    // The other hand takes the cloth and rubs the lantern clean (N again finishes it at once).
+                    // (A cloth already in the player's hand can't be played out: finish the cleaning instead, or N would do nothing.)
+                    var cloth = FindAnyObjectByType<CleaningCloth>();
+                    bool played = cloth != null && !cloth.IsAutoCleaning && Current == Beat.LanternHeld && cloth.AutoClean();
+                    if (!played && cleaning != null) cleaning.CompleteNow();
+                    break;
                 case Beat.Cleaned: if (fingerCut != null) fingerCut.Cut(HandSide.Right); break;
                 case Beat.FingerCut:
                 case Beat.Awakening: if (awakening != null) awakening.Skip(); break;
                 case Beat.PortalOpen: if (portal != null) portal.Enter(); break;
+                case Beat.Done:
+                    if (RiftGate.Current != null) RiftGate.Current.Enter();
+                    else if (portal != null && portal.IsOpen) portal.Enter();
+                    break;
             }
         }
 
@@ -212,6 +265,8 @@ namespace ArcaneStrike.Story
 
         void HandleEntered() => SetBeat(Beat.Done);
 
+        void HandlePulledIn() => SetBeat(Beat.Done);
+
         // Kept from the first version, for UnityEvents that call it.
         public void OpenChestSequence()
         {
@@ -234,10 +289,11 @@ namespace ArcaneStrike.Story
             switch (beat)
             {
                 case Beat.ChestClosed: return ": reach to the front of the chest lid and lift (E or N)";
-                case Beat.LanternFound: return ": close a fist around the lantern's top ring (N)";
-                case Beat.LanternHeld: return ": rub the lantern with your other hand (N)";
+                case Beat.LanternFound: return ": close a fist around the lantern's top ring, or point your left index finger at it (N)";
+                case Beat.LanternHeld: return ": with your other hand take the old cloth from the chest (a fist on it, or point your left index finger at it) and rub the lantern (N)";
                 case Beat.Cleaned: return ": touch the glinting edge with a fingertip (N)";
                 case Beat.PortalOpen: return ": walk up to the portal (Enter or N)";
+                case Beat.Done: return ": the rift pulls the player through (the Ascension happens in the AscensionCave scene)";
                 default: return "";
             }
         }

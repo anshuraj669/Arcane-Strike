@@ -5,7 +5,8 @@ using UnityEngine;
 namespace ArcaneStrike.Story
 {
     /// <summary>
-    /// The player rubs years of dust off the lantern with their free hand. Cleaning drives the first half
+    /// The player rubs years of dust off the lantern with the old cloth from the chest (<see cref="CleaningCloth"/>,
+    /// faster) or their bare free hand. Cleaning drives the first half
     /// of the awakening: dust puffs while rubbing, then (as it gets cleaner) a soft hum, a golden glow and
     /// glowing runes, and when fully clean the hum grows louder.
     /// A cleaning cloth or any other script can also call <see cref="AddCleaning"/>.
@@ -43,6 +44,10 @@ namespace ArcaneStrike.Story
 
         public float Progress => Mathf.Clamp01(currentCleaning / Mathf.Max(requiredCleaning, 0.01f));
         public bool IsCleaned { get; private set; }
+        /// <summary>The lantern is in hand and not yet clean: rubbing counts.</summary>
+        public bool IsActive => active && !IsCleaned;
+        public float CleaningPerMetre => cleaningPerMetre;
+        public float Required => requiredCleaning;
         public event Action OnStarted, OnCleaned;
 
         bool active, started, humOn, glowOn, runesOn;
@@ -50,7 +55,7 @@ namespace ArcaneStrike.Story
         readonly Vector3[] lastPalm = new Vector3[2];
         readonly bool[] hadPalm = new bool[2];
 
-        Vector3 Center => transform.TransformPoint(centerOffset);
+        public Vector3 Center => transform.TransformPoint(centerOffset);
 
         void Awake()
         {
@@ -77,7 +82,8 @@ namespace ArcaneStrike.Story
                 var side = (HandSide)i;
                 HandFrame f = input.Get(side);
                 // The hand holding the lantern can't polish it.
-                bool free = pickup == null || !pickup.IsPickedUp || side != pickup.HeldBy;
+                // A hand holding the cloth cleans through the cloth instead.
+                bool free = (pickup == null || !pickup.IsPickedUp || side != pickup.HeldBy) && !CleaningCloth.IsHeldBy(side);
                 bool near = free && f.IsTracked && Vector3.Distance(f.PalmCenter, Center) < cleanReach;
                 if (!near)
                 {
@@ -88,15 +94,19 @@ namespace ArcaneStrike.Story
                 if (hadPalm[i])
                 {
                     float moved = Vector3.Distance(f.PalmCenter, lastPalm[i]);
-                    if (moved / dt > minRubSpeed)
-                    {
-                        AddCleaning(moved * cleaningPerMetre);
-                        if (dust != null) dust.Rub(Vector3.Lerp(f.PalmCenter, Center, 0.5f), moved / dt);
-                    }
+                    if (moved / dt > minRubSpeed) Rub(Vector3.Lerp(f.PalmCenter, Center, 0.5f), moved * cleaningPerMetre, moved / dt);
                 }
                 lastPalm[i] = f.PalmCenter;
                 hadPalm[i] = true;
             }
+        }
+
+        /// <summary>Rubbing at `point`: cleans by `amount` and stirs dust there.</summary>
+        public void Rub(Vector3 point, float amount, float speed)
+        {
+            if (!IsActive) return;
+            AddCleaning(amount);
+            if (dust != null) dust.Rub(point, speed);
         }
 
         public void AddCleaning(float amount)

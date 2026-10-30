@@ -10,6 +10,8 @@ namespace ArcaneStrike.Combat
         public Vector3 Direction;
         public float Speed;
         public HandSide Hand;
+        /// <summary>The sword technique that struck (None for anything else).</summary>
+        public SwordTechnique Technique;
     }
 
     /// <summary>Anything the player's hands can hit: enemies, Shades, training dummies, breakable props.</summary>

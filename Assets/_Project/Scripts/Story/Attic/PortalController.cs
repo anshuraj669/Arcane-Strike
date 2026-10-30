@@ -14,7 +14,8 @@ namespace ArcaneStrike.Story
     /// The portal that ends the attic. It opens on the real wall in front of the player when the room is
     /// known (MRUK: Quest or the Meta XR Simulator), otherwise where it was placed in the scene. Walking
     /// up to it (head within Enter Distance) moves to the next chapter, then loads Next Scene if that scene
-    /// is in Build Settings.
+    /// is in Build Settings. It opens from its frame: the stone ring rises out of nothing first, then the portal
+    /// tears open inside it. <see cref="OpenInto"/> reuses it as the rift after the Ascension.
     /// </summary>
     public class PortalController : MonoBehaviour
     {
@@ -32,6 +33,8 @@ namespace ArcaneStrike.Story
         [Header("Look")]
         [Tooltip("Optional portal art (prefab). The runtime swirl is used when empty.")]
         public GameObject visualPrefab;
+        [Tooltip("Optional stone ring around the portal (a child that starts hidden with the portal): it grows in as it opens.")]
+        public Transform frame;
         [SerializeField] float radius = 0.8f;
         [SerializeField] float openTime = 1.5f;
         [SerializeField] Color edgeColor = new Color(0.31f, 0.89f, 1f, 1f);   // Volt cyan #4FE3FF
@@ -43,7 +46,7 @@ namespace ArcaneStrike.Story
 
         [Header("Entering")]
         [SerializeField] float enterDistance = 0.6f;
-        [Tooltip("Editor / debug builds: Enter steps through the portal.")]
+        [Tooltip("Keyboard (GameInput): E steps through the portal.")]
         [SerializeField] bool keyboardFallback = true;
         [SerializeField] UnityEvent onEntered;
 
@@ -51,11 +54,25 @@ namespace ArcaneStrike.Story
         public bool IsOpen { get; private set; }
 
         float openedAt;
-        bool entered;
+        bool entered, tore, keepHeight;
         Transform visual;
         ParticleSystem swirl;
         Material innerMaterial;
         static readonly int BaseColorId = Shader.PropertyToID("_BaseColor");
+
+        /// <summary>Opens it as a way into another scene (the Rift after the Ascension), in its own colours, without
+        /// moving the chapter on.</summary>
+        public void OpenInto(string scene, Color edge, Color inner)
+        {
+            nextScene = scene;
+            advanceChapter = false;
+            placeOnRoomWall = false;
+            keepHeight = true; // stands on the floor where it was put, frame and all
+            edgeColor = edge;
+            innerColor = inner;
+            openTime = Mathf.Max(openTime, 2.4f);
+            Open();
+        }
 
         public void Open()
         {
@@ -67,16 +84,27 @@ namespace ArcaneStrike.Story
             if (!onWall && head != null)
             {
                 // No room wall: open at eye height (also keeps it in view in desk mode), facing the player.
-                transform.position = new Vector3(transform.position.x, head.position.y, transform.position.z);
+                transform.position = new Vector3(transform.position.x, keepHeight ? transform.position.y : head.position.y, transform.position.z);
                 transform.rotation = Quaternion.LookRotation(StoryFx.Flat(head.position - transform.position));
             }
 
             BuildVisual();
             IsOpen = true;
             openedAt = Time.time;
-            // It tears open with a flash of sparks.
-            StoryFx.Burst(swirl, transform.position, 120, 1.6f, 0.05f, 0.9f, edgeColor);
-            StoryFx.Burst(swirl, transform.position, 40, 0.5f, 0.2f, 0.6f, StoryFx.WithAlpha(Color.white, 0.8f));
+            if (frame != null)
+            {
+                frame.gameObject.SetActive(true);
+                frame.localScale = Vector3.one * 0.001f;
+                // The ring rises with a puff of dust and the boom of stone.
+                StoryFx.Burst(swirl, frame.position, 60, 1f, 0.06f, 1f, StoryFx.WithAlpha(new Color(0.7f, 0.65f, 0.6f), 0.6f));
+                Combat.CombatAudio.Play(Combat.CombatAudio.Tear, transform.position, 0.6f, 0f);
+            }
+            else
+            {
+                tore = true; // no frame: it tears open straight away, with a flash of sparks
+                StoryFx.Burst(swirl, transform.position, 120, 1.6f, 0.05f, 0.9f, edgeColor);
+                StoryFx.Burst(swirl, transform.position, 40, 0.5f, 0.2f, 0.6f, StoryFx.WithAlpha(Color.white, 0.8f));
+            }
             Debug.Log($"[Attic] Portal opens {(onWall ? "on the room wall" : "at its scene position")}");
             OnOpened?.Invoke();
         }
@@ -143,9 +171,19 @@ namespace ArcaneStrike.Story
             float grow = Mathf.Clamp01((Time.time - openedAt) / Mathf.Max(openTime, 0.01f));
             float eased = 1f - (1f - grow) * (1f - grow);
             float age = Time.time - openedAt;
+            // The frame first (the first 40%), then the portal tears open inside it.
+            float ring = Mathf.Clamp01(grow / 0.4f), inside = Mathf.Clamp01((grow - 0.4f) / 0.6f);
+            if (frame != null) frame.localScale = Vector3.one * Mathf.Max(1f - (1f - ring) * (1f - ring), 0.001f);
+            if (inside > 0f && !tore)
+            {
+                tore = true; // it tears open with a flash of sparks
+                StoryFx.Burst(swirl, transform.position, 120, 1.6f, 0.05f, 0.9f, edgeColor);
+                StoryFx.Burst(swirl, transform.position, 40, 0.5f, 0.2f, 0.6f, StoryFx.WithAlpha(Color.white, 0.8f));
+            }
+            eased = frame != null ? 1f - (1f - inside) * (1f - inside) : eased;
             if (visual != null)
             {
-                visual.localScale = Vector3.one * eased * (1f + pulse * Mathf.Sin(age * 3f));
+                visual.localScale = Vector3.one * Mathf.Max(eased, 0.001f) * (1f + pulse * Mathf.Sin(age * 3f));
                 visual.localRotation = Quaternion.Euler(0f, 0f, -age * spinSpeed);
             }
             if (innerMaterial != null)
@@ -155,8 +193,7 @@ namespace ArcaneStrike.Story
             if (entered) return;
             Transform head = StoryFx.Head(input);
             bool walkedIn = grow >= 1f && head != null && Vector3.Distance(head.position, transform.position) < enterDistance;
-            bool key = keyboardFallback && (Application.isEditor || Debug.isDebugBuild) &&
-                       Keyboard.current != null && Keyboard.current.enterKey.wasPressedThisFrame;
+            bool key = keyboardFallback && GameInput.Pressed(GameAction.Interact);
             if (walkedIn || key) Enter();
         }
 
@@ -190,8 +227,39 @@ namespace ArcaneStrike.Story
             OnEntered?.Invoke();
 
             if (string.IsNullOrEmpty(nextScene)) return;
-            if (Application.CanStreamedLevelBeLoaded(nextScene)) SceneManager.LoadScene(nextScene);
-            else Debug.Log($"[Attic] Scene '{nextScene}' isn't in Build Settings yet, so the story stays in this scene.");
+            if (Application.CanStreamedLevelBeLoaded(nextScene))
+            {
+                StartCoroutine(Through());
+                return;
+            }
+            // Nowhere to go yet: say so where the player can see it, and let them try again once it exists.
+            string fix = nextScene == "ShadowRift" ? "Arcane Strike → Create Shadow Rift Scene" : "File → Build Settings";
+            Debug.LogWarning($"[Attic] Scene '{nextScene}' isn't in Build Settings yet ({fix}), so the story stays in this scene.");
+            Transform head = StoryFx.Head(input);
+            if (head != null)
+                Combat.CombatFx.Popup($"No '{nextScene}' scene yet\nStop Play, then {fix}", head.position + StoryFx.Flat(head.forward) * 1.2f,
+                                      new Color(1f, 0.6f, 0.6f), 0.7f);
+            StartCoroutine(AllowRetry());
+        }
+
+        void OnDestroy()
+        {
+            if (innerMaterial != null) Destroy(innerMaterial); // made at runtime: not freed with the scene
+        }
+
+        System.Collections.IEnumerator AllowRetry()
+        {
+            yield return new WaitForSeconds(3f);
+            entered = false;
+        }
+
+        // Pulled through: the view floods with the portal's colour, goes dark, and the next scene loads.
+        System.Collections.IEnumerator Through()
+        {
+            var locomotion = FindAnyObjectByType<PlayerLocomotion>();
+            if (locomotion != null) locomotion.Paused = true;
+            yield return ScreenFade.To(StoryFx.WithAlpha(edgeColor, 0.6f), 0.7f);
+            ScreenFade.LoadScene(nextScene, new Color(0.05f, 0f, 0.08f, 1f), 0.7f);
         }
     }
 }

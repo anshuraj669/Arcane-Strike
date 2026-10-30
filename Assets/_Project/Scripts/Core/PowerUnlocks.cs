@@ -21,6 +21,7 @@ namespace ArcaneStrike.Core
         SparkBlade,
         Skyhammer,
         Strikes,    // bare-hand punches and swipes that damage enemies
+        WeaverSword, // the Jyoti Blade: the sword from the Ascension, kept as chapter 1's prize after the Rift
     }
 
     /// <summary>
@@ -56,7 +57,7 @@ namespace ArcaneStrike.Core
         [Tooltip("Editor only: allow every power, e.g. for combat testing in SampleScene.")]
         [SerializeField] bool unlockAllInEditor;
 
-        [Tooltip("Editor / debug builds: ] = next chapter, [ = previous chapter.")]
+        [Tooltip("Keyboard (GameInput): ] = next chapter, [ = previous chapter.")]
         [SerializeField] bool keyboardFallback = true;
 
         [Tooltip("Fired once per newly unlocked power with its name: hook tutorial prompts and Ember's lines here.")]
@@ -139,11 +140,9 @@ namespace ArcaneStrike.Core
 
         void Update()
         {
-            if (!keyboardFallback || !(Application.isEditor || Debug.isDebugBuild)) return;
-            Keyboard kb = Keyboard.current;
-            if (kb == null) return;
-            if (kb.rightBracketKey.wasPressedThisFrame) NextChapter();
-            if (kb.leftBracketKey.wasPressedThisFrame) SetChapter(CurrentChapter - 1);
+            if (!keyboardFallback) return;
+            if (GameInput.Pressed(GameAction.NextChapter)) NextChapter();
+            if (GameInput.Pressed(GameAction.PreviousChapter)) SetChapter(CurrentChapter - 1);
         }
     }
 }

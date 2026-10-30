@@ -1,0 +1,43 @@
+{
+ "name": "GothicBed_01",
+ "size": [
+  1.4921245574951172,
+  2.041360378265381,
+  1.535468339920044
+ ],
+ "triangles": 7496,
+ "materials": [
+  {
+   "name": "M_Prop_GothicBed_01",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/GothicBed_01/M_Prop_GothicBed_01_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/GothicBed_01/M_Prop_GothicBed_01_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/GothicBed_01/M_Prop_GothicBed_01_MetalSmooth.png"
+  }
+ ],
+ "objects": [
+  {
+   "name": "GothicBed_01",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  }
+ ]
+}

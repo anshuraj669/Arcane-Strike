@@ -1,0 +1,43 @@
+{
+ "name": "painted_wooden_stool",
+ "size": [
+  0.38483744859695435,
+  0.40607428550720215,
+  0.5789150595664978
+ ],
+ "triangles": 676,
+ "materials": [
+  {
+   "name": "M_Prop_painted_wooden_stool",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/painted_wooden_stool/M_Prop_painted_wooden_stool_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/painted_wooden_stool/M_Prop_painted_wooden_stool_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/painted_wooden_stool/M_Prop_painted_wooden_stool_MetalSmooth.png"
+  }
+ ],
+ "objects": [
+  {
+   "name": "painted_wooden_stool",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  }
+ ]
+}

@@ -1,0 +1,65 @@
+{
+ "name": "vintage_oil_lamp",
+ "size": [
+  0.2199999988079071,
+  0.2199999988079071,
+  0.8016371726989746
+ ],
+ "triangles": 7200,
+ "materials": [
+  {
+   "name": "M_Prop_vintage_oil_lamp_0",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/vintage_oil_lamp/M_Prop_vintage_oil_lamp_0_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/vintage_oil_lamp/M_Prop_vintage_oil_lamp_0_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/vintage_oil_lamp/M_Prop_vintage_oil_lamp_0_MetalSmooth.png"
+  },
+  {
+   "name": "M_Prop_vintage_oil_lamp_1",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 0.3,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/vintage_oil_lamp/M_Prop_vintage_oil_lamp_1_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/vintage_oil_lamp/M_Prop_vintage_oil_lamp_1_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/vintage_oil_lamp/M_Prop_vintage_oil_lamp_1_MetalSmooth.png"
+  }
+ ],
+ "objects": [
+  {
+   "name": "vintage_oil_lamp",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  }
+ ]
+}
