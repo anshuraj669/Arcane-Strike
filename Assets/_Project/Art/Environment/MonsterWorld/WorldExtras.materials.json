@@ -1,0 +1,365 @@
+{
+ "materials": [
+  {
+   "name": "M_World_Bone",
+   "color": [
+    0.72,
+    0.68,
+    0.58
+   ],
+   "smoothness": 0.09999999999999998,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false
+  },
+  {
+   "name": "M_World_BoneShadow",
+   "color": [
+    0.05,
+    0.04,
+    0.035
+   ],
+   "smoothness": 0.050000000000000044,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false
+  },
+  {
+   "name": "M_World_RustIron",
+   "color": [
+    0.2,
+    0.11,
+    0.065
+   ],
+   "smoothness": 0.30000000000000004,
+   "metallic": 0.45,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false
+  },
+  {
+   "name": "M_World_OldWood",
+   "color": [
+    0.15,
+    0.095,
+    0.055
+   ],
+   "smoothness": 0.09999999999999998,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false
+  },
+  {
+   "name": "M_World_Leather",
+   "color": [
+    0.11,
+    0.065,
+    0.04
+   ],
+   "smoothness": 0.15000000000000002,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false
+  },
+  {
+   "name": "M_World_Rock",
+   "color": [
+    0.24,
+    0.21,
+    0.21
+   ],
+   "smoothness": 0.19999999999999996,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Rock058",
+   "tile": 4.0,
+   "emissive": false
+  },
+  {
+   "name": "M_World_RockCrack",
+   "color": [
+    0.6,
+    0.16,
+    0.03
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    1.6,
+    0.4,
+    0.05
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": true
+  },
+  {
+   "name": "M_World_BirdFeather",
+   "color": [
+    0.035,
+    0.03,
+    0.035
+   ],
+   "smoothness": 0.25,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false
+  },
+  {
+   "name": "M_World_BirdBeak",
+   "color": [
+    0.22,
+    0.2,
+    0.17
+   ],
+   "smoothness": 0.4,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false
+  },
+  {
+   "name": "M_World_WyvernSkin",
+   "color": [
+    0.12,
+    0.085,
+    0.13
+   ],
+   "smoothness": 0.35,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false
+  },
+  {
+   "name": "M_World_WyvernMembrane",
+   "color": [
+    0.36,
+    0.05,
+    0.05
+   ],
+   "smoothness": 0.30000000000000004,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false
+  },
+  {
+   "name": "M_World_WyvernEyes",
+   "color": [
+    1.0,
+    0.5,
+    0.1
+   ],
+   "smoothness": 0.7,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    5.0,
+    2.0,
+    0.25
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": true
+  },
+  {
+   "name": "M_World_WyvernHorn",
+   "color": [
+    0.28,
+    0.25,
+    0.21
+   ],
+   "smoothness": 0.44999999999999996,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false
+  },
+  {
+   "name": "M_World_RustedSteel",
+   "color": [
+    0.3,
+    0.17,
+    0.09
+   ],
+   "smoothness": 0.38,
+   "metallic": 0.55,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false
+  },
+  {
+   "name": "M_World_TarnishedBronze",
+   "color": [
+    0.3,
+    0.21,
+    0.1
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.7,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false
+  },
+  {
+   "name": "M_World_ShieldPaint",
+   "color": [
+    0.3,
+    0.06,
+    0.045
+   ],
+   "smoothness": 0.09999999999999998,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false
+  },
+  {
+   "name": "M_World_ShieldEmblem",
+   "color": [
+    0.48,
+    0.4,
+    0.22
+   ],
+   "smoothness": 0.15000000000000002,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false
+  },
+  {
+   "name": "M_World_TornBanner",
+   "color": [
+    0.22,
+    0.035,
+    0.04
+   ],
+   "smoothness": 0.050000000000000044,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false
+  },
+  {
+   "name": "M_World_ChainMail",
+   "color": [
+    0.16,
+    0.12,
+    0.09
+   ],
+   "smoothness": 0.44999999999999996,
+   "metallic": 0.6,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false
+  }
+ ]
+}

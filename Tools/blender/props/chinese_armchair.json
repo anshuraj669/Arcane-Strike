@@ -1,0 +1,43 @@
+{
+ "name": "chinese_armchair",
+ "size": [
+  0.8482747673988342,
+  0.7886627912521362,
+  1.5874828100204468
+ ],
+ "triangles": 2675,
+ "materials": [
+  {
+   "name": "M_Prop_chinese_armchair",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/chinese_armchair/M_Prop_chinese_armchair_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/chinese_armchair/M_Prop_chinese_armchair_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/chinese_armchair/M_Prop_chinese_armchair_MetalSmooth.png"
+  }
+ ],
+ "objects": [
+  {
+   "name": "chinese_armchair",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  }
+ ]
+}

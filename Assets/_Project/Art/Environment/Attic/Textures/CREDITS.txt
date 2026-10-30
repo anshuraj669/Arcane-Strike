@@ -1,0 +1,10 @@
+Attic textures: CC0 (public domain) PBR materials from ambientCG, https://ambientcg.com
+Wood049, Wood060, Plaster007, Metal041B, Metal063, Fabric085, Fabric061, Leather037, Paper006, Rock058,
+RoofingTiles013A, WoodSiding008, Bricks113A, Grass004, PavingStones138 (1K JPG).
+<Set>_MetalSmooth.png is made from each set's Metalness (R) and Roughness (A = 1 - roughness) for URP Lit.
+
+Attic furniture and props: CC0 (public domain) models from Poly Haven, https://polyhaven.com/models
+chinese_armchair, large_castle_door, painted_wooden_stool, wooden_bookshelf_worn (supplied as 4K .blend),
+wine_barrel_01, wooden_crate_01, vintage_suitcase (variant 01), vintage_wooden_drawer_01, wooden_bucket_01,
+fancy_picture_frame_01, ceramic_vase_01, brass_pot_01, vintage_oil_lamp, standing_picture_frame_01 (1K).
+Prepared for Quest by Tools/blender/prepare_prop.py: modifiers applied, 1K textures, metal/smoothness packed for URP.

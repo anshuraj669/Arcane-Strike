@@ -6,6 +6,21 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/_Project/Scenes/Attic.unity
+    guid: 0ed3f3c9b196254bea47d6d6dd3872d6
+  - enabled: 1
+    path: Assets/_Project/Scenes/AscensionCave.unity
+    guid: eafbdc9d13e734c0883a89cfd15603f6
+  - enabled: 1
+    path: Assets/_Project/Scenes/MonsterWorld.unity
+    guid: 4540bc2026dcda1f78412a6e8aac4e00
+  - enabled: 0
+    path: Assets/_Project/Scenes/ShadowRift.unity
+    guid: 00000000000000000000000000000000
+  - enabled: 0
+    path: Assets/_Project/Scenes/LanternVoid.unity
+    guid: 00000000000000000000000000000000
+  - enabled: 0
     path: Assets/Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
   m_configObjects:

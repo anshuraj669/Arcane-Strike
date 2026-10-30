@@ -1,0 +1,94 @@
+{
+ "objects": [
+  {
+   "name": "World_CaveMouth",
+   "position": [
+    0,
+    0,
+    0
+   ],
+   "rotation": [
+    0,
+    0,
+    0,
+    1
+   ],
+   "scale": 1.0
+  },
+  {
+   "name": "World_CaveTunnel",
+   "position": [
+    0,
+    0,
+    0
+   ],
+   "rotation": [
+    0,
+    0,
+    0,
+    1
+   ],
+   "scale": 1.0
+  },
+  {
+   "name": "World_Ground",
+   "position": [
+    0,
+    0,
+    0
+   ],
+   "rotation": [
+    0,
+    0,
+    0,
+    1
+   ],
+   "scale": 1.0
+  },
+  {
+   "name": "World_Mountains",
+   "position": [
+    0,
+    0,
+    0
+   ],
+   "rotation": [
+    0,
+    0,
+    0,
+    1
+   ],
+   "scale": 1.0
+  },
+  {
+   "name": "World_Peak",
+   "position": [
+    0,
+    0,
+    0
+   ],
+   "rotation": [
+    0,
+    0,
+    0,
+    1
+   ],
+   "scale": 1.0
+  },
+  {
+   "name": "World_Rocks",
+   "position": [
+    0,
+    0,
+    0
+   ],
+   "rotation": [
+    0,
+    0,
+    0,
+    1
+   ],
+   "scale": 1.0
+  }
+ ]
+}

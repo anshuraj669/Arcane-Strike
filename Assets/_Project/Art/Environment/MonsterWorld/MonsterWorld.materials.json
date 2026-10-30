@@ -1,0 +1,99 @@
+{
+ "materials": [
+  {
+   "name": "M_World_Basalt",
+   "color": [
+    0.2,
+    0.15,
+    0.19
+   ],
+   "smoothness": 0.30000000000000004,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Rock058",
+   "tile": 3.0,
+   "emissive": false
+  },
+  {
+   "name": "M_World_Rock",
+   "color": [
+    0.3,
+    0.15,
+    0.18
+   ],
+   "smoothness": 0.19999999999999996,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Rock058",
+   "tile": 4.0,
+   "emissive": false
+  },
+  {
+   "name": "M_World_Peak",
+   "color": [
+    0.62,
+    0.12,
+    0.15
+   ],
+   "smoothness": 0.15000000000000002,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Rock058",
+   "tile": 14.0,
+   "emissive": false
+  },
+  {
+   "name": "M_World_Mountains",
+   "color": [
+    0.34,
+    0.08,
+    0.12
+   ],
+   "smoothness": 0.09999999999999998,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Rock058",
+   "tile": 18.0,
+   "emissive": false
+  },
+  {
+   "name": "M_World_Unused",
+   "color": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "smoothness": 0.19999999999999996,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false
+  }
+ ]
+}

@@ -1,0 +1,328 @@
+{
+ "materials": [
+  {
+   "name": "M_Weaver_OutfitCoat",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 1.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Characters/Weaver/Textures/Assassin_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Characters/Weaver/Textures/Assassin_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Characters/Weaver/Textures/Assassin_MetalSmooth.png",
+   "smoothnessScale": 1.0
+  },
+  {
+   "name": "M_Weaver_OutfitTrim",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 1.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Characters/Weaver/Textures/Assassin_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Characters/Weaver/Textures/Assassin_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Characters/Weaver/Textures/Assassin_MetalSmooth.png",
+   "smoothnessScale": 1.0
+  },
+  {
+   "name": "M_Weaver_OutfitBoots",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 1.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Characters/Weaver/Textures/Assassin_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Characters/Weaver/Textures/Assassin_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Characters/Weaver/Textures/Assassin_MetalSmooth.png",
+   "smoothnessScale": 1.0
+  },
+  {
+   "name": "M_Weaver_OutfitCape",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 1.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Characters/Weaver/Textures/Assassin_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Characters/Weaver/Textures/Assassin_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Characters/Weaver/Textures/Assassin_MetalSmooth.png",
+   "smoothnessScale": 1.0
+  },
+  {
+   "name": "M_Weaver_OutfitScarf",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 1.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Characters/Weaver/Textures/Assassin_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Characters/Weaver/Textures/Assassin_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Characters/Weaver/Textures/Assassin_MetalSmooth.png",
+   "smoothnessScale": 1.0
+  },
+  {
+   "name": "M_Weaver_Skin",
+   "color": [
+    0.72,
+    0.48,
+    0.36
+   ],
+   "smoothness": 0.4,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false
+  },
+  {
+   "name": "M_Weaver_Hair",
+   "color": [
+    0.13,
+    0.08,
+    0.05
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false
+  },
+  {
+   "name": "M_Weaver_Hoodie",
+   "color": [
+    0.5,
+    0.55,
+    0.62
+   ],
+   "smoothness": 0.050000000000000044,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Fabric061",
+   "tile": 0.25,
+   "emissive": false
+  },
+  {
+   "name": "M_Weaver_Joggers",
+   "color": [
+    0.35,
+    0.35,
+    0.37
+   ],
+   "smoothness": 0.050000000000000044,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Fabric061",
+   "tile": 0.25,
+   "emissive": false
+  },
+  {
+   "name": "M_Weaver_Shoes",
+   "color": [
+    0.92,
+    0.9,
+    0.86
+   ],
+   "smoothness": 0.30000000000000004,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Leather037",
+   "tile": 0.2,
+   "emissive": false
+  },
+  {
+   "name": "M_Weaver_SwordSteel",
+   "color": [
+    0.62,
+    0.64,
+    0.68
+   ],
+   "smoothness": 0.72,
+   "metallic": 1.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Metal063",
+   "tile": 0.25,
+   "emissive": false
+  },
+  {
+   "name": "M_Weaver_SwordEdge",
+   "color": [
+    0.9,
+    0.91,
+    0.94
+   ],
+   "smoothness": 0.85,
+   "metallic": 1.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Metal063",
+   "tile": 0.25,
+   "emissive": false
+  },
+  {
+   "name": "M_Weaver_SwordFuller",
+   "color": [
+    0.3,
+    0.31,
+    0.34
+   ],
+   "smoothness": 0.65,
+   "metallic": 1.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Metal063",
+   "tile": 0.25,
+   "emissive": false
+  },
+  {
+   "name": "M_Weaver_SwordWrap",
+   "color": [
+    0.42,
+    0.07,
+    0.05
+   ],
+   "smoothness": 0.4,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Leather037",
+   "tile": 0.06,
+   "emissive": false
+  },
+  {
+   "name": "M_Weaver_Saya",
+   "color": [
+    0.11,
+    0.075,
+    0.05
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Leather037",
+   "tile": 0.15,
+   "emissive": false
+  },
+  {
+   "name": "M_Weaver_OutfitTrimSword",
+   "color": [
+    0.85,
+    0.62,
+    0.25
+   ],
+   "smoothness": 0.7,
+   "metallic": 1.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Metal063",
+   "tile": 0.1,
+   "emissive": false
+  }
+ ]
+}

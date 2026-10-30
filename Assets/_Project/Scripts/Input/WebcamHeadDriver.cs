@@ -22,7 +22,7 @@ namespace ArcaneStrike.HandInput
         [Tooltip("Ignore head moves further than this (m) from where you calibrated (bad tracking frames).")]
         [SerializeField] float maxOffset = 0.6f;
 
-        Vector3 rigAtCalibration;
+        Vector3 applied; // how far the rig is moved now for the real head's offset
         int seenCalibration;
 
         void Awake()
@@ -40,7 +40,7 @@ namespace ArcaneStrike.HandInput
             if (webcam.CalibrationCount != seenCalibration)
             {
                 seenCalibration = webcam.CalibrationCount;
-                rigAtCalibration = rig.position;
+                applied = Vector3.zero; // (the rig where it is now is the calibrated centre)
             }
             if (!webcam.CalibratedFromBody || !webcam.IsActive) return;
 
@@ -49,7 +49,10 @@ namespace ArcaneStrike.HandInput
 
             Vector3 offset = body[UpperBodyJoint.Head] - webcam.CalibratedBodyHead;
             if (offset.magnitude > maxOffset) return;
-            rig.position = rigAtCalibration + offset * followStrength;
+            // Move by the change only: walking (PlayerLocomotion) moves the rig too, and setting it outright would undo it.
+            Vector3 want = offset * followStrength;
+            rig.position += want - applied;
+            applied = want;
         }
     }
 }

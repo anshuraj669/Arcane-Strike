@@ -1,0 +1,43 @@
+{
+ "name": "wooden_bookshelf_worn",
+ "size": [
+  1.37395179271698,
+  0.5813020467758179,
+  2.0634419918060303
+ ],
+ "triangles": 10106,
+ "materials": [
+  {
+   "name": "M_Prop_wooden_bookshelf_worn",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/wooden_bookshelf_worn/M_Prop_wooden_bookshelf_worn_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/wooden_bookshelf_worn/M_Prop_wooden_bookshelf_worn_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/wooden_bookshelf_worn/M_Prop_wooden_bookshelf_worn_MetalSmooth.png"
+  }
+ ],
+ "objects": [
+  {
+   "name": "wooden_bookshelf_worn",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  }
+ ]
+}

@@ -1,0 +1,118 @@
+{
+ "materials": [
+  {
+   "name": "DemonLord_Body",
+   "color": [
+    0.34,
+    0.03,
+    0.018
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false
+  },
+  {
+   "name": "DemonLord_Horn",
+   "color": [
+    0.025,
+    0.018,
+    0.018
+   ],
+   "smoothness": 0.6,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false
+  },
+  {
+   "name": "DemonLord_Embers",
+   "color": [
+    1.0,
+    0.22,
+    0.04
+   ],
+   "smoothness": 0.4,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    3.4,
+    0.7,
+    0.06
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": true
+  },
+  {
+   "name": "DemonLord_Eyes",
+   "color": [
+    1.0,
+    0.3,
+    0.04
+   ],
+   "smoothness": 0.3,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    8.0,
+    1.8,
+    0.2
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": true
+  },
+  {
+   "name": "DemonLord_Antler",
+   "color": [
+    0.06,
+    0.02,
+    0.018
+   ],
+   "smoothness": 0.55,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false
+  },
+  {
+   "name": "DemonLord_Dark",
+   "color": [
+    0.012,
+    0.01,
+    0.01
+   ],
+   "smoothness": 0.1,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false
+  }
+ ]
+}

@@ -1,0 +1,2067 @@
+{
+ "materials": [
+  {
+   "name": "M_Attic_FloorA",
+   "color": [
+    0.85,
+    0.8,
+    0.75
+   ],
+   "smoothness": 0.19999999999999996,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Wood049",
+   "tile": 1.2,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_FloorB",
+   "color": [
+    0.95,
+    0.88,
+    0.8
+   ],
+   "smoothness": 0.19999999999999996,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Wood049",
+   "tile": 1.2,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_FloorC",
+   "color": [
+    0.7,
+    0.65,
+    0.6
+   ],
+   "smoothness": 0.19999999999999996,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Wood049",
+   "tile": 1.2,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_WallBoardA",
+   "color": [
+    0.9,
+    0.85,
+    0.8
+   ],
+   "smoothness": 0.19999999999999996,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Wood049",
+   "tile": 1.2,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_WallBoardB",
+   "color": [
+    0.75,
+    0.7,
+    0.65
+   ],
+   "smoothness": 0.19999999999999996,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Wood049",
+   "tile": 1.2,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_Plaster",
+   "color": [
+    0.85,
+    0.8,
+    0.7
+   ],
+   "smoothness": 0.050000000000000044,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Plaster007",
+   "tile": 1.5,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_RoofBoardA",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.19999999999999996,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Wood060",
+   "tile": 1.2,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_RoofBoardB",
+   "color": [
+    0.85,
+    0.85,
+    0.85
+   ],
+   "smoothness": 0.19999999999999996,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Wood060",
+   "tile": 1.2,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_Beam",
+   "color": [
+    0.8,
+    0.75,
+    0.7
+   ],
+   "smoothness": 0.19999999999999996,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Wood060",
+   "tile": 1.0,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_Wood",
+   "color": [
+    0.85,
+    0.8,
+    0.75
+   ],
+   "smoothness": 0.19999999999999996,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Wood049",
+   "tile": 1.0,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_WoodDark",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.19999999999999996,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Wood060",
+   "tile": 1.0,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_WoodLight",
+   "color": [
+    1.0,
+    0.95,
+    0.9
+   ],
+   "smoothness": 0.19999999999999996,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Wood049",
+   "tile": 1.0,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_Iron",
+   "color": [
+    0.35,
+    0.33,
+    0.3
+   ],
+   "smoothness": 0.44999999999999996,
+   "metallic": 0.9,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Metal041B",
+   "tile": 0.5,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_Brass",
+   "color": [
+    1.0,
+    0.75,
+    0.35
+   ],
+   "smoothness": 0.7,
+   "metallic": 1.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Metal063",
+   "tile": 0.5,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_DirtyMetal",
+   "color": [
+    0.5,
+    0.45,
+    0.38
+   ],
+   "smoothness": 0.15000000000000002,
+   "metallic": 0.4,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Metal041B",
+   "tile": 0.4,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_Glass",
+   "color": [
+    1.0,
+    0.92,
+    0.7
+   ],
+   "smoothness": 0.95,
+   "metallic": 0.0,
+   "alpha": 0.35,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_DirtyGlass",
+   "color": [
+    0.45,
+    0.42,
+    0.35
+   ],
+   "smoothness": 0.09999999999999998,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_Wax",
+   "color": [
+    0.92,
+    0.88,
+    0.76
+   ],
+   "smoothness": 0.4,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_Pages",
+   "color": [
+    1.0,
+    0.97,
+    0.9
+   ],
+   "smoothness": 0.09999999999999998,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Paper006",
+   "tile": 0.3,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_BookRed",
+   "color": [
+    0.75,
+    0.2,
+    0.15
+   ],
+   "smoothness": 0.30000000000000004,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Paper006",
+   "tile": 0.3,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_BookGreen",
+   "color": [
+    0.25,
+    0.5,
+    0.3
+   ],
+   "smoothness": 0.30000000000000004,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Paper006",
+   "tile": 0.3,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_BookBlue",
+   "color": [
+    0.25,
+    0.32,
+    0.65
+   ],
+   "smoothness": 0.30000000000000004,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Paper006",
+   "tile": 0.3,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_Leather",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.30000000000000004,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Leather037",
+   "tile": 0.5,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_Cloth",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.0,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Fabric085",
+   "tile": 0.5,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_Painting",
+   "color": [
+    0.25,
+    0.32,
+    0.22
+   ],
+   "smoothness": 0.09999999999999998,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Paper006",
+   "tile": 0.5,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_JarGreen",
+   "color": [
+    0.25,
+    0.45,
+    0.3
+   ],
+   "smoothness": 0.8,
+   "metallic": 0.0,
+   "alpha": 0.6,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_JarAmber",
+   "color": [
+    0.6,
+    0.35,
+    0.1
+   ],
+   "smoothness": 0.8,
+   "metallic": 0.0,
+   "alpha": 0.6,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_Cork",
+   "color": [
+    0.55,
+    0.42,
+    0.28
+   ],
+   "smoothness": 0.19999999999999996,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_Straw",
+   "color": [
+    0.7,
+    0.58,
+    0.32
+   ],
+   "smoothness": 0.0,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_Cobweb",
+   "color": [
+    0.85,
+    0.85,
+    0.82
+   ],
+   "smoothness": 0.0,
+   "metallic": 0.0,
+   "alpha": 0.4,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_Shadow",
+   "color": [
+    0.03,
+    0.025,
+    0.02
+   ],
+   "smoothness": 0.0,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_WindowLight",
+   "color": [
+    0.55,
+    0.65,
+    0.85
+   ],
+   "smoothness": 0.95,
+   "metallic": 0.0,
+   "alpha": 0.18,
+   "emission": [
+    0.04,
+    0.06,
+    0.1
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": true
+  },
+  {
+   "name": "M_Attic_Tin",
+   "color": [
+    0.45,
+    0.45,
+    0.47
+   ],
+   "smoothness": 0.6,
+   "metallic": 0.8,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Metal063",
+   "tile": 0.3,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_BottleGlass",
+   "color": [
+    0.2,
+    0.35,
+    0.25
+   ],
+   "smoothness": 0.9,
+   "metallic": 0.0,
+   "alpha": 0.7,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_DustSheet",
+   "color": [
+    0.82,
+    0.8,
+    0.74
+   ],
+   "smoothness": 0.0,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Fabric061",
+   "tile": 0.3,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_Siding",
+   "color": [
+    0.85,
+    0.82,
+    0.78
+   ],
+   "smoothness": 0.09999999999999998,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "WoodSiding008",
+   "tile": 1.6,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_RoofTiles",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.19999999999999996,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "RoofTerracotta",
+   "tile": 1.4,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_HousePlaster",
+   "color": [
+    0.92,
+    0.76,
+    0.54
+   ],
+   "smoothness": 0.050000000000000044,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Plaster007",
+   "tile": 1.5,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_Timber",
+   "color": [
+    0.62,
+    0.48,
+    0.38
+   ],
+   "smoothness": 0.15000000000000002,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Wood060",
+   "tile": 1.0,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_YardStone",
+   "color": [
+    0.66,
+    0.61,
+    0.53
+   ],
+   "smoothness": 0.050000000000000044,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Plaster007",
+   "tile": 0.7,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_MossStone",
+   "color": [
+    0.38,
+    0.47,
+    0.24
+   ],
+   "smoothness": 0.0,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Plaster007",
+   "tile": 0.7,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_GraveStone",
+   "color": [
+    0.6,
+    0.6,
+    0.58
+   ],
+   "smoothness": 0.09999999999999998,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Plaster007",
+   "tile": 0.5,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_Moss",
+   "color": [
+    0.2,
+    0.34,
+    0.1
+   ],
+   "smoothness": 0.0,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_DeadBark",
+   "color": [
+    0.13,
+    0.115,
+    0.1
+   ],
+   "smoothness": 0.0,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_StoneWall",
+   "color": [
+    0.8,
+    0.8,
+    0.8
+   ],
+   "smoothness": 0.09999999999999998,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Bricks113A",
+   "tile": 1.2,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_Grass",
+   "color": [
+    0.55,
+    0.6,
+    0.55
+   ],
+   "smoothness": 0.0,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Grass004",
+   "tile": 2.0,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_PathStones",
+   "color": [
+    0.75,
+    0.75,
+    0.75
+   ],
+   "smoothness": 0.09999999999999998,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "PavingStones138",
+   "tile": 1.2,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_NightGlass",
+   "color": [
+    0.1,
+    0.13,
+    0.18
+   ],
+   "smoothness": 0.95,
+   "metallic": 0.0,
+   "alpha": 0.45,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_LampGlass",
+   "color": [
+    1.0,
+    0.75,
+    0.4
+   ],
+   "smoothness": 0.8,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    2.4,
+    1.5,
+    0.6
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": true
+  },
+  {
+   "name": "M_Attic_RuneGlyph",
+   "color": [
+    0.2,
+    0.15,
+    0.09
+   ],
+   "smoothness": 0.6,
+   "metallic": 0.7,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Metal063",
+   "tile": 0.2,
+   "emissive": true
+  },
+  {
+   "name": "M_Attic_SharpMetal",
+   "color": [
+    0.95,
+    0.95,
+    1.0
+   ],
+   "smoothness": 0.85,
+   "metallic": 1.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Metal063",
+   "tile": 0.2,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_Flame",
+   "color": [
+    1.0,
+    0.75,
+    0.35
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    2.0,
+    1.2,
+    0.45
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": true
+  },
+  {
+   "name": "M_Attic_Rag",
+   "color": [
+    0.8,
+    0.72,
+    0.58
+   ],
+   "smoothness": 0.0,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Fabric061",
+   "tile": 0.12,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_PortalStone",
+   "color": [
+    0.8,
+    0.8,
+    0.82
+   ],
+   "smoothness": 0.09999999999999998,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Rock058",
+   "tile": 0.6,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_PortalRune",
+   "color": [
+    0.3,
+    0.89,
+    1.0
+   ],
+   "smoothness": 0.7,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0.6,
+    1.8,
+    2.0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": true
+  },
+  {
+   "name": "M_Prop_large_castle_door",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/large_castle_door/M_Prop_large_castle_door_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/large_castle_door/M_Prop_large_castle_door_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/large_castle_door/M_Prop_large_castle_door_MetalSmooth.png"
+  },
+  {
+   "name": "M_Prop_wooden_bookshelf_worn",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/wooden_bookshelf_worn/M_Prop_wooden_bookshelf_worn_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/wooden_bookshelf_worn/M_Prop_wooden_bookshelf_worn_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/wooden_bookshelf_worn/M_Prop_wooden_bookshelf_worn_MetalSmooth.png"
+  },
+  {
+   "name": "M_Prop_brass_pot_01",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/brass_pot_01/M_Prop_brass_pot_01_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/brass_pot_01/M_Prop_brass_pot_01_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/brass_pot_01/M_Prop_brass_pot_01_MetalSmooth.png"
+  },
+  {
+   "name": "M_Prop_standing_picture_frame_01_0",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 0.3,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/standing_picture_frame_01/M_Prop_standing_picture_frame_01_0_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/standing_picture_frame_01/M_Prop_standing_picture_frame_01_0_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/standing_picture_frame_01/M_Prop_standing_picture_frame_01_0_MetalSmooth.png"
+  },
+  {
+   "name": "M_Prop_standing_picture_frame_01_1",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/standing_picture_frame_01/M_Prop_standing_picture_frame_01_1_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/standing_picture_frame_01/M_Prop_standing_picture_frame_01_1_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/standing_picture_frame_01/M_Prop_standing_picture_frame_01_1_MetalSmooth.png"
+  },
+  {
+   "name": "M_Prop_standing_picture_frame_01_2",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/standing_picture_frame_01/M_Prop_standing_picture_frame_01_2_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/standing_picture_frame_01/M_Prop_standing_picture_frame_01_2_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/standing_picture_frame_01/M_Prop_standing_picture_frame_01_2_MetalSmooth.png"
+  },
+  {
+   "name": "M_Prop_vintage_oil_lamp_0",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/vintage_oil_lamp/M_Prop_vintage_oil_lamp_0_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/vintage_oil_lamp/M_Prop_vintage_oil_lamp_0_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/vintage_oil_lamp/M_Prop_vintage_oil_lamp_0_MetalSmooth.png"
+  },
+  {
+   "name": "M_Prop_vintage_oil_lamp_1",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 0.3,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/vintage_oil_lamp/M_Prop_vintage_oil_lamp_1_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/vintage_oil_lamp/M_Prop_vintage_oil_lamp_1_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/vintage_oil_lamp/M_Prop_vintage_oil_lamp_1_MetalSmooth.png"
+  },
+  {
+   "name": "M_Prop_fancy_picture_frame_01_0",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/fancy_picture_frame_01/M_Prop_fancy_picture_frame_01_0_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/fancy_picture_frame_01/M_Prop_fancy_picture_frame_01_0_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/fancy_picture_frame_01/M_Prop_fancy_picture_frame_01_0_MetalSmooth.png"
+  },
+  {
+   "name": "M_Prop_fancy_picture_frame_01_1",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/fancy_picture_frame_01/M_Prop_fancy_picture_frame_01_1_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/fancy_picture_frame_01/M_Prop_fancy_picture_frame_01_1_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/fancy_picture_frame_01/M_Prop_fancy_picture_frame_01_1_MetalSmooth.png"
+  },
+  {
+   "name": "M_Prop_vintage_wooden_drawer_01",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/vintage_wooden_drawer_01/M_Prop_vintage_wooden_drawer_01_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/vintage_wooden_drawer_01/M_Prop_vintage_wooden_drawer_01_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/vintage_wooden_drawer_01/M_Prop_vintage_wooden_drawer_01_MetalSmooth.png"
+  },
+  {
+   "name": "M_Prop_ceramic_vase_01",
+   "color": [
+    0.62,
+    0.56,
+    0.46
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/ceramic_vase_01/M_Prop_ceramic_vase_01_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/ceramic_vase_01/M_Prop_ceramic_vase_01_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/ceramic_vase_01/M_Prop_ceramic_vase_01_MetalSmooth.png",
+   "smoothnessScale": 0.25
+  },
+  {
+   "name": "M_Prop_antique_katana_01",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/antique_katana_01/M_Prop_antique_katana_01_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/antique_katana_01/M_Prop_antique_katana_01_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/antique_katana_01/M_Prop_antique_katana_01_MetalSmooth.png"
+  },
+  {
+   "name": "M_Prop_wine_barrel_01",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/wine_barrel_01/M_Prop_wine_barrel_01_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/wine_barrel_01/M_Prop_wine_barrel_01_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/wine_barrel_01/M_Prop_wine_barrel_01_MetalSmooth.png"
+  },
+  {
+   "name": "M_Prop_wooden_crate_01",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/wooden_crate_01/M_Prop_wooden_crate_01_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/wooden_crate_01/M_Prop_wooden_crate_01_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/wooden_crate_01/M_Prop_wooden_crate_01_MetalSmooth.png"
+  },
+  {
+   "name": "M_Prop_brass_blowtorch",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/brass_blowtorch/M_Prop_brass_blowtorch_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/brass_blowtorch/M_Prop_brass_blowtorch_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/brass_blowtorch/M_Prop_brass_blowtorch_MetalSmooth.png"
+  },
+  {
+   "name": "M_Prop_chinese_armchair",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/chinese_armchair/M_Prop_chinese_armchair_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/chinese_armchair/M_Prop_chinese_armchair_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/chinese_armchair/M_Prop_chinese_armchair_MetalSmooth.png"
+  },
+  {
+   "name": "M_Prop_painted_wooden_stool",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/painted_wooden_stool/M_Prop_painted_wooden_stool_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/painted_wooden_stool/M_Prop_painted_wooden_stool_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/painted_wooden_stool/M_Prop_painted_wooden_stool_MetalSmooth.png"
+  },
+  {
+   "name": "M_Prop_vintage_suitcase",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/vintage_suitcase/M_Prop_vintage_suitcase_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/vintage_suitcase/M_Prop_vintage_suitcase_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/vintage_suitcase/M_Prop_vintage_suitcase_MetalSmooth.png"
+  },
+  {
+   "name": "M_Prop_vintage_suitcase_02",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/vintage_suitcase_02/M_Prop_vintage_suitcase_02_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/vintage_suitcase_02/M_Prop_vintage_suitcase_02_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/vintage_suitcase_02/M_Prop_vintage_suitcase_02_MetalSmooth.png"
+  },
+  {
+   "name": "M_Prop_kite_shield_0",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5999999940395355,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/kite_shield/M_Prop_kite_shield_0_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/kite_shield/M_Prop_kite_shield_0_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/kite_shield/M_Prop_kite_shield_0_MetalSmooth.png"
+  },
+  {
+   "name": "M_Prop_kite_shield_1",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/kite_shield/M_Prop_kite_shield_1_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/kite_shield/M_Prop_kite_shield_1_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/kite_shield/M_Prop_kite_shield_1_MetalSmooth.png"
+  },
+  {
+   "name": "M_Prop_wooden_broom_0",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.4,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/wooden_broom/M_Prop_wooden_broom_0_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/wooden_broom/M_Prop_wooden_broom_0_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/wooden_broom/M_Prop_wooden_broom_0_MetalSmooth.png",
+   "cutout": false
+  },
+  {
+   "name": "M_Prop_wooden_broom_1",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/wooden_broom/M_Prop_wooden_broom_1_Color.png",
+   "normalMap": "",
+   "maskMap": "",
+   "cutout": true
+  },
+  {
+   "name": "M_Prop_wooden_bucket_01",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/wooden_bucket_01/M_Prop_wooden_bucket_01_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/wooden_bucket_01/M_Prop_wooden_bucket_01_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/wooden_bucket_01/M_Prop_wooden_bucket_01_MetalSmooth.png"
+  },
+  {
+   "name": "M_Prop_treasure_chest",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/treasure_chest/M_Prop_treasure_chest_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/treasure_chest/M_Prop_treasure_chest_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/treasure_chest/M_Prop_treasure_chest_MetalSmooth.png"
+  },
+  {
+   "name": "M_Prop_Lantern_01_0",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.36050015687942505,
+   "metallic": 0.0,
+   "alpha": 0.3,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/Lantern_01/M_Prop_Lantern_01_0_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/Lantern_01/M_Prop_Lantern_01_0_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/Lantern_01/M_Prop_Lantern_01_0_MetalSmooth.png"
+  },
+  {
+   "name": "M_Prop_Lantern_01_1",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.36050015687942505,
+   "metallic": 0.0,
+   "alpha": 0.3,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/Lantern_01/M_Prop_Lantern_01_1_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/Lantern_01/M_Prop_Lantern_01_1_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/Lantern_01/M_Prop_Lantern_01_1_MetalSmooth.png"
+  },
+  {
+   "name": "M_Prop_Lantern_01_0_Dirty",
+   "color": [
+    0.42,
+    0.37,
+    0.3
+   ],
+   "smoothness": 0.36050015687942505,
+   "metallic": 0.0,
+   "alpha": 0.3,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/Lantern_01/M_Prop_Lantern_01_0_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/Lantern_01/M_Prop_Lantern_01_0_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/Lantern_01/M_Prop_Lantern_01_0_MetalSmooth.png",
+   "smoothnessScale": 0.3
+  },
+  {
+   "name": "M_Prop_Lantern_01_1_Dirty",
+   "color": [
+    0.42,
+    0.37,
+    0.3
+   ],
+   "smoothness": 0.36050015687942505,
+   "metallic": 0.0,
+   "alpha": 0.3,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/Lantern_01/M_Prop_Lantern_01_1_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/Lantern_01/M_Prop_Lantern_01_1_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/Lantern_01/M_Prop_Lantern_01_1_MetalSmooth.png",
+   "smoothnessScale": 0.3
+  },
+  {
+   "name": "M_Prop_Sofa_01",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/Sofa_01/M_Prop_Sofa_01_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/Sofa_01/M_Prop_Sofa_01_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/Sofa_01/M_Prop_Sofa_01_MetalSmooth.png"
+  },
+  {
+   "name": "M_Prop_CoffeeTable_01",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/CoffeeTable_01/M_Prop_CoffeeTable_01_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/CoffeeTable_01/M_Prop_CoffeeTable_01_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/CoffeeTable_01/M_Prop_CoffeeTable_01_MetalSmooth.png"
+  },
+  {
+   "name": "M_Prop_Rockingchair_01",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.36050015687942505,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/Rockingchair_01/M_Prop_Rockingchair_01_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/Rockingchair_01/M_Prop_Rockingchair_01_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/Rockingchair_01/M_Prop_Rockingchair_01_MetalSmooth.png"
+  },
+  {
+   "name": "M_Prop_round_wooden_table_02",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/round_wooden_table_02/M_Prop_round_wooden_table_02_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/round_wooden_table_02/M_Prop_round_wooden_table_02_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/round_wooden_table_02/M_Prop_round_wooden_table_02_MetalSmooth.png"
+  },
+  {
+   "name": "M_Prop_ceramic_vase_03",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5999999940395355,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/ceramic_vase_03/M_Prop_ceramic_vase_03_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/ceramic_vase_03/M_Prop_ceramic_vase_03_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/ceramic_vase_03/M_Prop_ceramic_vase_03_MetalSmooth.png"
+  },
+  {
+   "name": "M_Prop_flower_empodium",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.4,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/flower_empodium/M_Prop_flower_empodium_Color.png",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/flower_empodium/M_Prop_flower_empodium_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/flower_empodium/M_Prop_flower_empodium_MetalSmooth.png",
+   "cutout": true
+  },
+  {
+   "name": "M_Prop_vintage_grandfather_clock_01_0",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/vintage_grandfather_clock_01/M_Prop_vintage_grandfather_clock_01_0_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/vintage_grandfather_clock_01/M_Prop_vintage_grandfather_clock_01_0_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/vintage_grandfather_clock_01/M_Prop_vintage_grandfather_clock_01_0_MetalSmooth.png"
+  },
+  {
+   "name": "M_Prop_vintage_grandfather_clock_01_1",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 0.3,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/vintage_grandfather_clock_01/M_Prop_vintage_grandfather_clock_01_1_Color.jpg",
+   "normalMap": "",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/vintage_grandfather_clock_01/M_Prop_vintage_grandfather_clock_01_1_MetalSmooth.png"
+  },
+  {
+   "name": "M_Prop_dining_table",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/dining_table/M_Prop_dining_table_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/dining_table/M_Prop_dining_table_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/dining_table/M_Prop_dining_table_MetalSmooth.png"
+  },
+  {
+   "name": "M_Prop_painted_wooden_chair_02",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/painted_wooden_chair_02/M_Prop_painted_wooden_chair_02_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/painted_wooden_chair_02/M_Prop_painted_wooden_chair_02_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/painted_wooden_chair_02/M_Prop_painted_wooden_chair_02_MetalSmooth.png"
+  },
+  {
+   "name": "M_Prop_GothicCabinet_01",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/GothicCabinet_01/M_Prop_GothicCabinet_01_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/GothicCabinet_01/M_Prop_GothicCabinet_01_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/GothicCabinet_01/M_Prop_GothicCabinet_01_MetalSmooth.png"
+  },
+  {
+   "name": "M_Prop_GothicBed_01",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/GothicBed_01/M_Prop_GothicBed_01_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/GothicBed_01/M_Prop_GothicBed_01_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/GothicBed_01/M_Prop_GothicBed_01_MetalSmooth.png"
+  },
+  {
+   "name": "M_Prop_ClassicNightstand_01",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/ClassicNightstand_01/M_Prop_ClassicNightstand_01_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/ClassicNightstand_01/M_Prop_ClassicNightstand_01_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/ClassicNightstand_01/M_Prop_ClassicNightstand_01_MetalSmooth.png"
+  },
+  {
+   "name": "M_Prop_wooden_candlestick",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 1.0,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/wooden_candlestick/M_Prop_wooden_candlestick_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/wooden_candlestick/M_Prop_wooden_candlestick_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/wooden_candlestick/M_Prop_wooden_candlestick_MetalSmooth.png"
+  },
+  {
+   "name": "M_Prop_garden_plants",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.19999998807907104,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/garden_plants/M_Prop_garden_plants_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/garden_plants/M_Prop_garden_plants_Normal.jpg",
+   "maskMap": ""
+  },
+  {
+   "name": "M_Prop_wooden_bucket_01",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/wooden_bucket_01/M_Prop_wooden_bucket_01_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/wooden_bucket_01/M_Prop_wooden_bucket_01_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/wooden_bucket_01/M_Prop_wooden_bucket_01_MetalSmooth.png"
+  }
+ ]
+}

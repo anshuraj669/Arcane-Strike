@@ -1,0 +1,43 @@
+{
+ "name": "wooden_crate_01",
+ "size": [
+  0.8252729177474976,
+  0.4089537262916565,
+  0.3496182858943939
+ ],
+ "triangles": 6576,
+ "materials": [
+  {
+   "name": "M_Prop_wooden_crate_01",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/wooden_crate_01/M_Prop_wooden_crate_01_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/wooden_crate_01/M_Prop_wooden_crate_01_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/wooden_crate_01/M_Prop_wooden_crate_01_MetalSmooth.png"
+  }
+ ],
+ "objects": [
+  {
+   "name": "wooden_crate_01",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  }
+ ]
+}

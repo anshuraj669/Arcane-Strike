@@ -1,0 +1,43 @@
+{
+ "name": "dining_table",
+ "size": [
+  2.2558960914611816,
+  1.3902360200881958,
+  0.8769892454147339
+ ],
+ "triangles": 1048,
+ "materials": [
+  {
+   "name": "M_Prop_dining_table",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/dining_table/M_Prop_dining_table_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/dining_table/M_Prop_dining_table_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/dining_table/M_Prop_dining_table_MetalSmooth.png"
+  }
+ ],
+ "objects": [
+  {
+   "name": "dining_table",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  }
+ ]
+}

@@ -1,0 +1,43 @@
+{
+ "name": "brass_blowtorch",
+ "size": [
+  0.1293426901102066,
+  0.25928550958633423,
+  0.21067485213279724
+ ],
+ "triangles": 4699,
+ "materials": [
+  {
+   "name": "M_Prop_brass_blowtorch",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/brass_blowtorch/M_Prop_brass_blowtorch_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/brass_blowtorch/M_Prop_brass_blowtorch_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/brass_blowtorch/M_Prop_brass_blowtorch_MetalSmooth.png"
+  }
+ ],
+ "objects": [
+  {
+   "name": "brass_blowtorch",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  }
+ ]
+}

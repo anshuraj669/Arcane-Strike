@@ -30,6 +30,7 @@ namespace ArcaneStrike.Combat
 
         Rigidbody body;
         SphereCollider sphere;
+        bool wasTracked;
         readonly Dictionary<IHittable, float> lastHit = new Dictionary<IHittable, float>();
 
         void Awake()
@@ -53,7 +54,9 @@ namespace ArcaneStrike.Combat
             if (input == null) return;
             HandFrame f = input.Get(side);
             sphere.enabled = f.IsTracked;
-            if (f.IsTracked) body.MovePosition(f.PalmCenter);
+            if (f.IsTracked && !wasTracked) body.position = transform.position = f.PalmCenter; // found again: jump there, don't sweep
+            else if (f.IsTracked) body.MovePosition(f.PalmCenter);
+            wasTracked = f.IsTracked;
         }
 
         void OnTriggerEnter(Collider other)
@@ -64,6 +67,7 @@ namespace ArcaneStrike.Combat
             float speed = motion.Speed(side);
             if (speed < minHitSpeed) return;
             if (lastHit.TryGetValue(target, out float t) && Time.time - t < sameTargetCooldown) return;
+            if (lastHit.Count > 32) lastHit.Clear(); // (forget old targets: most are gone by now)
             lastHit[target] = Time.time;
 
             target.TakeHit(new HitInfo

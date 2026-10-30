@@ -1,0 +1,80 @@
+{
+ "materials": [
+  {
+   "name": "Warlord_Body",
+   "color": [
+    0.03,
+    0.028,
+    0.03
+   ],
+   "smoothness": 0.42,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false
+  },
+  {
+   "name": "Warlord_Horn",
+   "color": [
+    0.06,
+    0.056999999999999995,
+    0.0552
+   ],
+   "smoothness": 0.55,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false
+  },
+  {
+   "name": "Warlord_Embers",
+   "color": [
+    1.0,
+    0.38,
+    0.06
+   ],
+   "smoothness": 0.4,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    2.6,
+    0.75,
+    0.08
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": true
+  },
+  {
+   "name": "Warlord_Eyes",
+   "color": [
+    1.0,
+    0.45,
+    0.08
+   ],
+   "smoothness": 0.3,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    6.0,
+    2.2,
+    0.3
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": true
+  }
+ ]
+}

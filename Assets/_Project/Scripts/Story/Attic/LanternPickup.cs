@@ -17,6 +17,8 @@ namespace ArcaneStrike.Story
         [SerializeField] float reach = 0.22f;
         [Tooltip("How quickly the lantern follows the hand. Lower is smoother on a jittery webcam.")]
         [SerializeField] float followSharpness = 12f;
+        [Tooltip("It hangs from the ring and swings as the hand moves (0 = held rigidly upright).")]
+        [Range(0f, 1f)] [SerializeField] float swing = 1f;
 
         [Header("Reveal")]
         [Tooltip("When the chest opens, the lantern rises this far (m) out of it and hovers, turning slowly, until it is taken.")]
@@ -33,7 +35,9 @@ namespace ArcaneStrike.Story
         public event Action OnPickedUp;
 
         Vector3 handleOffset;  // handle relative to the lantern origin, captured at pickup
-        Vector3 lastTarget;
+        Vector3 lastTarget;    // where the hand holds the ring
+        Vector3 grip, gripVelocity, tilt, tiltVelocity;
+        Quaternion facing;
         bool hasTarget;
         bool hovering;
         float revealedAt;
@@ -66,7 +70,11 @@ namespace ArcaneStrike.Story
             HeldBy = side;
             hovering = false;
             handleOffset = HandlePoint - transform.position;
+            grip = lastTarget = HandlePoint;
+            gripVelocity = tilt = tiltVelocity = Vector3.zero;
+            facing = Quaternion.LookRotation(StoryFx.Flat(transform.forward));
             transform.SetParent(null, true); // leave the chest, so the chest shaking later doesn't move it
+            Combat.CombatFx.Rumble(side, 0.3f, 0.06f); // its weight settling into the hand (controllers only)
             Debug.Log($"[Attic] Lantern picked up ({side} hand)");
             OnPickedUp?.Invoke();
         }
@@ -82,9 +90,10 @@ namespace ArcaneStrike.Story
         void Update()
         {
             if (hovering) Hover();
-            if (!IsAvailable || input == null) return;
+            if (!IsAvailable) return;
             if (!IsPickedUp)
             {
+                if (input == null) return;
                 for (int i = 0; i < 2; i++)
                 {
                     HandFrame f = input.Get((HandSide)i);
@@ -114,26 +123,43 @@ namespace ArcaneStrike.Story
         void Follow()
         {
             Transform head = StoryFx.Head(input);
-            HandFrame f = input.Get(HeldBy);
-            if (f.IsTracked)
+            HandFrame f = input != null ? input.Get(HeldBy) : null;
+            if (f != null && f.IsTracked)
             {
-                lastTarget = f.PalmCenter - handleOffset;
+                lastTarget = f.PalmCenter;
                 hasTarget = true;
             }
             else if (!hasTarget && head != null)
             {
                 // Picked up with the keyboard and no hands: hold it in front of the player.
-                lastTarget = head.position + StoryFx.Flat(head.forward) * 0.4f + Vector3.down * 0.45f;
+                float side = HeldBy == HandSide.Right ? 0.15f : -0.15f; // in that hand, a little to the side
+                lastTarget = head.position + StoryFx.Flat(head.forward) * 0.4f + StoryFx.Flat(head.right) * side + Vector3.down * 0.45f + handleOffset;
             }
 
-            float k = 1f - Mathf.Exp(-followSharpness * Time.deltaTime);
-            transform.position = Vector3.Lerp(transform.position, lastTarget, k);
+            float dt = Mathf.Max(Time.deltaTime, 1e-4f);
+            float k = 1f - Mathf.Exp(-followSharpness * dt);
+            Vector3 was = grip;
+            grip = Vector3.Lerp(grip, lastTarget, k);
+
+            // It hangs from the ring like a real lantern: when the hand speeds up the body lags behind and swings,
+            // then settles. A damped pendulum on the hand's sideways acceleration (tilt = a / g, about 1 Hz swing).
+            Vector3 velocity = (grip - was) / dt;
+            Vector3 accel = Vector3.ClampMagnitude((velocity - gripVelocity) / dt, 25f); // tracking jitter stays small
+            gripVelocity = velocity;
+            accel.y = 0f;
+            tiltVelocity += ((accel / 9.81f * swing) - tilt) * (40f * dt);
+            tiltVelocity *= Mathf.Exp(-3.5f * dt);
+            tilt = Vector3.ClampMagnitude(tilt + tiltVelocity * dt, 0.7f);
+            Quaternion hang = Quaternion.FromToRotation(Vector3.up, (Vector3.up + tilt).normalized);
+
             if (head != null)
             {
-                // Stay upright, turned towards the player.
-                Quaternion face = Quaternion.LookRotation(StoryFx.Flat(head.position - transform.position));
-                transform.rotation = Quaternion.Slerp(transform.rotation, face, k);
+                // Turned towards the player.
+                Quaternion face = Quaternion.LookRotation(StoryFx.Flat(head.position - grip));
+                facing = Quaternion.Slerp(facing, face, k);
             }
+            transform.rotation = hang * facing;
+            transform.position = grip - hang * handleOffset; // swings about the ring, not its middle
         }
     }
 }

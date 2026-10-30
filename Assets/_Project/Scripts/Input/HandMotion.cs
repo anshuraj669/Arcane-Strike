@@ -106,7 +106,7 @@ namespace ArcaneStrike.HandInput
 
             float now = Time.time;
             for (int i = 0; i < 2; i++) UpdateHand(input.Get((HandSide)i), tracks[i], head, now);
-            if (keyboardFallback && (Application.isEditor || Debug.isDebugBuild)) UpdateKeyboard(head, now);
+            if (keyboardFallback) UpdateKeyboard(head, now);
         }
 
         void UpdateHand(HandFrame f, Track t, Transform head, float now)
@@ -170,13 +170,10 @@ namespace ArcaneStrike.HandInput
 
         void UpdateKeyboard(Transform head, float now)
         {
-            Keyboard kb = Keyboard.current;
-            if (kb == null) return;
-
             Track t = tracks[(int)HandSide.Right];
             Vector3 pos = head.position + head.forward * 0.4f - head.up * 0.15f;
-            if (kb.jKey.wasPressedThisFrame) Raise(t, StrikeType.Punch, HandSide.Right, pos, head.forward, punchSpeed * 1.5f, now, true);
-            if (kb.kKey.wasPressedThisFrame) Raise(t, StrikeType.Swipe, HandSide.Right, pos, head.right, swipeSpeed * 1.5f, now, true);
+            if (GameInput.Pressed(GameAction.Punch)) Raise(t, StrikeType.Punch, HandSide.Right, pos, head.forward, punchSpeed * 1.5f, now, true);
+            if (GameInput.Pressed(GameAction.Swipe)) Raise(t, StrikeType.Swipe, HandSide.Right, pos, head.right, swipeSpeed * 1.5f, now, true);
         }
 
         void Raise(Track t, StrikeType type, HandSide hand, Vector3 position, Vector3 direction, float speed, float now,

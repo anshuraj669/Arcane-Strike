@@ -47,7 +47,7 @@ namespace ArcaneStrike.Props
         [Tooltip("How far (m) the hand must rise while holding the lid to open it.")]
         [SerializeField] float liftDistance = 0.08f;
 
-        [Tooltip("Editor / debug builds: press E to open, like the other keyboard fallbacks.")]
+        [Tooltip("Keyboard (GameInput): press E to open.")]
         [SerializeField] bool keyboardFallback = true;
 
         [SerializeField] UnityEvent onOpened;
@@ -55,8 +55,11 @@ namespace ArcaneStrike.Props
         Quaternion closedRot;
         Quaternion openRot;
         bool opening;
-        float openedAt, nextRattle, rattleStart = float.NegativeInfinity;
+        float openedAt, nextRattle, rattleStart = float.NegativeInfinity, shakeUntil;
+        Quaternion restRotation;
         readonly float[] holdStartY = { float.NaN, float.NaN };
+        HandSide? liftedBy;
+        Story.AtticIntro intro;
 
         public bool IsOpen { get; private set; }
 
@@ -73,6 +76,19 @@ namespace ArcaneStrike.Props
             closedRot = lid.localRotation;
             openRot = closedRot * Quaternion.Euler(openAngle, 0f, 0f);
             nextRattle = Time.time + idleRattleEvery;
+            restRotation = transform.localRotation;
+            intro = FindAnyObjectByType<Story.AtticIntro>();
+        }
+
+        /// <summary>
+        /// Something inside wants out: the chest shakes hard for `seconds` (lid jumping, the whole chest rocking),
+        /// then keeps knocking about every `knockEvery` seconds until it is opened.
+        /// </summary>
+        public void Rattle(float seconds, float knockEvery = 2.5f)
+        {
+            shakeUntil = Time.time + seconds;
+            idleRattleEvery = knockEvery;
+            nextRattle = shakeUntil + knockEvery;
         }
 
         public void OpenChest()
@@ -81,6 +97,10 @@ namespace ArcaneStrike.Props
             IsOpen = true;
             opening = animateLid;
             openedAt = Time.time;
+            // Opened mid-rock (the chest shakes after the intro): settle it, or it stays tilted for good.
+            transform.localRotation = restRotation;
+            // The lid's weight in the hand that lifted it (controllers only; bare hands feel nothing).
+            Combat.CombatFx.Rumble(liftedBy, 0.35f, 0.12f);
             Debug.Log($"[ChestOpen] {name} opened");
             onOpened?.Invoke();
         }
@@ -94,9 +114,8 @@ namespace ArcaneStrike.Props
             if (input != null)
                 for (int i = 0; i < 2; i++) UpdateHand(input.Get((HandSide)i), i);
 
-            if (keyboardFallback && (Application.isEditor || Debug.isDebugBuild) &&
-                Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame)
-                OpenChest();
+            // Not while the intro walk plays: there E skips the walk, and must not open the chest in the same press.
+            if (keyboardFallback && (intro == null || !intro.IsPlaying) && GameInput.Pressed(GameAction.Interact)) OpenChest();
         }
 
         void UpdateHand(HandFrame f, int i)
@@ -110,14 +129,26 @@ namespace ArcaneStrike.Props
             float y = f.PalmCenter.y;
             if (float.IsNaN(holdStartY[i])) holdStartY[i] = y;
             else if (y < holdStartY[i]) holdStartY[i] = y; // measure the lift from the lowest point
-            else if (y - holdStartY[i] >= liftDistance) OpenChest();
+            else if (y - holdStartY[i] >= liftDistance)
+            {
+                liftedBy = (HandSide)i;
+                OpenChest();
+            }
         }
 
         // Knock, knock: every few seconds the closed lid jumps twice, as if something inside wants out.
         void IdleRattle()
         {
-            if (idleRattleEvery <= 0f) return;
             float now = Time.time;
+            if (now < shakeUntil)
+            {
+                float left = shakeUntil - now;
+                lid.localRotation = Lifted(rattleAngle * 2f * Mathf.Abs(Mathf.Sin(now * 31f)) * Mathf.Min(1f, left));
+                transform.localRotation = restRotation * Quaternion.Euler(0f, Mathf.Sin(now * 23f) * 1.5f, Mathf.Sin(now * 37f) * 1.2f);
+                return;
+            }
+            transform.localRotation = restRotation;
+            if (idleRattleEvery <= 0f) return;
             if (now >= nextRattle)
             {
                 rattleStart = now;

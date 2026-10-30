@@ -1,0 +1,44 @@
+{
+ "name": "flower_empodium",
+ "size": [
+  0.2173636555671692,
+  0.2504986524581909,
+  0.2670718729496002
+ ],
+ "triangles": 455,
+ "materials": [
+  {
+   "name": "M_Prop_flower_empodium",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.4,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/flower_empodium/M_Prop_flower_empodium_Color.png",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/flower_empodium/M_Prop_flower_empodium_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/flower_empodium/M_Prop_flower_empodium_MetalSmooth.png",
+   "cutout": true
+  }
+ ],
+ "objects": [
+  {
+   "name": "flower_empodium",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  }
+ ]
+}

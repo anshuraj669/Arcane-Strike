@@ -1,0 +1,317 @@
+{
+ "materials": [
+  {
+   "name": "M_Temple_Ivory",
+   "color": [
+    0.96,
+    0.9,
+    0.76
+   ],
+   "smoothness": 0.25,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Plaster007",
+   "tile": 1.5,
+   "emissive": false
+  },
+  {
+   "name": "M_Temple_Pier",
+   "color": [
+    0.86,
+    0.76,
+    0.58
+   ],
+   "smoothness": 0.30000000000000004,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Plaster007",
+   "tile": 1.2,
+   "emissive": false
+  },
+  {
+   "name": "M_Temple_Paving",
+   "color": [
+    1.0,
+    0.95,
+    0.82
+   ],
+   "smoothness": 0.4,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "PavingStones138",
+   "tile": 1.6,
+   "emissive": false
+  },
+  {
+   "name": "M_Temple_Gold",
+   "color": [
+    1.0,
+    0.76,
+    0.36
+   ],
+   "smoothness": 0.65,
+   "metallic": 1.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Metal063",
+   "tile": 0.5,
+   "emissive": false
+  },
+  {
+   "name": "M_Temple_Mosaic",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.55,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Temple/T_Temple_Mosaic.jpg"
+  },
+  {
+   "name": "M_Temple_Ornament",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.44999999999999996,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Temple/T_Temple_Ornament.jpg"
+  },
+  {
+   "name": "M_Temple_Water",
+   "color": [
+    0.06,
+    0.36,
+    0.3
+   ],
+   "smoothness": 0.9,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false
+  },
+  {
+   "name": "M_Temple_Bank",
+   "color": [
+    0.42,
+    0.3,
+    0.17
+   ],
+   "smoothness": 0.050000000000000044,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Rock058",
+   "tile": 8.0,
+   "emissive": false
+  },
+  {
+   "name": "M_Temple_Leaf",
+   "color": [
+    0.22,
+    0.38,
+    0.12
+   ],
+   "smoothness": 0.09999999999999998,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false
+  },
+  {
+   "name": "M_Temple_Seal",
+   "color": [
+    0.9,
+    0.8,
+    0.6
+   ],
+   "smoothness": 0.4,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Plaster007",
+   "tile": 1.0,
+   "emissive": false
+  },
+  {
+   "name": "M_Temple_Orb",
+   "color": [
+    0.4,
+    0.8,
+    1.0
+   ],
+   "smoothness": 0.8,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    1.2,
+    2.6,
+    3.6
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": true
+  },
+  {
+   "name": "M_Temple_Banner",
+   "color": [
+    0.62,
+    0.08,
+    0.05
+   ],
+   "smoothness": 0.19999999999999996,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false
+  },
+  {
+   "name": "M_Temple_Bronze",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.35,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Temple/T_Temple_Bronze.jpg"
+  },
+  {
+   "name": "M_Temple_CauldronFire",
+   "color": [
+    1.0,
+    0.7,
+    0.3
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    2.6,
+    1.5,
+    0.5
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": true
+  },
+  {
+   "name": "M_Prop_Lantern_01_0",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.36050015687942505,
+   "metallic": 0.0,
+   "alpha": 0.3,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/Lantern_01/M_Prop_Lantern_01_0_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/Lantern_01/M_Prop_Lantern_01_0_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/Lantern_01/M_Prop_Lantern_01_0_MetalSmooth.png"
+  },
+  {
+   "name": "M_Prop_Lantern_01_1",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.36050015687942505,
+   "metallic": 0.0,
+   "alpha": 0.3,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/Lantern_01/M_Prop_Lantern_01_1_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/Lantern_01/M_Prop_Lantern_01_1_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/Lantern_01/M_Prop_Lantern_01_1_MetalSmooth.png"
+  }
+ ]
+}

@@ -1,0 +1,43 @@
+{
+ "name": "Sofa_01",
+ "size": [
+  1.571467638015747,
+  0.6580145359039307,
+  0.7965150475502014
+ ],
+ "triangles": 4101,
+ "materials": [
+  {
+   "name": "M_Prop_Sofa_01",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/Sofa_01/M_Prop_Sofa_01_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/Sofa_01/M_Prop_Sofa_01_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/Sofa_01/M_Prop_Sofa_01_MetalSmooth.png"
+  }
+ ],
+ "objects": [
+  {
+   "name": "Sofa_01",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  }
+ ]
+}

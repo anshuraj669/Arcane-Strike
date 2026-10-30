@@ -1,0 +1,43 @@
+{
+ "name": "brass_pot_01",
+ "size": [
+  0.30194565653800964,
+  0.3016926050186157,
+  0.29094764590263367
+ ],
+ "triangles": 3760,
+ "materials": [
+  {
+   "name": "M_Prop_brass_pot_01",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/brass_pot_01/M_Prop_brass_pot_01_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/brass_pot_01/M_Prop_brass_pot_01_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/brass_pot_01/M_Prop_brass_pot_01_MetalSmooth.png"
+  }
+ ],
+ "objects": [
+  {
+   "name": "brass_pot_01",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  }
+ ]
+}

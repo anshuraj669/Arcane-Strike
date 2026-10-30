@@ -1,0 +1,87 @@
+{
+ "name": "standing_picture_frame_01",
+ "size": [
+  0.2007998526096344,
+  0.1002768725156784,
+  0.24965810775756836
+ ],
+ "triangles": 1634,
+ "materials": [
+  {
+   "name": "M_Prop_standing_picture_frame_01_0",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 0.3,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/standing_picture_frame_01/M_Prop_standing_picture_frame_01_0_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/standing_picture_frame_01/M_Prop_standing_picture_frame_01_0_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/standing_picture_frame_01/M_Prop_standing_picture_frame_01_0_MetalSmooth.png"
+  },
+  {
+   "name": "M_Prop_standing_picture_frame_01_1",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/standing_picture_frame_01/M_Prop_standing_picture_frame_01_1_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/standing_picture_frame_01/M_Prop_standing_picture_frame_01_1_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/standing_picture_frame_01/M_Prop_standing_picture_frame_01_1_MetalSmooth.png"
+  },
+  {
+   "name": "M_Prop_standing_picture_frame_01_2",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/standing_picture_frame_01/M_Prop_standing_picture_frame_01_2_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/standing_picture_frame_01/M_Prop_standing_picture_frame_01_2_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/standing_picture_frame_01/M_Prop_standing_picture_frame_01_2_MetalSmooth.png"
+  }
+ ],
+ "objects": [
+  {
+   "name": "standing_picture_frame_01",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  }
+ ]
+}

@@ -1,0 +1,43 @@
+{
+ "name": "painted_wooden_chair_02",
+ "size": [
+  0.6393895149230957,
+  0.662097692489624,
+  1.2637710571289062
+ ],
+ "triangles": 1246,
+ "materials": [
+  {
+   "name": "M_Prop_painted_wooden_chair_02",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/painted_wooden_chair_02/M_Prop_painted_wooden_chair_02_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/painted_wooden_chair_02/M_Prop_painted_wooden_chair_02_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/painted_wooden_chair_02/M_Prop_painted_wooden_chair_02_MetalSmooth.png"
+  }
+ ],
+ "objects": [
+  {
+   "name": "painted_wooden_chair_02",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  }
+ ]
+}

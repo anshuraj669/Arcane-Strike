@@ -1,0 +1,43 @@
+{
+ "name": "vintage_suitcase_02",
+ "size": [
+  0.6937829256057739,
+  0.23917542397975922,
+  0.5679050087928772
+ ],
+ "triangles": 8237,
+ "materials": [
+  {
+   "name": "M_Prop_vintage_suitcase_02",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/vintage_suitcase_02/M_Prop_vintage_suitcase_02_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/vintage_suitcase_02/M_Prop_vintage_suitcase_02_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/vintage_suitcase_02/M_Prop_vintage_suitcase_02_MetalSmooth.png"
+  }
+ ],
+ "objects": [
+  {
+   "name": "vintage_suitcase_02",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  }
+ ]
+}

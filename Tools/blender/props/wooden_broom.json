@@ -1,0 +1,67 @@
+{
+ "name": "wooden_broom",
+ "size": [
+  0.49000200629234314,
+  0.11251410841941833,
+  1.4535739421844482
+ ],
+ "triangles": 5701,
+ "materials": [
+  {
+   "name": "M_Prop_wooden_broom_0",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.4,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/wooden_broom/M_Prop_wooden_broom_0_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/wooden_broom/M_Prop_wooden_broom_0_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/wooden_broom/M_Prop_wooden_broom_0_MetalSmooth.png",
+   "cutout": false
+  },
+  {
+   "name": "M_Prop_wooden_broom_1",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/wooden_broom/M_Prop_wooden_broom_1_Color.png",
+   "normalMap": "",
+   "maskMap": "",
+   "cutout": true
+  }
+ ],
+ "objects": [
+  {
+   "name": "wooden_broom",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  }
+ ]
+}

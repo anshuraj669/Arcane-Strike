@@ -50,7 +50,7 @@ namespace ArcaneStrike.HandInput
         public bool IsDodging => LastDodge.HasValue && Time.time - LastDodge.Value.Time < dodgeWindow;
         public bool IsDodgingFrom(DodgeType type) => IsDodging && LastDodge.Value.Type == type;
 
-        Vector3 rest, lastPos;
+        Vector3 rest, lastPos, lastMoved;
         bool hasRest;
         float lastDodge = -10f;
 
@@ -66,7 +66,13 @@ namespace ArcaneStrike.HandInput
 
             float now = Time.time, dt = Mathf.Max(Time.deltaTime, 1e-4f);
             Vector3 pos = head.position;
-            if (!hasRest)
+            // Smooth walking, shoves and jumps move the head too, but they aren't the body leaning: carry the rest
+            // position (and the last one) along with them, so strafing or landing a jump is never read as a dodge.
+            Vector3 moved = PlayerLocomotion.Moved - lastMoved;
+            lastMoved = PlayerLocomotion.Moved;
+            rest += moved;
+            lastPos += moved;
+            if (!hasRest || (pos - lastPos).sqrMagnitude > 1f) // (first frame, or the player was put somewhere else)
             {
                 rest = lastPos = pos;
                 hasRest = true;
@@ -88,16 +94,14 @@ namespace ArcaneStrike.HandInput
                 else if (sideways > leanDistance && sideSpeed > minSpeed) Raise(DodgeType.Right, now);
             }
 
-            if (keyboardFallback && (Application.isEditor || Debug.isDebugBuild)) UpdateKeyboard(now);
+            if (keyboardFallback) UpdateKeyboard(now);
         }
 
         void UpdateKeyboard(float now)
         {
-            Keyboard kb = Keyboard.current;
-            if (kb == null) return;
-            if (kb.leftArrowKey.wasPressedThisFrame) Raise(DodgeType.Left, now, true);
-            if (kb.rightArrowKey.wasPressedThisFrame) Raise(DodgeType.Right, now, true);
-            if (kb.downArrowKey.wasPressedThisFrame) Raise(DodgeType.Duck, now, true);
+            if (GameInput.Pressed(GameAction.DodgeLeft)) Raise(DodgeType.Left, now, true);
+            if (GameInput.Pressed(GameAction.DodgeRight)) Raise(DodgeType.Right, now, true);
+            if (GameInput.Pressed(GameAction.Duck)) Raise(DodgeType.Duck, now, true);
         }
 
         void Raise(DodgeType type, float now, bool fromKeyboard = false)

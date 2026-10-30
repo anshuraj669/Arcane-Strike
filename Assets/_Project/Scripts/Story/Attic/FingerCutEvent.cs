@@ -35,6 +35,7 @@ namespace ArcaneStrike.Story
 
         bool active;
         float beganAt, nextGlint;
+        LanternPickup pickup;
         ParticleSystem blood, glint;
 
         Vector3 EdgePoint => sharpEdge != null ? sharpEdge.position : transform.position + Vector3.up * 0.24f;
@@ -43,6 +44,7 @@ namespace ArcaneStrike.Story
         void Awake()
         {
             if (input == null) input = FindAnyObjectByType<HandInputService>();
+            pickup = GetComponent<LanternPickup>();
         }
 
         void Start()
@@ -71,6 +73,8 @@ namespace ArcaneStrike.Story
             if (input != null)
                 for (int i = 0; i < 2; i++)
                 {
+                    // The hand holding the ring sits a few cm from the edge: only the other hand's touch counts.
+                    if (pickup != null && pickup.IsPickedUp && (int)pickup.HeldBy == i) continue;
                     HandFrame f = input.Get((HandSide)i);
                     if (f.IsTracked && Vector3.Distance(f[HandJoint.IndexTip], EdgePoint) < touchDistance)
                     {
@@ -100,6 +104,7 @@ namespace ArcaneStrike.Story
             Vector3 tip = Fingertip(side);
             if (bloodEffect != null) Instantiate(bloodEffect, tip, Quaternion.identity);
             StoryFx.Burst(blood, tip, 6, 0.15f, 0.012f, 0.8f, bloodColor);
+            Combat.CombatFx.Rumble(side, 0.8f, 0.07f); // a sharp sting (controllers only)
             OnCut?.Invoke();
 
             // Drip from the fingertip for a moment.

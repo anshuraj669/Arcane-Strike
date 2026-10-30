@@ -17,7 +17,7 @@ namespace ArcaneStrike.Core
     {
         [Tooltip("Give the room's surfaces colliders (fireballs, shockwaves and later enemies use them).")]
         [SerializeField] bool roomColliders = true;
-        [Tooltip("Draw the room mesh in the editor, to check the Simulator room lines up. R toggles it.")]
+        [Tooltip("Draw the room mesh in the editor, to check the Simulator room lines up. F5 toggles it.")]
         [SerializeField] bool showRoomMeshInEditor = true;
         [Tooltip("Draw the room mesh on device. Usually off: the player sees the real room through passthrough.")]
         [SerializeField] bool showRoomMeshOnDevice;
@@ -26,6 +26,27 @@ namespace ArcaneStrike.Core
 
         bool showMesh;
         static bool hooked;
+        static bool virtualWorld;
+
+        /// <summary>
+        /// The scene is a full virtual world (the attic house at night), not the player's own room: the real room's
+        /// mesh and colliders are switched off, so they don't block walking or catch falling props.
+        /// </summary>
+        public static bool VirtualWorld
+        {
+            get => virtualWorld;
+            set
+            {
+                virtualWorld = value;
+                foreach (EffectMesh effectMesh in FindObjectsByType<EffectMesh>(FindObjectsSortMode.None)) ApplyTo(effectMesh, false);
+            }
+        }
+
+        static void ApplyTo(EffectMesh effectMesh, bool show)
+        {
+            effectMesh.HideMesh = virtualWorld || !show;
+            if (virtualWorld) effectMesh.ToggleEffectMeshColliders(false);
+        }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         static void AutoAdd()
@@ -49,8 +70,8 @@ namespace ArcaneStrike.Core
             showMesh = Application.isEditor ? showRoomMeshInEditor : showRoomMeshOnDevice;
             foreach (EffectMesh effectMesh in FindObjectsByType<EffectMesh>(FindObjectsSortMode.None))
             {
-                if (roomColliders) effectMesh.Colliders = true;
-                effectMesh.HideMesh = !showMesh;
+                if (roomColliders && !virtualWorld) effectMesh.Colliders = true;
+                ApplyTo(effectMesh, showMesh);
             }
         }
 
@@ -77,8 +98,8 @@ namespace ArcaneStrike.Core
 
             foreach (EffectMesh effectMesh in FindObjectsByType<EffectMesh>(FindObjectsSortMode.None))
             {
-                if (roomColliders) effectMesh.ToggleEffectMeshColliders(true); // adds any that are missing
-                effectMesh.HideMesh = !showMesh;
+                if (roomColliders && !virtualWorld) effectMesh.ToggleEffectMeshColliders(true); // adds any that are missing
+                ApplyTo(effectMesh, showMesh);
             }
             LogRoom();
         }
@@ -97,18 +118,16 @@ namespace ArcaneStrike.Core
             string floor = room.FloorAnchors.Count > 0 ? $"{room.FloorAnchors[0].transform.position.y:F2} m" : "none";
             Debug.Log($"[Room] Loaded {rooms.Count} room(s) from {MRUK.Instance.SceneSettings.DataSource}. " +
                       $"Current '{room.name}': {room.WallAnchors.Count} walls, {room.Anchors.Count} anchors, floor at y = {floor}. " +
-                      $"Colliders {(roomColliders ? "on" : "off")}, mesh {(showMesh ? "shown" : "hidden")} (R toggles).");
+                      $"Colliders {(roomColliders ? "on" : "off")}, mesh {(showMesh ? "shown" : "hidden")} ({HandInput.GameInput.KeyName(HandInput.GameAction.ToggleRoomMesh)} toggles).");
         }
 
         void Update()
         {
-            if (!keyboardToggle || !(Application.isEditor || Debug.isDebugBuild)) return;
-            Keyboard kb = Keyboard.current;
-            if (kb == null || !kb.rKey.wasPressedThisFrame) return;
+            if (!keyboardToggle || !HandInput.GameInput.Pressed(HandInput.GameAction.ToggleRoomMesh)) return;
 
             showMesh = !showMesh;
             foreach (EffectMesh effectMesh in FindObjectsByType<EffectMesh>(FindObjectsSortMode.None))
-                effectMesh.HideMesh = !showMesh;
+                ApplyTo(effectMesh, showMesh);
             Debug.Log($"[Room] Room mesh {(showMesh ? "shown" : "hidden")}.");
         }
     }

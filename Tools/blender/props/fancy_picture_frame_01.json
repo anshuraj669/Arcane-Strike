@@ -1,0 +1,65 @@
+{
+ "name": "fancy_picture_frame_01",
+ "size": [
+  0.603030264377594,
+  0.019993074238300323,
+  0.46412646770477295
+ ],
+ "triangles": 938,
+ "materials": [
+  {
+   "name": "M_Prop_fancy_picture_frame_01_0",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/fancy_picture_frame_01/M_Prop_fancy_picture_frame_01_0_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/fancy_picture_frame_01/M_Prop_fancy_picture_frame_01_0_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/fancy_picture_frame_01/M_Prop_fancy_picture_frame_01_0_MetalSmooth.png"
+  },
+  {
+   "name": "M_Prop_fancy_picture_frame_01_1",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/fancy_picture_frame_01/M_Prop_fancy_picture_frame_01_1_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/fancy_picture_frame_01/M_Prop_fancy_picture_frame_01_1_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/fancy_picture_frame_01/M_Prop_fancy_picture_frame_01_1_MetalSmooth.png"
+  }
+ ],
+ "objects": [
+  {
+   "name": "fancy_picture_frame_01",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  }
+ ]
+}

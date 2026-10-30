@@ -32,6 +32,8 @@ namespace ArcaneStrike.Story
         public AudioSource rumbleAudio;
 
         ParticleSystem dust;
+        Coroutine shaking;
+        float shakeStart;
 
         void Awake()
         {
@@ -44,16 +46,25 @@ namespace ArcaneStrike.Story
             if (rumbleAudio == null) rumbleAudio = StoryFx.CreateSource(gameObject, StoryFx.Rumble(), false, 0f);
         }
 
-        public void Shake() => StartCoroutine(ShakeRoutine());
-
-        IEnumerator ShakeRoutine()
+        /// <summary>Starts a shake, or (already shaking) keeps it going longer: a second shake mustn't take the first
+        /// one's shaken positions as the place to settle back to.</summary>
+        public void Shake()
         {
-            Debug.Log("[Attic] The attic shakes");
+            if (shakeTargets == null) shakeTargets = new Transform[0];
+            float t = Time.time - shakeStart;
+            if (shaking == null) shakeStart = Time.time;
+            else if (t > duration * 0.5f) shakeStart = Time.time - (duration - t); // settling: build up again from this strength
             if (rumbleAudio != null)
             {
                 rumbleAudio.volume = 1f;
                 rumbleAudio.Play();
             }
+            if (shaking == null) shaking = StartCoroutine(ShakeRoutine());
+        }
+
+        IEnumerator ShakeRoutine()
+        {
+            Debug.Log("[Attic] The attic shakes");
 
             var basePos = new Vector3[shakeTargets.Length];
             var baseRot = new Quaternion[shakeTargets.Length];
@@ -65,7 +76,7 @@ namespace ArcaneStrike.Story
             }
 
             float debt = 0f;
-            for (float t = 0f; t < duration; t += Time.deltaTime)
+            for (float t = 0f; t < duration; t = Time.time - shakeStart)
             {
                 float envelope = Mathf.Sin(Mathf.PI * t / duration); // builds up, then settles
                 for (int i = 0; i < shakeTargets.Length; i++)
@@ -100,6 +111,7 @@ namespace ArcaneStrike.Story
                 shakeTargets[i].localPosition = basePos[i];
                 shakeTargets[i].localRotation = baseRot[i];
             }
+            shaking = null;
         }
     }
 }

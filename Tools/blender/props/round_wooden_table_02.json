@@ -1,0 +1,43 @@
+{
+ "name": "round_wooden_table_02",
+ "size": [
+  0.7961780428886414,
+  0.7961780428886414,
+  0.7460266351699829
+ ],
+ "triangles": 4254,
+ "materials": [
+  {
+   "name": "M_Prop_round_wooden_table_02",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/round_wooden_table_02/M_Prop_round_wooden_table_02_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/round_wooden_table_02/M_Prop_round_wooden_table_02_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/round_wooden_table_02/M_Prop_round_wooden_table_02_MetalSmooth.png"
+  }
+ ],
+ "objects": [
+  {
+   "name": "round_wooden_table_02",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  }
+ ]
+}
