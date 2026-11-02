@@ -36,7 +36,7 @@ namespace ArcaneStrike.Story
         [SerializeField] Color blueFire = new Color(0.1f, 0.42f, 1f, 1f);
         [Tooltip("The heart of the fire: what the view fills with as the flames take the player.")]
         [SerializeField] Color blueBlaze = new Color(0.55f, 0.84f, 1f, 1f);
-        [SerializeField] Color goldColor = new Color(1f, 0.79f, 0.29f, 1f);
+        [SerializeField] Color paleBlue = new Color(0.45f, 0.78f, 1f, 1f);
         [Tooltip("How high the light lifts the player (m).")]
         [SerializeField] float liftHeight = 1.3f;
         [Tooltip("The character: his body in the light, and the outfit formed on it. Empty: found in the scene.")]
@@ -1070,13 +1070,13 @@ namespace ArcaneStrike.Story
             emberSpeech = go.AddComponent<StorySpeech>();
             emberSpeech.TextOffset = Vector3.up * 0.9f;
             ember.LookAt(head);
-            if (lanternLight != null) lanternLight.color = goldColor;
+            if (lanternLight != null) lanternLight.color = paleBlue;
             Vector3 from = go.transform.position;
             for (float t = 0f; t < 2.5f; t += Time.deltaTime) // out of the wick and across to the soul
             {
                 float k = Mathf.SmoothStep(0f, 1f, t / 2.5f);
                 go.transform.position = Vector3.Lerp(from, EmberSpot(head), k) + Vector3.up * Mathf.Sin(k * Mathf.PI) * 0.4f;
-                if (Random.value < 0.5f) StoryFx.Emit(burst, go.transform.position, Random.insideUnitSphere * 0.3f, 0.04f, 0.8f, goldColor);
+                if (Random.value < 0.5f) StoryFx.Emit(burst, go.transform.position, Random.insideUnitSphere * 0.3f, 0.04f, 0.8f, paleBlue);
                 yield return null;
             }
             ember.SetMood(EmberFlame.Mood.Calm);
@@ -1084,20 +1084,18 @@ namespace ArcaneStrike.Story
             Debug.Log("[Rift] Ember meets the soul (N skips a line)");
 
             // Who are you? (Ember, curious, circling the soul.)
-            yield return Line("Oh! Well, look at you. Pulled right through the Rift, and out of your body too.", 1.2f);
-            yield return Line("Don't panic. That's you over there, hanging in the light. It'll keep. It's only holding you up.", 1.4f);
-            yield return Line("It's been many years since someone has been here. Many, many years. You have no idea...", 1.6f);
-            yield return Line("...Right. Introductions.", 0.8f);
+            yield return Voiced("many_years", "It's been many years since someone has been here. You have no idea...", 0.6f);
+            yield return Voiced("introductions", "...Right. Introductions.", 0.2f);
             ember.SetMood(EmberFlame.Mood.Excited);
-            yield return Line("Hii! My name is Ember.", 1f);
+            yield return Voiced("my_name_is_ember", "Hii! My name is Ember.", 0.2f);
             ember.SetMood(EmberFlame.Mood.Calm);
             ember.PointAt(head, 2.5f);
-            yield return Line("And you...", 1.2f);
+            yield return Voiced("and_you", "And you...", 1.2f);
             ember.SetMood(EmberFlame.Mood.Excited);
             ember.PointAt(head, 4f);
-            yield return Line("Wait a minute. Oh. Oh, my, my... You have it.", 1.4f);
+            yield return Voiced("you_have_it", "Wait a minute. Oh. Oh, my, my... You have it.", 1f);
             ember.SetMood(EmberFlame.Mood.Calm);
-            yield return Line("Look at your hands. Go on... hold them up.", 0.4f);
+            yield return Voiced("hold_them_up", "Look at your hands. Go on... hold them up.", 0.4f);
 
             // Everything waits for the player to raise both palms to their face; then the Seal answers with a heartbeat.
             yield return WaitForPalms(input, head);
@@ -1105,40 +1103,29 @@ namespace ArcaneStrike.Story
             var powers = FindAnyObjectByType<PowerUnlocks>();
             Debug.Log("[Rift] The Jyoti Seal awakens on the player's palms");
             ember.SetMood(EmberFlame.Mood.Excited);
-            yield return Line("Feel that? That's not your heart. That golden mark... the Jyoti Seal. I don't believe it.", 1.8f);
+            yield return Voiced("jyoti_seal", "I don't believe it... the Jyoti Seal.", 0.8f);
+            yield return Voiced("youre_a_weaver", "Do you have any idea what this means, kid? You aren't just a tourist. You're a Weaver.", 1f);
 
             // The suit-up: Ember moves aside and the soul watches the suit wrap onto the body.
             ember.SetMood(EmberFlame.Mood.Calm);
-            yield return Line("And now the light will dress you for it. Don't look away... this is the good part.", 0.8f);
             yield return SuitUp(head);
             ember.SetMood(EmberFlame.Mood.Excited);
-            yield return Line("Look at you. The Weaver's skin, woven out of the first light.", 1.4f);
-
-            // What has happened: the lantern, the runes, the blood, the Rift.
-            ember.SetMood(EmberFlame.Mood.Calm);
-            yield return Line("That lantern you were scrubbing isn't just a lantern. It's a Jyoti Deep: a vessel for the first light.", 1.6f);
-            yield return Line("Your family has guarded it for generations, keeping it lit so the dark stays where it belongs.", 1.6f);
-            yield return Line("The runes on it are the Weaver's script. Every line is a promise: light, kept and carried.", 1.6f);
-            yield return Line("They only answer one kind of blood. When your cut touched the wick, they answered you... and tore time open to bring you here.", 1.8f);
-
-            // What the Weaver must do.
-            ember.SetMood(EmberFlame.Mood.Excited);
-            yield return Line(relic != null
-                ? "Beyond this temple lies the Rift, the Kalakh's side of the dark. Shadows that feed on light. They'll have felt this."
-                : "This is the Rift, the Kalakh's side of the dark. Shadows that feed on light. They'll have felt this.", 1.8f);
-            ember.SetMood(EmberFlame.Mood.Calm);
-            yield return Line("They snuff out every light they find. Your job is to find the lost lights and keep them burning.", 1.8f);
-
-            // The powers.
-            yield return Line("The Seal is how you'll do it. Close your fist and the light gathers. Open it, and it's yours to hold.", 1.8f);
-            yield return Line("Point two fingers and it flies as fire. Raise a fist and it becomes a shield. Reach out, and it pulls things to you.", 1.8f);
-            ember.SetMood(EmberFlame.Mood.Excited);
             Gear(); // the sword: it forms out of the light before the chest, turns, and slides into the sheath on the back
-            yield return Line("And every Weaver needs a blade. This one was forged in the first light. It cuts what the dark is made of.", 2.4f);
-            yield return Line("It rides on your back. When you need it, reach over your right shoulder and draw.", 2.4f);
+            yield return Wait(Dur(3f)); // (time to watch the sword form)
             ember.SetMood(EmberFlame.Mood.Calm);
-            yield return Line("There. You look the part now. Back you go... your body's getting lonely.", 1.2f);
             if (powers == null) Debug.Log("[Rift] (no PowerUnlocks in the scene: every power is allowed)");
+        }
+
+        // Ember says a line in its recorded voice (Resources/VO/Ember/`clip`), with no subtitle; N (Skip) ends it at once.
+        IEnumerator Voiced(string clip, string text, float hold)
+        {
+            AudioClip voice = Resources.Load<AudioClip>($"VO/Ember/{clip}");
+            if (voice == null || emberSpeech == null)
+            {
+                Debug.LogWarning($"[Ember] No voice clip '{clip}': {text}");
+                yield break;
+            }
+            yield return emberSpeech.Speak(voice, text, hold);
         }
 
         // The suit-up, watched by the soul: Ember drifts out of the way, the white thins so the body is clear, and
@@ -1151,7 +1138,7 @@ namespace ArcaneStrike.Story
             StartCoroutine(ScreenFade.To(StoryFx.WithAlpha(blueBlaze, 0f), 1.2f)); // nothing tints the view while the suit forms
             var glow = new GameObject("SuitUpGlow").AddComponent<Light>();
             glow.type = LightType.Point;
-            glow.color = goldColor;
+            glow.color = paleBlue;
             glow.range = 3f;
             glow.shadows = LightShadows.None;
             if (fire != null) fire.Target = 1f;
@@ -1246,7 +1233,7 @@ namespace ArcaneStrike.Story
                 {
                     CombatFx.Rumble(null, thump == 0 ? 1f : 0.6f, 0.1f);
                     SealOnPalms(input, 40 + i * 30);
-                    yield return ScreenFade.To(StoryFx.WithAlpha(goldColor, (0.18f + 0.06f * i) * (thump == 0 ? 1f : 0.7f)), 0.09f);
+                    yield return ScreenFade.To(StoryFx.WithAlpha(paleBlue, (0.18f + 0.06f * i) * (thump == 0 ? 1f : 0.7f)), 0.09f);
                     yield return ScreenFade.To(StoryFx.WithAlpha(blueBlaze, hoverWash), thump == 0 ? 0.19f : 0.58f);
                 }
             }
@@ -1267,7 +1254,7 @@ namespace ArcaneStrike.Story
                 {
                     float angle = Random.value * Mathf.PI * 2f;
                     Vector3 dir = a * Mathf.Cos(angle) + b * Mathf.Sin(angle);
-                    StoryFx.Emit(burst, f.PalmCenter + dir * 0.035f + n * 0.01f, dir * 0.25f + n * 0.1f, Random.Range(0.006f, 0.014f), 0.6f, goldColor);
+                    StoryFx.Emit(burst, f.PalmCenter + dir * 0.035f + n * 0.01f, dir * 0.25f + n * 0.1f, Random.Range(0.006f, 0.014f), 0.6f, paleBlue);
                 }
             }
         }
