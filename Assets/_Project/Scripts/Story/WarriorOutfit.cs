@@ -42,9 +42,9 @@ namespace ArcaneStrike.Story
         [SerializeField] float chestBehindEyes = 0.08f;
         [Tooltip("How quickly the body turns after the head (larger = tighter).")]
         [SerializeField] float bodyTurn = 3f;
-        [SerializeField] Color sparkColor = new Color(1f, 0.8f, 0.35f, 1f);
+        [SerializeField] Color blueSpark = new Color(0.45f, 0.8f, 1f, 1f);
         [Tooltip("The body: a part flares this colour as it forms, before it turns to cloth.")]
-        [SerializeField] Color formingColor = new Color(1f, 0.92f, 0.72f, 0.85f);
+        [SerializeField] Color formingBlue = new Color(0.72f, 0.92f, 1f, 0.85f);
         [Tooltip("The body: seconds a forming part glows before it turns to cloth.")]
         [SerializeField] float formingGlow = 0.6f;
 
@@ -429,7 +429,7 @@ namespace ArcaneStrike.Story
                 return;
             }
             foreach (Piece p in pieces)
-                if (p.transform.gameObject.activeSelf) StoryFx.Burst(sparks, Center(p), 25, 0.6f, 0.02f, 0.7f, sparkColor);
+                if (p.transform.gameObject.activeSelf) StoryFx.Burst(sparks, Center(p), 25, 0.6f, 0.02f, 0.7f, blueSpark);
         }
 
         void Update()
@@ -450,7 +450,7 @@ namespace ArcaneStrike.Story
             SetBodyPose(eyes, yaw);
             if (forming == null)
             {
-                forming = AegisShield.CreateFaceMaterial(formingColor);
+                forming = AegisShield.CreateFaceMaterial(formingBlue);
                 forming.name = "WeaverForming";
             }
             foreach (BodyPart part in body)
@@ -560,7 +560,7 @@ namespace ArcaneStrike.Story
             stone.enabled = false;
             bareSword.SetPositionAndRotation(grip, upright);
             Combat.CombatAudio.Play(Combat.CombatAudio.Clang, grip, 0.7f, 0f);
-            if (sparks != null) StoryFx.Burst(sparks, grip + Vector3.down * 0.5f, 60, 0.8f, 0.02f, 0.8f, sparkColor);
+            if (sparks != null) StoryFx.Burst(sparks, grip + Vector3.down * 0.5f, 60, 0.8f, 0.02f, 0.8f, blueSpark);
             const float pull = 1.4f, fly = 1.6f;
             for (float t = 0f; t < pull; t += Time.deltaTime)
             {
@@ -568,7 +568,7 @@ namespace ArcaneStrike.Story
                 Vector3 shake = Random.insideUnitSphere * 0.004f * (1f - k);
                 bareSword.SetPositionAndRotation(grip + Vector3.up * 0.95f * k + shake, upright);
                 if (sparks != null && k < 0.7f && Random.value < 0.6f)
-                    StoryFx.Emit(sparks, grip + Vector3.down * (0.55f - 0.95f * k), Random.insideUnitSphere * 0.4f, Random.Range(0.01f, 0.03f), 0.6f, sparkColor);
+                    StoryFx.Emit(sparks, grip + Vector3.down * (0.55f - 0.95f * k), Random.insideUnitSphere * 0.4f, Random.Range(0.01f, 0.03f), 0.6f, blueSpark);
                 yield return null;
             }
             Combat.CombatAudio.Play(Combat.CombatAudio.Swoosh, bareSword.position, 0.5f, 0.1f);
@@ -581,7 +581,7 @@ namespace ArcaneStrike.Story
                 bareSword.SetPositionAndRotation(Vector3.Lerp(from, chest, k) + Vector3.up * Mathf.Sin(k * Mathf.PI) * 0.5f,
                                                  Quaternion.Slerp(upright, Quaternion.LookRotation(facing * Vector3.right, Vector3.down), k));
                 if (sparks != null && Random.value < 0.5f)
-                    StoryFx.Emit(sparks, bareSword.position + bareSword.up * Random.Range(0f, 0.8f), Random.insideUnitSphere * 0.1f, 0.015f, 0.5f, sparkColor);
+                    StoryFx.Emit(sparks, bareSword.position + bareSword.up * Random.Range(0f, 0.8f), Random.insideUnitSphere * 0.1f, 0.015f, 0.5f, blueSpark);
                 yield return null;
             }
         }
@@ -607,7 +607,7 @@ namespace ArcaneStrike.Story
                 bareSword.localScale = stone != null ? size : size * EaseOutBack(Mathf.Min(1f, k * 2.5f)); // (out of light: it grows)
                 if (sparks != null && Random.value < 0.8f)
                     StoryFx.Emit(sparks, grip + bareSword.up * Random.Range(0f, 0.85f), Random.insideUnitSphere * 0.15f,
-                                 Random.Range(0.01f, 0.03f), 0.7f, sparkColor);
+                                 Random.Range(0.01f, 0.03f), 0.7f, blueSpark);
                 yield return null;
             }
             // Into the sheath: up behind the right shoulder, turning to hang down the back as it does there.
@@ -635,7 +635,7 @@ namespace ArcaneStrike.Story
                 for (int i = 0; i < count / renderers.Length; i++)
                 {
                     var p = new Vector3(Random.Range(b.min.x, b.max.x), Random.Range(b.min.y, b.max.y), Random.Range(b.min.z, b.max.z));
-                    StoryFx.Emit(sparks, p, Random.insideUnitSphere * 0.3f + Vector3.up * 0.2f, Random.Range(0.015f, 0.04f), Random.Range(0.6f, 1.2f), sparkColor);
+                    StoryFx.Emit(sparks, p, Random.insideUnitSphere * 0.3f + Vector3.up * 0.2f, Random.Range(0.015f, 0.04f), Random.Range(0.6f, 1.2f), blueSpark);
                 }
             }
         }
@@ -751,7 +751,7 @@ namespace ArcaneStrike.Story
                     if (reveal.eat)
                         StoryFx.Emit(sparks, at, Random.insideUnitSphere * 0.15f, Random.Range(0.01f, 0.02f), 0.5f, new Color(0.8f, 0.85f, 1f, 0.5f));
                     else
-                        StoryFx.Emit(sparks, at, Random.insideUnitSphere * 0.08f, Random.Range(0.012f, 0.03f), Random.Range(0.4f, 0.8f), sparkColor);
+                        StoryFx.Emit(sparks, at, Random.insideUnitSphere * 0.08f, Random.Range(0.012f, 0.03f), Random.Range(0.4f, 0.8f), blueSpark);
                 }
             }
         }
@@ -881,7 +881,7 @@ namespace ArcaneStrike.Story
                 trail.widthCurve = new AnimationCurve(new Keyframe(0f, 0.035f), new Keyframe(1f, 0f));
                 trail.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
                 var g = new Gradient();
-                g.SetKeys(new[] { new GradientColorKey(Color.white, 0f), new GradientColorKey(sparkColor, 1f) },
+                g.SetKeys(new[] { new GradientColorKey(Color.white, 0f), new GradientColorKey(blueSpark, 1f) },
                           new[] { new GradientAlphaKey(0.9f, 0f), new GradientAlphaKey(0f, 1f) });
                 trail.colorGradient = g;
                 trail.emitting = false;
@@ -1026,13 +1026,13 @@ namespace ArcaneStrike.Story
             p.transform.gameObject.SetActive(true);
             ShowPiece(p, !bodyShown); // out of the body: they show once the soul is back
             Place(p);
-            if (sparks != null && !bodyShown) StoryFx.Burst(sparks, Center(p), 40, 0.8f, 0.025f, 0.9f, sparkColor);
+            if (sparks != null && !bodyShown) StoryFx.Burst(sparks, Center(p), 40, 0.8f, 0.025f, 0.9f, blueSpark);
             for (float t = 0f; t < seconds; t += Time.deltaTime)
             {
                 p.grow = t / seconds;
                 if (sparks != null && !bodyShown && Random.value < 0.6f)
                     StoryFx.Emit(sparks, Center(p) + Random.insideUnitSphere * (p.anchor == Anchor.Body ? 0.35f : 0.12f), Random.insideUnitSphere * 0.2f,
-                                 Random.Range(0.01f, 0.03f), 0.6f, sparkColor);
+                                 Random.Range(0.01f, 0.03f), 0.6f, blueSpark);
                 yield return null;
             }
             p.grow = 1f;

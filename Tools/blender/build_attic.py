@@ -167,6 +167,20 @@ SHARP = material("SharpMetal", (0.95, 0.95, 1.0), 0.15, 1.0, tex="Metal063", til
 FLAME = material("Flame", (1.0, 0.75, 0.35), 0.5, emission=(2.0, 1.2, 0.45))
 RAG = material("Rag", (0.80, 0.72, 0.58), 1.0, tex="Fabric061", tile=0.12)
 STONE = material("PortalStone", (0.80, 0.80, 0.82), 0.9, tex="Rock058", tile=0.6)
+# The old things (build_old_things): nobody has touched these for decades.
+GRIMY_WOOD = material("GrimyWood", (1.0, 1.0, 1.0), 0.92, tex="WoodGrimy", tile=0.7)
+GRIMY_PALE = material("GrimyPaleWood", (1.45, 1.3, 1.1), 0.95, tex="WoodGrimy", tile=0.5)
+GRIMY_CASE = material("GrimyCase", (0.72, 0.6, 0.52), 0.7, tex="WoodGrimy", tile=0.9)
+CARDBOARD = material("Cardboard", (1.0, 1.0, 1.0), 0.97, tex="CardboardOld", tile=0.8)
+BURLAP = material("Burlap", (1.0, 1.0, 1.0), 1.0, tex="BurlapOld", tile=0.45)
+TARNISH = material("TarnishedBrass", (1.0, 1.0, 1.0), 0.62, 0.55, tex="BrassTarnished", tile=0.45)
+SCREEN = material("DustyScreen", (1.0, 1.0, 1.0), 0.55, tex="ScreenDusty", tile=0.5)
+OLD_RECORD = material("OldRecord", (0.05, 0.05, 0.055), 0.6)
+OLD_PAPER = material("OldPaper", (0.62, 0.54, 0.4), 0.95, tex="Paper006", tile=0.3)
+TWINE = material("Twine", (0.26, 0.2, 0.12), 1.0)
+OLD_BOOKS = [material("OldBook" + n, c, 0.85, tex="Paper006", tile=0.3) for n, c in (
+    ("Oxblood", (0.24, 0.08, 0.06)), ("Moss", (0.12, 0.16, 0.1)), ("Ink", (0.08, 0.1, 0.15)),
+    ("Umber", (0.22, 0.14, 0.08)), ("Faded", (0.4, 0.33, 0.24)))]
 PORTAL_RUNE = material("PortalRune", (0.30, 0.89, 1.0), 0.3, emission=(0.6, 1.8, 2.0))  # Volt cyan
 
 
@@ -325,6 +339,49 @@ class Part:
         for i in range(n):
             self.bm.faces.new((front[i], front[(i + 1) % n], back[(i + 1) % n], back[i]))
         self._end(Matrix.Identity(4), mat, smooth=False, world_uv=True)
+
+    def turned(self, a, b, profile, mat, segments=10):
+        """A turned shape from a to b: `profile` is (0..1 along, radius) pairs. It may double back on itself, so a horn
+        can have an inside and an outside."""
+        a, b = Vector(a), Vector(b)
+        axis = (b - a).normalized()
+        x = axis.orthogonal().normalized()
+        y = axis.cross(x)
+        self._begin()
+        rings = []
+        for k, r in profile:
+            c = a.lerp(b, k)
+            rings.append([self.bm.verts.new(c + (x * math.cos(i * math.tau / segments) + y * math.sin(i * math.tau / segments)) * r)
+                          for i in range(segments)])
+        self.bm.faces.new(rings[0])
+        self.bm.faces.new(list(reversed(rings[-1])))
+        for p, q in zip(rings, rings[1:]):
+            for i in range(segments):
+                self.bm.faces.new((p[i], p[(i + 1) % segments], q[(i + 1) % segments], q[i]))
+        self._end(Matrix.Identity(4), mat, smooth=True)
+
+    def slab(self, outline, y0, y1, mat):
+        """A flat level slab: `outline` is a list of (x, z) points, from height y0 to y1."""
+        self._begin()
+        low = [self.bm.verts.new((x, y0, z)) for x, z in outline]
+        high = [self.bm.verts.new((x, y1, z)) for x, z in outline]
+        self.bm.faces.new(low)
+        self.bm.faces.new(list(reversed(high)))
+        n = len(outline)
+        for i in range(n):
+            self.bm.faces.new((low[i], low[(i + 1) % n], high[(i + 1) % n], high[i]))
+        self._end(Matrix.Identity(4), mat, smooth=False)
+
+    def lump(self, shape, mat, rings=16, sides=20):
+        """A soft closed bag: shape(k, a) → a point, for k 0..1 from bottom to top and a the angle round."""
+        self._begin()
+        loops = [[self.bm.verts.new(shape(k / rings, i * math.tau / sides)) for i in range(sides)] for k in range(rings + 1)]
+        self.bm.faces.new(loops[0])
+        self.bm.faces.new(list(reversed(loops[-1])))
+        for p, q in zip(loops, loops[1:]):
+            for i in range(sides):
+                self.bm.faces.new((p[i], p[(i + 1) % sides], q[(i + 1) % sides], q[i]))
+        self._end(Matrix.Identity(4), mat, smooth=True)
 
     def triangle(self, a, b, c, mat, thickness=0.003):
         """A thin triangular sheet (cobwebs)."""
@@ -548,7 +605,7 @@ def build_props(room):
     barrel_x, barrel_z = 1.45, Z_BACK - 0.45
     place_prop(room, "wine_barrel_01", (barrel_x, 0, barrel_z), yaw=25)
     place_prop(room, "wooden_crate_01", (HALF_W - 0.3, 0, 2.85), yaw=90)
-    place_prop(room, "brass_blowtorch", (HALF_W - 0.3, 0.35, 2.7), yaw=30)
+    place_prop(room, "brass_blowtorch", (HALF_W - 0.3, 0.35, 2.55), yaw=30)
     place_prop(room, "chinese_armchair", (-1.6, 0, 0.3), yaw=65)  # half turned towards the chest
     place_prop(room, "painted_wooden_stool", (-1.0, 0, -0.55), yaw=15)
     place_prop(room, "vintage_suitcase", (-HALF_W + 0.15, 0, -1.0), yaw=90)  # stood against the wall
@@ -1408,6 +1465,252 @@ def build_yard(root):
                        names={"garden_plants": f"Garden_Tree_{i + 1}"}, reuse=True)
 
 
+# ---------------------------------------------------------------- the old things
+
+OLD = random.Random(29)  # their own dice: the room's other random choices stay as they were
+
+
+def set_down(part, room, pos, yaw=0.0, tilt=0.0):
+    """Builds a thing made round its own foot at the origin and sets it in the room, as place_prop does. Tipped over,
+    it comes to rest on the floor (or whatever height `pos` gives)."""
+    obj = part.build(room)
+    obj.location = (TO_BLENDER @ Vector(pos).to_4d()).to_3d()
+    obj.rotation_euler = Euler((math.radians(-tilt), 0, math.radians(-yaw)), "XYZ")
+    bpy.context.view_layer.update()
+    if tilt:
+        low = min((obj.matrix_world @ v.co).z for v in obj.data.vertices)
+        obj.location.z += pos[1] + 0.002 - low
+    return obj
+
+
+def turned_leg(a, b):
+    a, b = Vector(a), Vector(b)
+    return a, b, [(0, 0.012), (0.05, 0.016), (0.16, 0.019), (0.2, 0.013), (0.26, 0.02), (0.5, 0.024), (0.72, 0.019), (0.78, 0.024),
+                  (0.84, 0.016), (1, 0.017)]
+
+
+def build_old_chair(name, broken):
+    """A spindle-back kitchen chair, its paint long gone. `broken` has lost a leg and a spindle."""
+    p = Part(name)
+    seat = [(0.22 * math.cos(a) * (1.0 + 0.1 * math.cos(2 * a)), 0.2 * math.sin(a) + 0.015 * math.cos(3 * a))
+            for a in (i * math.tau / 20 for i in range(20))]
+    p.slab(seat, 0.43, 0.465, GRIMY_PALE)
+    p.box((0.03, 0.466, 0.02), (0.006, 0.002, 0.36), SHADOW, rot=(0, 3, 0), bevel=0)  # the seat has split
+    feet = [(-0.21, 0.22), (0.21, 0.22), (-0.19, -0.2), (0.19, -0.2)]
+    tops = [(-0.15, 0.14), (0.15, 0.14), (-0.14, -0.13), (0.14, -0.13)]
+    for i, (f, t) in enumerate(zip(feet, tops)):
+        a, b, prof = turned_leg((f[0], 0, f[1]), (t[0], 0.435, t[1]))
+        if broken and i == 1:
+            p.turned(a.lerp(b, 0.72), b, [(0, 0.012), (0.1, 0.02), (1, 0.017)], GRIMY_WOOD, segments=7)  # snapped off
+            continue
+        p.turned(a, b, prof, GRIMY_WOOD, segments=8)
+    p.turned((-0.2, 0.2, 0.2), (-0.17, 0.2, -0.18), [(0, 0.011), (0.5, 0.015), (1, 0.011)], GRIMY_WOOD, segments=7)
+    p.turned((0.17, 0.2, -0.18), (0.2, 0.2, 0.2), [(0, 0.011), (0.5, 0.015), (1, 0.011)], GRIMY_WOOD, segments=7)
+    p.turned((-0.18, 0.15, -0.0), (0.05, 0.13, 0.02), [(0, 0.011), (0.6, 0.015), (0.95, 0.011), (1, 0.004)], GRIMY_PALE, segments=7)  # snapped
+    top_y, back_z = 0.96, -0.24
+    for i, x in enumerate((-0.15, -0.075, 0.0, 0.075, 0.15)):
+        low = (x * 0.92, 0.46, -0.145)
+        high = (x * 1.08, top_y - 0.06, back_z)
+        if broken and i == 3:
+            continue
+        p.turned(low, high, [(0, 0.011), (0.2, 0.016), (0.45, 0.012), (0.75, 0.014), (1, 0.01)], GRIMY_WOOD, segments=7)
+    crest = [(-0.235, top_y - 0.085), (0.235, top_y - 0.085), (0.25, top_y - 0.01), (0.15, top_y - 0.0), (0.06, top_y + 0.035),
+             (-0.06, top_y + 0.035), (-0.15, top_y - 0.0), (-0.25, top_y - 0.01)]
+    p.prism(crest, back_z - 0.014, back_z + 0.014, GRIMY_PALE)
+    return p
+
+
+def build_old_bookcase(name):
+    """A tall dark bookcase, shelves bowing, its books faded and fallen, loose papers in the bottom."""
+    p = Part(name)
+    w, h, d, t = 0.7, 1.7, 0.3, 0.025
+    for s in (-1, 1):
+        p.box((s * (w - t) / 2, h / 2, 0), (t, h, d), GRIMY_PALE)
+    p.box((0, h / 2, -d / 2 + 0.005), (w, h, 0.01), GRIMY_WOOD)
+    p.box((0, h + 0.015, 0.012), (w + 0.1, 0.03, d + 0.05), GRIMY_WOOD)
+    p.box((0, h + 0.042, 0.012), (w + 0.05, 0.024, d + 0.03), GRIMY_WOOD)
+    p.box((0, 0.05, 0.005), (w + 0.03, 0.1, d + 0.01), GRIMY_WOOD)
+    p.prism([(-w / 2 + t, h - 0.12), (w / 2 - t, h - 0.12), (w / 2 - t, h), (-w / 2 + t, h)], d / 2 - 0.018, d / 2 - 0.002, GRIMY_WOOD)
+    shelves = (0.12, 0.42, 0.71, 1.0, 1.29)
+    inner = w - 2 * t
+    for k, y in enumerate(shelves):
+        sag = 1.4 if k == 3 else 0.0  # this one has worked loose at one end
+        p.box((0, y + 0.01, 0.008), (inner, 0.02, d - 0.03), GRIMY_WOOD, rot=(0, 0, sag))
+    for k, y in enumerate(shelves):
+        if k == 0:
+            continue  # the bottom shelf only has papers on it
+        base = y + 0.02 + (0.0 if k != 3 else 0.004)
+        x = -inner / 2 + 0.008
+        room = inner / 2 - 0.02
+        while x < room:
+            th = OLD.uniform(0.018, 0.042)
+            if OLD.random() < 0.13:  # a gap where one has gone
+                x += OLD.uniform(0.04, 0.09)
+                continue
+            bh, bd = OLD.uniform(0.16, 0.24), OLD.uniform(0.13, 0.19)
+            lean = OLD.choice((0, 0, 0, 0, 7, 12)) if x > -inner / 2 + 0.1 else 0
+            c = (x + th / 2, base + bh / 2, 0.01)
+            p.box(c, (th, bh, bd), OLD.choice(OLD_BOOKS), rot=(0, 0, -lean), bevel=0.002)
+            p.box((c[0], c[1], c[2] - 0.004), (th * 0.8, bh - 0.008, bd), OLD_PAPER, rot=(0, 0, -lean), bevel=0)
+            x += th + 0.002 + bh * math.sin(math.radians(lean)) * 0.4
+    # A pile lying down on top, and the loose papers.
+    for k in range(3):
+        p.box((-0.12 + k * 0.012, 1.325 + k * 0.03, 0.01), (0.22, 0.028, 0.16), OLD_BOOKS[k], rot=(0, 8 * k - 8, 0), bevel=0.002)
+    for k in range(7):
+        p.box((OLD.uniform(-0.2, 0.2), 0.142 + k * 0.0025, OLD.uniform(-0.04, 0.05)), (0.17, 0.0015, 0.22), OLD_PAPER,
+              rot=(OLD.uniform(-2, 2), OLD.uniform(-40, 40), OLD.uniform(-2, 2)), bevel=0)
+    return p
+
+
+def build_old_box(name, w, h, d, flaps_open):
+    """A cardboard carton gone soft with age, its tape peeling, the handling marks faded."""
+    p = Part(name)
+    p.box((0, h / 2, 0), (w, h, d), CARDBOARD, bevel=0.012)
+    f = 0.006
+    if flaps_open:
+        p.box((0, h + 0.001, 0), (w - 0.03, 0.004, d - 0.03), SHADOW, bevel=0)  # dark inside
+        p.box((-w * 0.25, h + 0.018, 0), (w * 0.5, f, d), CARDBOARD, rot=(0, 0, -7), bevel=0.002)
+        p.box((w * 0.33, h + 0.05, d * 0.02), (w * 0.42, f, d * 0.92), CARDBOARD, rot=(5, 4, 19), bevel=0.002)
+        p.box((w * 0.02, h + 0.04, -d * 0.36), (w * 0.82, f, d * 0.34), CARDBOARD, rot=(-14, 2, 0), bevel=0.002)
+    else:
+        p.box((-w * 0.25, h + 0.004, 0), (w * 0.5 - 0.004, f, d), CARDBOARD, bevel=0.002)
+        p.box((w * 0.25, h + 0.006, 0), (w * 0.5 - 0.004, f, d), CARDBOARD, rot=(0, 0, 1.5), bevel=0.002)
+    p.box((w * 0.2, h + 0.012, -d * 0.2), (w * 0.3, 0.002, d * 0.26), OLD_PAPER, rot=(0, 4, 0), bevel=0)  # a faded label
+    # Faded stencil marks on the front: this way up, and a glass.
+    z = d / 2 + 0.0005
+    n = (0, 0, 1)
+    x0, y0, size = -w * 0.32, h * 0.2, min(h, w) * 0.28
+    for k in (0.0, 0.42):
+        c = x0 + k * size
+        p.stroke((c, y0, z), (c, y0 + size * 0.8, z), n, SHADOW, width=0.006)
+        p.stroke((c, y0 + size * 0.8, z), (c - size * 0.13, y0 + size * 0.55, z), n, SHADOW, width=0.006)
+        p.stroke((c, y0 + size * 0.8, z), (c + size * 0.13, y0 + size * 0.55, z), n, SHADOW, width=0.006)
+    return p
+
+
+def sack_shape(height, width, slump, seed):
+    wob = lambda k, a, f, s: math.sin(a * f + k * 7.0 + s + seed)
+    def shape(k, a):
+        body = min(1.0, (k / 0.12) ** 0.5) * (1.0 - 0.72 * ((k / 0.84) ** 3.2))  # a broad foot, drawn in at the shoulders
+        r = width * max(body, 0.2)
+        if k > 0.86:
+            r = width * (0.2 + (k - 0.86) * 1.5 - max(0.0, k - 0.95) * 5.5)  # the gathered top, bunched above the tie
+        gather = max(0.0, k - 0.45) * 0.55  # creases run down from the tie
+        r *= 1.0 + 0.1 * wob(k, a, 2, 0.0) + 0.06 * wob(k, a, 3, 2.0) + gather * math.sin(a * 11 + seed) + 1.6 * max(0.0, k - 0.86) * math.sin(a * 5 + k * 9)
+        bow = slump * (k ** 1.6) * height * 0.5
+        side = 1.0 - 0.2 * slump * math.sin(a)
+        y = height * k * (1.0 - 0.32 * slump)
+        return Vector((math.cos(a) * r + bow, y, math.sin(a) * r * side))
+    return shape
+
+
+def build_old_sack(name, height, width, slump, seed):
+    """A burlap sack tied at the neck, sagging where what is in it has settled."""
+    p = Part(name)
+    p.lump(sack_shape(height, width, slump, seed), BURLAP)
+    k = 0.86
+    c = sack_shape(height, width, slump, seed)(k, 0.0)
+    p.torus((c.x - width * 0.2, c.y, c.z), width * 0.21, 0.007, TWINE, rot=(90, 0, 0), segments=12, sides=5)
+    return p
+
+
+def build_old_tv(name):
+    """An old valve television in a wooden case, its plate rubbed blank, the screen under decades of dust."""
+    p = Part(name)
+    w, h, d = 0.52, 0.48, 0.42
+    p.box((0, h / 2, 0), (w, h, d), GRIMY_CASE, bevel=0.022)
+    fy, fz = h / 2 + 0.03, d / 2 + 0.002
+    sw, sh = w - 0.1, h - 0.17
+    for y, s in ((fy + sh / 2 + 0.008, (sw + 0.03, 0.02, 0.012)), (fy - sh / 2 - 0.008, (sw + 0.03, 0.02, 0.012))):
+        p.box((0, y, fz), s, TARNISH, bevel=0.004)
+    for x in (-1, 1):
+        p.box((x * (sw / 2 + 0.008), fy, fz), (0.02, sh + 0.03, 0.012), TARNISH, bevel=0.004)
+    def bulge(u, v):
+        return 0.014 * (1 - (2 * u) ** 2) * (1 - (2 * v) ** 2)
+    p.sheet((0, fy, fz + 0.001), (sw, sh), SCREEN, bulge, rot=(90, 0, 0), segments=(10, 8), thickness=0.004)
+    py = 0.055
+    p.box((0, py, fz + 0.001), (w - 0.1, 0.075, 0.01), TARNISH, bevel=0.003)
+    for x in (-0.17, 0.17):
+        p.cylinder((x, py, fz + 0.016), 0.024, 0.024, TARNISH, axis="z", segments=14)
+        p.cylinder((x, py, fz + 0.032), 0.017, 0.012, SHADOW, axis="z", segments=12)
+    p.box((0, py + 0.016, fz + 0.007), (0.1, 0.022, 0.003), SHADOW, bevel=0)  # the name wore off it years ago
+    for i in range(4):
+        p.box((-0.045 + i * 0.03, py - 0.018, fz + 0.009), (0.02, 0.012, 0.008), GRIMY_WOOD, bevel=0.002)
+    for i in range(8):
+        p.box((0, 0.16 + i * 0.03, -d / 2 - 0.002), (w * 0.6, 0.012, 0.006), SHADOW, bevel=0)
+    p.turned((0.12, h - 0.005, -0.1), (0.2, h + 0.48, -0.16), [(0, 0.008), (0.03, 0.008), (0.04, 0.0035), (1, 0.002)], DIRTY_METAL, segments=5)
+    return p
+
+
+def build_old_gramophone(name):
+    """A wind-up gramophone: a stepped dark case, a dusty record, a tarnished horn gone green at the seams."""
+    p = Part(name)
+    p.box((0, 0.02, 0), (0.42, 0.04, 0.42), GRIMY_WOOD, bevel=0.008)
+    p.box((0, 0.05, 0), (0.39, 0.024, 0.39), GRIMY_PALE, bevel=0.006)
+    p.box((0, 0.14, 0), (0.34, 0.16, 0.34), GRIMY_CASE, bevel=0.006)
+    p.box((0, 0.232, 0), (0.37, 0.026, 0.37), GRIMY_WOOD, bevel=0.008)
+    for s in (-1, 1):
+        p.box((0, 0.14, s * 0.173), (0.24, 0.1, 0.008), GRIMY_WOOD, bevel=0.002)
+        p.box((s * 0.173, 0.14, 0), (0.008, 0.1, 0.24), GRIMY_WOOD, bevel=0.002)
+        for t in (-1, 1):
+            p.turned((s * 0.168, 0.065, t * 0.168), (s * 0.168, 0.215, t * 0.168),
+                     [(0, 0.01), (0.2, 0.015), (0.5, 0.01), (0.8, 0.015), (1, 0.01)], GRIMY_WOOD, segments=7)
+    top = 0.245
+    p.cylinder((0, top + 0.008, 0), 0.15, 0.016, DIRTY_METAL, segments=28)
+    p.cylinder((0, top + 0.018, 0), 0.142, 0.004, OLD_RECORD, segments=28)
+    p.cylinder((0, top + 0.021, 0), 0.046, 0.002, OLD_PAPER, segments=14)
+    p.cylinder((0, top + 0.03, 0), 0.005, 0.02, TARNISH, segments=6)
+    # The crank on the side, and the arm: up from the back corner, over, and into the horn's throat.
+    p.cylinder((0.22, 0.16, 0), 0.008, 0.08, DIRTY_METAL, axis="x", segments=6)
+    p.cylinder((0.26, 0.2, 0), 0.007, 0.09, DIRTY_METAL, segments=6)
+    p.cylinder((0.26, 0.25, 0.02), 0.012, 0.05, GRIMY_WOOD, axis="z", segments=8)
+    arm = Vector((-0.14, top, -0.14))
+    elbow = arm + Vector((0, 0.13, 0))
+    p.cylinder(arm + Vector((0, 0.012, 0)), 0.03, 0.024, TARNISH, segments=12)
+    p.turned(arm, elbow, [(0, 0.016), (1, 0.016)], DIRTY_METAL, segments=8)
+    p.turned(elbow, (0.03, top + 0.075, 0.09), [(0, 0.015), (0.8, 0.011), (0.92, 0.02), (1, 0.016)], DIRTY_METAL, segments=8)
+    throat = elbow + Vector((0, 0.01, 0))
+    mouth = throat + Vector((-0.1, 0.33, 0.55))
+    ribs = [0.018, 0.024, 0.038, 0.062, 0.1, 0.16, 0.25, 0.3]
+    along = [0.0, 0.22, 0.42, 0.6, 0.74, 0.86, 0.96, 1.0]
+    outside = list(zip(along, ribs))
+    p.turned(throat, mouth, outside + [(k, max(r - 0.006, 0.004)) for k, r in reversed(outside)], TARNISH, segments=20)
+    axis = (mouth - throat).normalized()
+    x = axis.orthogonal().normalized()
+    y = axis.cross(x)
+    turn = axis.to_track_quat("Z", "Y").to_euler()
+    p.torus(mouth, 0.3, 0.012, TARNISH, rot=[math.degrees(c) for c in turn], segments=28, sides=6)
+    for i in range(8):  # the seams between the horn's petals
+        a = i * math.tau / 8
+        for k0, k1 in zip(range(3, 7), range(4, 8)):
+            d = x * math.cos(a) + y * math.sin(a)
+            p.stroke(throat + (mouth - throat) * along[k0] + d * ribs[k0], throat + (mouth - throat) * along[k1] + d * ribs[k1], d, SHADOW, width=0.005)
+    return p
+
+
+def build_old_webs(room):
+    """Old webs strung off the new arrivals, into the corners."""
+    webs = Part("Decor_OldWebs")
+    v = Vector
+    for a, b, c in (((1.0, 1.72, -1.78), (1.65, 1.72, -1.45), (1.66, 1.9, -1.78)),):
+        webs.triangle(v(a), v(b), v(c), COBWEB)
+    webs.build(room)
+
+
+def build_old_things(root):
+    set_down(build_old_bookcase("Prop_OldBookcase"), root, (1.32, 0, Z_FRONT + 0.17))
+    set_down(build_old_chair("Prop_OldChair", False), root, (-0.72, 0, 3.15), yaw=205)
+    set_down(build_old_chair("Prop_OldChairFallen", True), root, (1.12, 0, 2.5), yaw=100, tilt=90)
+    set_down(build_old_box("Prop_OldBox_Under", 0.6, 0.4, 0.44, False), root, (1.88, 0, -0.3), yaw=-82)
+    set_down(build_old_box("Prop_OldBox_Stack", 0.56, 0.36, 0.42, False), root, (0.66, 0, 3.15), yaw=14)
+    set_down(build_old_box("Prop_OldBox_Top", 0.42, 0.26, 0.32, True), root, (0.64, 0.37, 3.14), yaw=-16)
+    set_down(build_old_sack("Prop_OldSack_1", 0.8, 0.27, 0.15, 1.0), root, (-1.78, 0, 1.4), yaw=30)
+    set_down(build_old_sack("Prop_OldSack_2", 0.6, 0.27, 0.5, 3.7), root, (1.5, 0, 2.78), yaw=200)
+    set_down(build_old_tv("Prop_OldTelevision"), root, (HALF_W - 0.3, 0.35, 2.98), yaw=-96)
+    set_down(build_old_gramophone("Prop_OldGramophone"), root, (1.88, 0.415, -0.3), yaw=-62)
+    build_old_webs(root)
+
+
 # ---------------------------------------------------------------- run
 
 
@@ -1431,6 +1734,7 @@ def main():
     build_crate(root, "Crate_Right", (0.95, 0.2, 1.3), (0.5, 0.4, 0.5))
     for i, spot in enumerate(BOOK_SPOTS):
         build_book(root, i, spot)
+    build_old_things(root)
 
     os.makedirs(os.path.dirname(OUT_FBX), exist_ok=True)
     bpy.ops.export_scene.fbx(

@@ -1027,6 +1027,291 @@
    "emissive": false
   },
   {
+   "name": "M_Attic_GrimyWood",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.07999999999999996,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "WoodGrimy",
+   "tile": 0.7,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_GrimyPaleWood",
+   "color": [
+    1.45,
+    1.3,
+    1.1
+   ],
+   "smoothness": 0.050000000000000044,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "WoodGrimy",
+   "tile": 0.5,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_GrimyCase",
+   "color": [
+    0.72,
+    0.6,
+    0.52
+   ],
+   "smoothness": 0.30000000000000004,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "WoodGrimy",
+   "tile": 0.9,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_Cardboard",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.030000000000000027,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "CardboardOld",
+   "tile": 0.8,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_Burlap",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.0,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "BurlapOld",
+   "tile": 0.45,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_TarnishedBrass",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.38,
+   "metallic": 0.55,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "BrassTarnished",
+   "tile": 0.45,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_DustyScreen",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.44999999999999996,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "ScreenDusty",
+   "tile": 0.5,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_OldRecord",
+   "color": [
+    0.05,
+    0.05,
+    0.055
+   ],
+   "smoothness": 0.4,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_OldPaper",
+   "color": [
+    0.62,
+    0.54,
+    0.4
+   ],
+   "smoothness": 0.050000000000000044,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Paper006",
+   "tile": 0.3,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_Twine",
+   "color": [
+    0.26,
+    0.2,
+    0.12
+   ],
+   "smoothness": 0.0,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_OldBookOxblood",
+   "color": [
+    0.24,
+    0.08,
+    0.06
+   ],
+   "smoothness": 0.15000000000000002,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Paper006",
+   "tile": 0.3,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_OldBookMoss",
+   "color": [
+    0.12,
+    0.16,
+    0.1
+   ],
+   "smoothness": 0.15000000000000002,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Paper006",
+   "tile": 0.3,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_OldBookInk",
+   "color": [
+    0.08,
+    0.1,
+    0.15
+   ],
+   "smoothness": 0.15000000000000002,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Paper006",
+   "tile": 0.3,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_OldBookUmber",
+   "color": [
+    0.22,
+    0.14,
+    0.08
+   ],
+   "smoothness": 0.15000000000000002,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Paper006",
+   "tile": 0.3,
+   "emissive": false
+  },
+  {
+   "name": "M_Attic_OldBookFaded",
+   "color": [
+    0.4,
+    0.33,
+    0.24
+   ],
+   "smoothness": 0.15000000000000002,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Paper006",
+   "tile": 0.3,
+   "emissive": false
+  },
+  {
    "name": "M_Attic_PortalRune",
    "color": [
     0.3,

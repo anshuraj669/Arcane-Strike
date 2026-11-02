@@ -147,6 +147,29 @@ namespace ArcaneStrike.Story
             IsSpeaking = false;
         }
 
+        /// <summary>Says a line in a recorded voice, with no subtitle, then waits `hold` seconds. `line` is only logged.</summary>
+        public IEnumerator Speak(AudioClip clip, string line, float hold)
+        {
+            int id = ++lineId;
+            IsSpeaking = true;
+            skipLine = false;
+            Debug.Log($"[{speakerName}] {line}");
+            text.text = "";
+            voice.pitch = 1f;
+            voice.PlayOneShot(clip);
+            if (ember != null) ember.Speaking = 1f;
+            for (float t = 0f; t < clip.length + hold && !skipLine; t += Time.deltaTime)
+            {
+                if (t >= clip.length && ember != null) ember.Speaking = 0f;
+                yield return null;
+                if (id != lineId) yield break;
+            }
+            voice.Stop();
+            if (ember != null) ember.Speaking = 0f;
+            skipLine = false;
+            IsSpeaking = false;
+        }
+
         static string Wrap(string s, int width)
         {
             var sb = new System.Text.StringBuilder();
