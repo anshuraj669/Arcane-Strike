@@ -74,8 +74,8 @@ namespace ArcaneStrike.Story
     }
 
     /// <summary>
-    /// The blue fire the Ascension happens in: a crown of living flames on the floor round the body and the soul (a
-    /// cylinder wearing the fire shader, wide enough to hold them both), fire climbing the body itself, and sparks leaping off it. It comes
+    /// The blue fire the Ascension happens in: two crowns of thin curling flames on the floor round the body and the soul
+    /// (cylinders wearing the fire shader, the inner one leaning in, so the fire has depth and fills the view seen from above), fire climbing the body itself, and sparks leaping off it. It comes
     /// up as the player is lifted and burns on through Ember's words and the suit-up. With <see cref="ClearView"/> the
     /// wall opens a window to the soul, and the fire leaves the body, so the suit can be seen going on.
     /// </summary>
@@ -92,8 +92,8 @@ namespace ArcaneStrike.Story
         /// <summary>What it burns round (the body).</summary>
         public Transform Centre { get; set; }
 
-        MeshRenderer wall, onBody;
-        Material wallMaterial, bodyMaterial;
+        MeshRenderer wall, inner, onBody;
+        Material wallMaterial, innerMaterial, bodyMaterial;
         ParticleSystem embers;
         Light glow;
         float emberDue, window, floor;
@@ -101,11 +101,13 @@ namespace ArcaneStrike.Story
 
         void Start()
         {
-            wall = FireFx.Wall(transform, "AscensionWall", radius, 0f, wallHeight, 10f, 0.31f);
+            wall = FireFx.Wall(transform, "AscensionWall", radius, 0f, wallHeight, 16f, 0.31f);
+            inner = FireFx.Wall(transform, "AscensionWallInner", radius * 0.9f, 0f, wallHeight * 0.7f, 12f, 0.53f, radius * 0.72f);
             onBody = FireFx.Wall(transform, "AscensionOnBody", 0.55f, -1.6f, 2.4f, 3f, 0.71f);
             wallMaterial = wall.sharedMaterial;
+            innerMaterial = inner.sharedMaterial;
             bodyMaterial = onBody.sharedMaterial;
-            wall.enabled = onBody.enabled = false;
+            wall.enabled = inner.enabled = onBody.enabled = false;
             embers = StoryFx.CreateParticles(transform, "AscensionEmbers", true, 0.25f, 200);
             glow = new GameObject("AscensionFireLight").AddComponent<Light>();
             glow.transform.SetParent(transform, false);
@@ -123,7 +125,7 @@ namespace ArcaneStrike.Story
             if (wall == null) return;
             bool on = Centre != null && Intensity > 0.01f;
             glow.enabled = on;
-            wall.enabled = on;
+            wall.enabled = inner.enabled = on;
             window = Mathf.MoveTowards(window, ClearView ? 1f : 0f, dt * 0.8f);
             onBody.enabled = on && window < 0.99f;
             if (!on) { burning = false; return; }
@@ -132,16 +134,19 @@ namespace ArcaneStrike.Story
             if (!burning) floor = c.y - 1.6f; // (the fire stands on the floor; the body is lifted out of it)
             burning = true;
             float t = Time.time;
-            wall.transform.position = new Vector3(c.x, floor, c.z);
+            wall.transform.position = inner.transform.position = new Vector3(c.x, floor, c.z);
             onBody.transform.position = c;
             Camera eyes = Camera.main;
             Vector3 toEyes = eyes != null ? StoryFx.Flat(eyes.transform.position - c) : Vector3.forward;
             if (toEyes.sqrMagnitude < 1e-4f) toEyes = Vector3.forward;
             toEyes.Normalize();
-            wallMaterial.SetFloat("_Power", Intensity);
-            wallMaterial.SetVector("_Centre", c);
-            wallMaterial.SetVector("_WindowDir", new Vector4(toEyes.x, toEyes.z, 0f, 0f));
-            wallMaterial.SetFloat("_WindowOn", window);
+            foreach (Material m in new[] { wallMaterial, innerMaterial })
+            {
+                m.SetFloat("_Power", Intensity);
+                m.SetVector("_Centre", c);
+                m.SetVector("_WindowDir", new Vector4(toEyes.x, toEyes.z, 0f, 0f));
+                m.SetFloat("_WindowOn", window);
+            }
             bodyMaterial.SetFloat("_Power", Intensity * (1f - window));
             glow.transform.position = c + Vector3.up * 0.5f;
             glow.intensity = (3.5f + 1.5f * Mathf.PerlinNoise(t * 6f, 2f)) * Intensity;

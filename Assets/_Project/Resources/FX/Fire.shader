@@ -77,14 +77,14 @@ Shader "ArcaneStrike/Fire"
             float Across(float count) { return _Shape > 0.5 ? round(count) : count; }
 
             // A row of `count` tongues: a soft peak in each cell, as high as that cell's own noise says just now.
-            float Tongues(float across, float count, float seed, float rate, float t)
+            float Tongues(float across, float count, float seed, float rate, float t, float sharpness)
             {
                 float x = across * count;
                 float cell = floor(x);
                 float peak = 1.0 - abs(2.0 * (x - cell) - 1.0);
                 peak = peak * peak * (3.0 - 2.0 * peak);
                 float height = smoothstep(0.3, 0.72, Noise(float2(cell * 0.37 + seed, cell * 0.13 - t * rate)));
-                return peak * (0.35 + 0.65 * height);
+                return pow(peak, sharpness) * (0.35 + 0.65 * height); // (sharper: thin curling tongues, not triangles)
             }
 
             half4 frag(Varyings i) : SV_Target
@@ -92,16 +92,18 @@ Shader "ArcaneStrike/Fire"
                 UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(i);
                 float t = _Time.y * _Flow;
                 float u = i.uv.x, v = i.uv.y;
-                float w = Noise(float2(u * Across(_TileX * 0.35) + _Seed, v * 0.35 - t * 0.55)) - 0.5;
-                float w2 = Noise(float2(u * Across(_TileX * 0.9) + _Seed * 2.0, v * 0.8 - t * 1.05)) - 0.5;
-                float bend = (w * 1.6 + w2 * 0.9) * (0.06 + v * 1.1);
+                float wall = _Shape > 0.5 ? 1.0 : 0.0;
+                float w = Noise(float2(u * Across(_TileX * lerp(0.35, 0.2, wall)) + _Seed, v * 0.35 - t * 0.55)) - 0.5;
+                float w2 = Noise(float2(u * Across(_TileX * lerp(0.9, 0.5, wall)) + _Seed * 2.0, v * 0.8 - t * 1.05)) - 0.5;
+                float bend = (w * 1.6 + w2 * 0.9) * (0.06 + v * 1.1) * lerp(1.0, 2.2, wall);
+                float sharpness = lerp(1.0, 1.5, wall);
 
-                float a = Tongues(u + bend / Across(_TileX * 2.5), Across(_TileX * 2.5), _Seed, 0.55, t);
-                float b = Tongues(u + (bend * 1.5 + 0.3) / Across(_TileX * 4.0), Across(_TileX * 4.0), _Seed + 0.4, 0.8, t);
+                float a = Tongues(u + bend / Across(_TileX * 2.5), Across(_TileX * 2.5), _Seed, 0.55, t, sharpness);
+                float b = Tongues(u + (bend * 1.5 + 0.3) / Across(_TileX * 4.0), Across(_TileX * 4.0), _Seed + 0.4, 0.8, t, sharpness);
                 float peak = max(a, b * 0.72) + 0.3 * min(a, b);
 
                 float height;
-                if (_Shape > 0.5) height = 0.1 + 0.62 * peak;
+                if (_Shape > 0.5) height = 0.08 + 0.75 * peak;
                 else
                 {
                     float x = 2.0 * u - 1.0;

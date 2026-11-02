@@ -2,6 +2,8 @@ Attic textures: CC0 (public domain) PBR materials from ambientCG, https://ambien
 Wood049, Wood060, Plaster007, Metal041B, Metal063, Fabric085, Fabric061, Leather037, Paper006, Rock058,
 RoofingTiles013A, WoodSiding008, Bricks113A, Grass004, PavingStones138 (1K JPG).
 <Set>_MetalSmooth.png is made from each set's Metalness (R) and Roughness (A = 1 - roughness) for URP Lit.
+WoodGrimy, BurlapOld, BrassTarnished, CardboardOld, ScreenDusty: made by Tools/textures/build_attic_grime.py, from those
+CC0 scans and noise.
 
 Attic furniture and props: CC0 (public domain) models from Poly Haven, https://polyhaven.com/models
 chinese_armchair, large_castle_door, painted_wooden_stool, wooden_bookshelf_worn (supplied as 4K .blend),
