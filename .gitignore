@@ -125,3 +125,6 @@ InitTestScene*.unity*
 *.kra.meta
 *.psd
 *.psd.meta
+
+# Local-only docs (not shared on Git)
+/Docs/GAME_SCRIPT.*
