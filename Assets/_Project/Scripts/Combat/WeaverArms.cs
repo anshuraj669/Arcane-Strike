@@ -25,8 +25,8 @@ namespace ArcaneStrike.Combat
         [SerializeField] float gripToWrist = 0.085f;
         [Tooltip("How far the wrist sits above the grip, so the palm rests on it (m).")]
         [SerializeField] float palmOverGrip = 0.028f;
-        [SerializeField] Color leather = new Color(0.075f, 0.05f, 0.04f);
-        [SerializeField] Color plate = new Color(0.74f, 0.76f, 0.8f);
+        [SerializeField] Color leather = new Color(0.84f, 0.8f, 0.72f); // (the armour's pale leather and white enamel)
+        [SerializeField] Color plate = new Color(0.96f, 0.95f, 0.92f);
 
         // Finger bones: from joint, to joint, radius (HandJoint order).
         static readonly (int a, int b, float r)[] Fingers =
@@ -196,7 +196,7 @@ namespace ArcaneStrike.Combat
             built = true;
             Material cloth = outfit != null ? outfit.SleeveMaterial : null;
             leatherMaterial = Surface("WeaverGlove", leather, 0f, 0.35f);
-            plateMaterial = Surface("WeaverGlovePlate", plate, 0.9f, 0.55f);
+            plateMaterial = Surface("WeaverGlovePlate", plate, 0.1f, 0.7f); // (barely metal: steel shows black with little to reflect)
             if (cloth == null) cloth = leatherMaterial;
             Mesh mesh = ArmMesh();
             foreach (Arm arm in arms)

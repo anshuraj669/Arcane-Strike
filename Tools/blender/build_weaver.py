@@ -98,15 +98,19 @@ def material(name, color, roughness=0.8, metallic=0.0, emission=None, tex=None, 
 
 # The armour. WarriorOutfit tints the cloth and leather by name for each appearance (OutfitCoat, OutfitTrim,
 # OutfitBoots, OutfitCape, OutfitScarf); the plate, gilt and gem keep their own colours.
-COAT = material("OutfitCoat", (0.9, 0.89, 0.86), 0.85, tex="Fabric061", tile=0.25)     # the tabard
-TRIM = material("OutfitTrim", (0.12, 0.115, 0.135), 0.9, tex="Fabric061", tile=0.25)   # the padding under the plate
-BOOTS = material("OutfitBoots", (0.13, 0.095, 0.075), 0.6, tex="Leather037", tile=0.2)  # boots and gloves
-CAPE = material("OutfitCape", (0.88, 0.88, 0.9), 0.85, tex="Fabric061", tile=0.3)
-SCARF = material("OutfitScarf", (0.86, 0.86, 0.84), 0.85, tex="Fabric061", tile=0.2)   # the standing collar
-PLATE = material("OutfitSteel", (0.74, 0.76, 0.8), 0.3, 1.0, tex="Metal063", tile=0.25)
-GILT = material("OutfitGilt", (0.86, 0.66, 0.3), 0.3, 1.0, tex="Metal063", tile=0.1)
-BELT = material("OutfitBelt", (0.1, 0.07, 0.05), 0.55, tex="Leather037", tile=0.15)
+# White enamelled plate edged in gold over royal-blue cloth, with lines of the Jyoti's blue light set into it. Mostly
+# not metallic on purpose: a fully metal surface only shows what it reflects, and the temple and the monster world have
+# little to reflect, so polished steel came out nearly black there.
+COAT = material("OutfitCoat", (0.1, 0.2, 0.52), 0.8, tex="Fabric061", tile=0.25)        # the tabard
+TRIM = material("OutfitTrim", (0.07, 0.13, 0.34), 0.85, tex="Fabric061", tile=0.25)    # the padding under the plate
+BOOTS = material("OutfitBoots", (0.84, 0.8, 0.72), 0.5, tile=0.2)                     # boots and gloves: pale leather
+CAPE = material("OutfitCape", (0.08, 0.16, 0.44), 0.8, tex="Fabric061", tile=0.3)
+SCARF = material("OutfitScarf", (0.95, 0.94, 0.9), 0.8, tex="Fabric061", tile=0.2)     # the standing collar
+PLATE = material("OutfitSteel", (0.96, 0.95, 0.92), 0.3, 0.1, tile=0.25)                 # white enamel
+GILT = material("OutfitGilt", (1.0, 0.76, 0.32), 0.3, 0.55, tex="Metal063", tile=0.1)
+BELT = material("OutfitBelt", (0.1, 0.17, 0.42), 0.5, tile=0.15)
 GEM = material("OutfitGem", (0.2, 0.55, 1.0), 0.1, emission=(0.15, 0.5, 1.0))
+GLOW = material("OutfitGlow", (0.45, 0.8, 1.0), 0.2, emission=(0.35, 0.75, 1.0))     # the light set into the plate
 # The boy.
 SKIN = material("Skin", (0.72, 0.48, 0.36), 0.6)
 HAIR = material("Hair", (0.13, 0.08, 0.05), 0.5)
@@ -168,8 +172,10 @@ def to_unity(p):
 # ---------------------------------------------------------------- building meshes
 
 
-def make_part(name, items, positions, root, to_local, decimate=6000):
-    """One object from [(face, material)], vertices through to_local(Unity point) → local Unity point."""
+def make_part(name, items, positions, root, to_local, decimate=6000, keep_winding=False):
+    """One object from [(face, material)], vertices through to_local(Unity point) → local Unity point. The mirror into
+    Blender's axes turns faces inside out, so their corners are reversed, unless `keep_winding` (the boy's model is
+    wound the other way round already)."""
     bm = bmesh.new()
     uv = bm.loops.layers.uv.new("UVMap")
     used, mats = {}, []
@@ -182,7 +188,7 @@ def make_part(name, items, positions, root, to_local, decimate=6000):
                 used[i] = bm.verts.new(TO_BLENDER @ to_local(positions[i]))
             vs.append(used[i])
         try:
-            f = bm.faces.new(list(reversed(vs)))  # TO_BLENDER mirrors: reverse the winding to keep faces outward
+            f = bm.faces.new(vs if keep_winding else list(reversed(vs)))
         except ValueError:
             continue  # a duplicate face (or a corner used twice)
         if mat not in mats:
@@ -190,7 +196,7 @@ def make_part(name, items, positions, root, to_local, decimate=6000):
         f.material_index = mats.index(mat)
         f.smooth = True
         if face_uv is not None and None not in face_uv:
-            for loop, t in zip(f.loops, reversed(face_uv)):  # the model's own UVs (corners reversed with the face)
+            for loop, t in zip(f.loops, face_uv if keep_winding else reversed(face_uv)):  # the model's own UVs
                 loop[uv].uv = t
             continue
         n = f.normal
@@ -247,7 +253,7 @@ def build_body(root):
         parts.setdefault("Body_" + part, []).append((face, mat))
     unity = [to_unity(p) for p in positions]
     for name, items in parts.items():
-        make_part(name, items, unity, root, body_local)
+        make_part(name, items, unity, root, body_local, keep_winding=True)
 
 
 # ---------------------------------------------------------------- the armour, fitted to the boy
@@ -405,6 +411,13 @@ def coat(shape):
         shape.sphere(centre + Vector((math.cos(a), math.sin(a), 0.0)) * 0.047, 0.008 if k % 2 else 0.011, GILT,
                      squash=(1, 1, 0.5), segs=8)
     shape.sphere(centre + Vector((0.0, 0.0, 0.007)), 0.016, GEM, squash=(1, 1.25, 0.6), segs=12)
+    # The Jyoti's light set into the plate: a line down from the sun to the belt, and two climbing to the shoulders.
+    shape.rim(front_line(plate[1:9], 0.0), 0.0032, GLOW)
+    for side in (1, -1):
+        rows = plate[9:15]
+        shape.rim(front_line(rows, [side * (0.03 + 0.024 * i) for i in range(len(rows))], 0.003), 0.0028, GLOW)
+        rows = plate[2:9]
+        shape.rim(front_line(rows, [side * (0.05 + 0.012 * i) for i in range(len(rows))], 0.003), 0.0026, GILT)
     # The belt and its buckle.
     belt = torso(0.548, 0.588, 3, 0.03)
     shape.sheet(belt, BELT, closed=True, thickness=0.004)
@@ -438,12 +451,45 @@ def coat(shape):
             rows.append(row)
         shape.sheet(rows, COAT, thickness=0.004)
         out = Vector((0.0, 0.0, 0.004 if facing_front else -0.004))
-        shape.rim([r[0] + out for r in rows], 0.005, PLATE)
-        shape.rim([r[-1] + out for r in rows], 0.005, PLATE)
-        shape.rim([p + out for p in rows[-1]], 0.005, PLATE)
+        shape.rim([r[0] + out for r in rows], 0.005, GILT)
+        shape.rim([r[-1] + out for r in rows], 0.005, GILT)
+        shape.rim([p + out for p in rows[-1]], 0.005, GILT)
+        shape.rim([r[1] + out for r in rows], 0.0022, GILT)
+        shape.rim([r[-2] + out for r in rows], 0.0022, GILT)
         if facing_front:
-            for k in (2, 4, 6):
-                shape.sphere(rows[k][4] + out * 1.5, 0.007, GILT, squash=(1, 1, 0.6), segs=8)
+            sun(shape, rows[5][4] + out * 1.5, 0.017, GILT, GEM)
+            shape.rim([r[4] + out * 1.2 for r in rows[7:13]], 0.0025, GLOW)
+
+
+def front_point(ring, x):
+    """Where a ring crosses `x` on its front (between the two corners either side), so a line over rings runs smooth."""
+    best = None
+    for p, q in zip(ring, ring[1:] + ring[:1]):
+        if (p.x - x) * (q.x - x) > 0 or p.x == q.x:
+            continue
+        r = p.lerp(q, (x - p.x) / (q.x - p.x))
+        if best is None or r.z > best.z:
+            best = r
+    return best if best is not None else max(ring, key=lambda q: q.z)
+
+
+def front_line(rings, x, lift=0.004):
+    """A smooth path over the front of a set of rings at `x` (a number, or one per ring), pushed out a little."""
+    xs = x if isinstance(x, (list, tuple)) else [x] * len(rings)
+    pts = [front_point(r, xi) + Vector((0.0, 0.0, lift)) for r, xi in zip(rings, xs)]
+    return [pts[0]] + [(pts[i - 1] + pts[i] * 2 + pts[i + 1]) / 4 for i in range(1, len(pts) - 1)] + [pts[-1]]
+
+
+def sun(shape, centre, radius, mat, gem=None, normal=Vector((0.0, 0.0, 1.0))):
+    """A gilt sun: a boss with twelve rays round it, facing `normal` (+Z or -Z), and maybe a gem at its heart."""
+    s = 1.0 if normal.z >= 0 else -1.0
+    shape.sphere(centre, radius, mat, squash=(1, 1, 0.22), segs=16)
+    for k in range(12):
+        a = k / 12 * math.tau
+        shape.sphere(centre + Vector((math.cos(a), math.sin(a), 0.0)) * radius * 1.45, radius * (0.24 if k % 2 else 0.34), mat,
+                     squash=(1, 1, 0.5), segs=8)
+    if gem is not None:
+        shape.sphere(centre + Vector((0.0, 0.0, 0.007 * s)), radius * 0.48, gem, squash=(1, 1.25, 0.6), segs=12)
 
 
 def boots(shape):
@@ -460,6 +506,7 @@ def boots(shape):
         greave = facing(rings_round([middle(y, x0, 0.06) for y in ys], [UP] * len(ys), (1, 0, 0), 24, 0.09, 0.02), FRONT, 95)
         shape.sheet(greave, PLATE, thickness=0.005)
         shape.rim(greave[-1], 0.004, GILT)
+        shape.rim([row[len(row) // 2] + Vector((0.0, 0.0, 0.005)) for row in greave[1:-1]], 0.003, GLOW)
         ys = steps(0.255, 0.335, 8)
         knee = facing(rings_round([middle(y, x0, 0.06) for y in ys], [UP] * len(ys), (1, 0, 0), 24, 0.08, 0.022,
                                   lambda v, t: 0.014 * math.sin(math.pi * t) * max(0.0, v[2])), FRONT, 85)
@@ -480,6 +527,7 @@ def forearm(shape, side):
     shape.sheet(vambrace, PLATE, closed=True, thickness=0.004)
     shape.rim(vambrace[0], 0.004, GILT, closed=True)
     shape.rim(vambrace[-1], 0.004, GILT, closed=True)
+    shape.rim([p + (p - sum(vambrace[5], Vector()) / len(vambrace[5])).normalized() * 0.004 for p in vambrace[5]], 0.0028, GLOW, closed=True)
 
 
 def sleeves(shape):
@@ -531,7 +579,7 @@ def pauldron(shape, side):
     across /= np.linalg.norm(across)
     fwd = np.cross(axis, across)
     top = np.array((0.158 * side, 0.742, -0.012))
-    for k, (r, a0, a1) in enumerate(((0.078, 3, 52), (0.083, 38, 76), (0.088, 62, 98))):
+    for k, (r, a0, a1) in enumerate(((0.074, 3, 50), (0.079, 40, 74), (0.084, 64, 94))):
         centre = top + arm * 0.022 * k
         rows = []
         for phi in steps(math.radians(a0), math.radians(a1), 7):
@@ -543,6 +591,8 @@ def pauldron(shape, side):
             rows.append(row)
         shape.sheet(rows, PLATE, thickness=0.006)
         shape.rim(rows[-1], 0.005, GILT)
+        if k == 0:
+            shape.rim(rows[len(rows) // 2], 0.0026, GLOW)
 
 
 def scarf(shape):
@@ -571,6 +621,12 @@ def cape(shape):
     shape.sheet(rows, CAPE, thickness=0.005)
     shape.rim(rows[0], 0.006, GILT)
     shape.rim(rows[-1], 0.005, GILT)
+    shape.rim([p + Vector((0.0, 0.03, -0.004)) for p in rows[-1]], 0.003, GILT)
+    for row in (rows[:-1],):
+        shape.rim([r[0] for r in row], 0.004, GILT)
+        shape.rim([r[-1] for r in row], 0.004, GILT)
+    back = rows[4][7] + Vector((0.0, 0.0, -0.008))
+    sun(shape, back, 0.03, GILT, GLOW, normal=Vector((0.0, 0.0, -1.0)))
 
 
 def build_outfit(root):
