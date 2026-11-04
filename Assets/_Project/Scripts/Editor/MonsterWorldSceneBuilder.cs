@@ -133,8 +133,8 @@ namespace ArcaneStrike.EditorTools
             Vector3[] crater = Triplets(points, "crater"); // the peak's top
 
             // The world's extras (Tools/blender/build_world_extras.py): the remains of warriors who fought here before,
-            // the boulders the Kalakh burst out of (and the rubble they leave), and the birds and beasts in the sky.
-            var spawnRocks = new List<SpawnRock>();
+            // and the birds and beasts in the sky. (The model's spawn boulders, their glowing cracks and rubble are left
+            // out: the Kalakh leap in over the edge.)
             Flyers flyers = null;
             var extrasModel = AssetDatabase.LoadAssetAtPath<GameObject>(ExtrasPath);
             if (extrasModel != null)
@@ -153,27 +153,9 @@ namespace ArcaneStrike.EditorTools
                     r.sharedMaterials = shared;
                 }
                 Transform Part(string name) => extras.GetComponentsInChildren<Transform>(true).FirstOrDefault(t => t.name == name);
-                var chunks = new List<GameObject>();
-                for (int i = 0; Part($"RockChunk_{i}") != null; i++)
-                {
-                    GameObject chunk = Part($"RockChunk_{i}").gameObject;
-                    chunk.SetActive(false); // (copied when a boulder bursts)
-                    chunks.Add(chunk);
-                }
-                for (int i = 0; Part($"SpawnRock_{i}") != null; i++)
-                {
-                    Transform rock = Part($"SpawnRock_{i}");
-                    rock.gameObject.AddComponent<MeshCollider>();
-                    var spawn = rock.gameObject.AddComponent<SpawnRock>();
-                    Transform cracks = Part($"SpawnRockCracks_{i}");
-                    if (cracks != null)
-                    {
-                        cracks.SetParent(rock, true); // (shakes with it)
-                        spawn.cracks = cracks.GetComponent<Renderer>();
-                    }
-                    spawn.chunkTemplates = chunks.ToArray();
-                    spawnRocks.Add(spawn);
-                }
+                foreach (Transform t in extras.GetComponentsInChildren<Transform>(true).ToArray())
+                    if (t != null && (t.name.StartsWith("SpawnRock") || t.name.StartsWith("RockChunk_")))
+                        Object.DestroyImmediate(t.gameObject);
                 flyers = root.AddComponent<Flyers>();
                 flyers.birdBody = Part("Bird_Body");
                 flyers.birdWingL = Part("Bird_WingL");
@@ -184,7 +166,7 @@ namespace ArcaneStrike.EditorTools
                 if (crater.Length > 0) flyers.volcano = crater[0];
                 int remains = extras.GetComponentsInChildren<Transform>(true).Count(t => t.name.StartsWith("Remains_"));
                 int debris = extras.GetComponentsInChildren<Transform>(true).Count(t => t.name.StartsWith("Debris_"));
-                Debug.Log($"[WorldBuilder] Extras: {remains} remains of fallen warriors, {debris} pieces of their gear (skulls, armour, shields, blades), {spawnRocks.Count} spawn boulders, {chunks.Count} rubble pieces, flyers {(flyers.birdBody != null ? "birds" : "no birds")} / {(flyers.wyvernBody != null ? "beasts" : "no beasts")}.");
+                Debug.Log($"[WorldBuilder] Extras: {remains} remains of fallen warriors, {debris} pieces of their gear (skulls, armour, shields, blades), flyers {(flyers.birdBody != null ? "birds" : "no birds")} / {(flyers.wyvernBody != null ? "beasts" : "no beasts")}.");
             }
             else Debug.LogWarning($"[WorldBuilder] {ExtrasPath} not found: run Tools/blender/build_world_extras.py in Blender (no remains, flyers or boulders; the Kalakh break out of rough rocks).");
 
@@ -206,7 +188,6 @@ namespace ArcaneStrike.EditorTools
             var hunt = root.AddComponent<KalakhHunt>();
             hunt.model = kalakh;
             hunt.bossModel = arena.bossModel;
-            hunt.rocks = spawnRocks.ToArray();
             hunt.soldier.model = AssetDatabase.LoadAssetAtPath<GameObject>(KalakhPrefabBuilder.BreedPrefabPath(hunt.soldier.breed));
             hunt.boss.model = AssetDatabase.LoadAssetAtPath<GameObject>(KalakhPrefabBuilder.BreedPrefabPath(hunt.boss.breed));
             Debug.Log($"[WorldBuilder] Soldier: {(hunt.soldier.model != null ? hunt.soldier.model.name : "the Kalakh")}. Boss: {(hunt.boss.model != null ? hunt.boss.model.name : "the boss Kalakh")}.");

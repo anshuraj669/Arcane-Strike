@@ -18,8 +18,8 @@ namespace ArcaneStrike.Story
     /// the soul slips out of the body: the view drifts out and looks back at the boy hanging in the light. Ember
     /// rises from the lantern, introduces itself to the soul, has the player raise their palms (the Jyoti Seal
     /// wakes with a heartbeat), and then the soul watches the suit-up: the suit wraps onto the body in one wave from
-    /// the chest out, ribbons of light winding down the limbs, the body arched back in the light, the hood last and
-    /// the mask's eyes lighting (<see cref="WarriorOutfit.SuitUp"/>). Ember explains the lantern, the runes, the
+    /// the chest out, ribbons of light winding down the limbs, the body arched back in the light, the gorget and
+    /// pauldrons last (<see cref="WarriorOutfit.SuitUp"/>). Ember explains the lantern, the runes, the
     /// Weaver's task and the powers, and the katana forms and slides into its sheath on the back. Then the soul is
     /// drawn back in, the white fades, and the player floats down to the Rift's floor wearing it. Ember stays
     /// (<see cref="Ember"/>) for the fight.
@@ -27,8 +27,8 @@ namespace ArcaneStrike.Story
     /// edge of the view while it moves (<see cref="ComfortVignette"/>); the soul's view stays steady while the body
     /// bobs; flashes rise and fall softly; every jump of the view happens behind solid white.
     /// </summary>
-    /// In the temple (AscensionCave scene, <see cref="relic"/> set): the player arrives, walks into the shaft of
-    /// light and touches the bronze cauldron; a shockwave rings out of it, and then the Ascension
+    /// In the temple (AscensionCave scene, <see cref="relic"/> set): the player arrives, the cauldron swallows the
+    /// lantern, the player walks into the shaft of light and touches the bronze cauldron; a shockwave rings out of it, and then the Ascension
     /// happens. The sword forms out of the light with the suit-up and goes to its sheath on the back.
     /// Afterwards a Kalakh rift opens in the cave wall (<see cref="exitScene"/>), and walking into it starts the fight.
     public class Ascension : MonoBehaviour
@@ -308,8 +308,8 @@ namespace ArcaneStrike.Story
 
         // ---------------------------------------------------------------- the cave: the sword in the stone
 
-        // The lantern drifts over to hang beside the cauldron; it glows and hums louder as the player walks up to it; a
-        // touch anywhere on its rim (or E close by) sets off the shockwave.
+        // The lantern is drawn to the cauldron and swallowed by it; the cauldron glows and hums louder as the player
+        // walks up to it; a touch anywhere on its rim (or E close by) sets off the shockwave.
         IEnumerator TouchTheSword(HandInputService input, Transform head, PlayerLocomotion locomotion)
         {
             Bounds b = relic.bounds;
@@ -317,8 +317,7 @@ namespace ArcaneStrike.Story
             Vector3 guard = new Vector3(b.center.x, b.min.y + b.size.y * 0.45f, b.center.z);
             float rim = Mathf.Min(b.extents.x, b.extents.z) * 0.8f; // (a hand on its side counts, not only over its middle)
             Vector3 toPlayer = StoryFx.Flat(head.position - guard);
-            Vector3 side = Vector3.Cross(Vector3.up, toPlayer);
-            StartCoroutine(MoveLantern(pommel + side.normalized * 1.0f + toPlayer.normalized * 0.2f - Vector3.up * 0.1f, 3f));
+            StartCoroutine(SwallowLantern(pommel));
 
             var glow = new GameObject("SwordGlow").AddComponent<Light>();
             glow.transform.position = (guard + pommel) * 0.5f + toPlayer * 0.15f;
@@ -416,7 +415,7 @@ namespace ArcaneStrike.Story
             if (shaft != null) shaft.Flare(2.5f, 2f);
             StartCoroutine(ScreenFade.Pulse(StoryFx.WithAlpha(Color.Lerp(blueFire, blueBlaze, 0.6f), 0.35f), 0.12f, 1f));
             float floor = Headset(head, head.root) ? head.root.position.y : head.position.y - 1.6f;
-            GroundLightning.Strike(this, new Vector3(at.x, floor + 0.05f, at.z), 9f, 2.2f); // gold lightning cracks out across the floor
+            FlameRing.Strike(this, new Vector3(at.x, floor + 0.02f, at.z), 9f, 2.2f, 1.1f); // light blue flame races out across the floor
             StartCoroutine(Ring(at, 14f, 1.2f, 0.3f));
             StartCoroutine(Ring(new Vector3(at.x, floor + 0.05f, at.z), 12f, 1.5f, 0.45f));
             for (int i = 0; i < 160; i++)
@@ -491,19 +490,52 @@ namespace ArcaneStrike.Story
             if (l != null) Destroy(l.gameObject);
         }
 
-        // The lantern glides (eased) to a new spot and bobs there.
-        IEnumerator MoveLantern(Vector3 to, float seconds)
+        // The cauldron takes the lantern: it glides (eased) over the mouth, then is pulled down into it, spinning and
+        // shrinking, faster as it goes, and the fire swallows it with a flare. Its glow stays in the mouth, which is
+        // where Ember will rise from (LanternCenter: the hidden lantern is left there).
+        IEnumerator SwallowLantern(Vector3 mouth)
         {
             if (lantern == null) yield break;
-            bobber++; // stop the old bob
-            Vector3 from = lantern.position;
-            for (float t = 0f; t < seconds && lantern != null; t += Time.deltaTime)
+            bobber++; // stop its bob
+            Vector3 from = lantern.position, above = mouth + Vector3.up * 0.55f;
+            for (float t = 0f, d = 2.5f; t < d && lantern != null; t += Time.deltaTime)
             {
-                float k = Mathf.SmoothStep(0f, 1f, t / seconds);
-                lantern.position = Vector3.Lerp(from, to, k) + Vector3.up * Mathf.Sin(k * Mathf.PI) * 0.25f;
+                float k = Mathf.SmoothStep(0f, 1f, t / d);
+                lantern.position = Vector3.Lerp(from, above, k) + Vector3.up * Mathf.Sin(k * Mathf.PI) * 0.3f;
                 yield return null;
             }
-            if (lantern != null) StartCoroutine(Bob(lantern, to));
+            if (lantern == null) yield break;
+            Vector3 size = lantern.localScale;
+            Quaternion turn = lantern.rotation;
+            CombatAudio.Play(CombatAudio.Swoosh, mouth, 0.5f, 0.05f);
+            for (float t = 0f, d = 1.2f; t < d && lantern != null; t += Time.deltaTime)
+            {
+                float k = t / d;
+                lantern.position = Vector3.Lerp(above, mouth - Vector3.up * 0.1f, k * k);
+                lantern.rotation = turn * Quaternion.Euler(0f, 540f * k * k, 0f);
+                lantern.localScale = size * Mathf.Lerp(1f, 0.15f, k * k);
+                if (Random.value < 0.6f) StoryFx.Emit(burst, LanternCenter, Random.insideUnitSphere * 0.3f, 0.025f, 0.6f, blueFire);
+                yield return null;
+            }
+            if (lantern == null) yield break;
+            var flames = FindAnyObjectByType<CauldronFlames>();
+            if (flames != null) flames.Flare(1f);
+            StoryFx.Burst(burst, mouth + Vector3.up * 0.1f, 60, 1.6f, 0.04f, 1f, blueFire);
+            var ears = new GameObject("LanternGulp");
+            ears.transform.position = mouth;
+            AudioSource gulp = StoryFx.CreateSource(ears, Boom(), false, 1f);
+            gulp.volume = 0.35f;
+            gulp.pitch = 1.6f; // a deep gulp, not the shockwave's boom
+            gulp.Play();
+            Destroy(ears, 3f);
+            if (lanternLight != null)
+            {
+                lanternLight.transform.SetParent(null, true);
+                lanternLight.transform.position = mouth + Vector3.up * 0.1f;
+            }
+            lantern.position = mouth - Vector3.up * 0.12f;
+            lantern.localScale = size;
+            lantern.gameObject.SetActive(false);
         }
 
         // ---------------------------------------------------------------- after: the way out of the cave
@@ -827,6 +859,7 @@ namespace ArcaneStrike.Story
             Destroy(skyLight.gameObject);
             lanternBobs = false;
             if (lantern != null) Destroy(lantern.gameObject); // its flame is Ember now
+            if (lanternLight != null) Destroy(lanternLight.gameObject); // (left in the cauldron's mouth when it was swallowed)
             yield return Wait(Dur(1f));
             float lifted = lift;
             fire.Target = 0f; // the flames sink as the player comes down
@@ -1058,7 +1091,7 @@ namespace ArcaneStrike.Story
         StorySpeech emberSpeech;
         SwordPractice practice;
 
-        // Ember rises out of the lantern's wick, drifts over to the soul and (after introducing itself) explains it
+        // Ember rises out of the lantern's wick (in the temple, out of the cauldron that swallowed it), drifts over to the soul and (after introducing itself) explains it
         // all: the lantern, the runes, what the Weaver must do and the powers. Each part of the outfit forms on the
         // body as Ember gets to it; the Jyoti Seal wakes when the player holds up their hands.
         IEnumerator EmberSpeaks(HandInputService input, Transform head)
@@ -1142,7 +1175,7 @@ namespace ArcaneStrike.Story
             glow.range = 3f;
             glow.shadows = LightShadows.None;
             if (fire != null) fire.Target = 1f;
-            GroundLightning.Strike(this, outfit.BodyChest + Vector3.down * 0.3f, 2.6f, 1.6f); // the fire answers the suit
+            FlameRing.Strike(this, outfit.BodyChest + Vector3.down * 1.1f, 1.6f, 1.6f, 1.4f); // the fire answers the suit (inside the soul's distance)
             Coroutine suit = StartCoroutine(outfit.SuitUp(suitUpTime));
             for (float t = 0f; t < suitUpTime; t += Time.deltaTime)
             {

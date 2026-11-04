@@ -48,8 +48,8 @@ namespace ArcaneStrike.Combat
         [SerializeField] HandSide hand = HandSide.Right;
 
         [Header("Blade (the sword model: grip at the pivot, blade along +Y)")]
-        [SerializeField] float bladeStart = 0.17f; // the katana: guard 0.155 m above the grip's middle
-        [SerializeField] float bladeEnd = 0.84f;
+        [SerializeField] float bladeStart = 0.17f; // the sword: guard 0.155 m above the grip's middle
+        [SerializeField] float bladeEnd = 1.01f;   // (the point: build_weaver.py's SWORD_TIP - SWORD_GRIP)
         [Tooltip("Seconds the draw takes: out of the sheath on the back and over the shoulder into the hand.")]
         [SerializeField] float drawTime = 0.6f;
         [SerializeField] float bladeRadius = 0.06f;
