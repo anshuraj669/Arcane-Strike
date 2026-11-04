@@ -83,17 +83,15 @@ Tools/
   textures/     scripts that generate the procedural textures
   sky/          the night sky panorama
   hand_bridge/  webcam hand and body tracking for testing in the editor
-Docs/           design document and setup guides for both laptops
+Docs/           setup guides for both laptops
 ```
 
 Most environments and characters are made by scripts. To change one, edit its script in `Tools/`, run it again, then run the matching **Arcane Strike** menu item in Unity (for example **Apply Attic Model**, **Create Ascension Temple Scene** or **Create Monster World Scene**).
 
-## Docs
+## Team setup guides
 
-- [Game design document](Docs/ARCANE_STRIKE_GDD.md)
 - [Ubuntu (tech laptop) setup](Docs/UBUNTU_TECH_SETUP.md) · [Windows (art laptop) setup](Docs/WINDOWS_ART_SETUP.pdf)
 - [Two-laptop setup](Docs/SETUP_GUIDE_TWO_LAPTOPS.md) · [Keeping both laptops in sync](Docs/SYNC_GUIDE.md)
-- [Multiplayer plan (Rift Link)](Docs/RIFT_LINK_GUIDE.md)
 
 ## Credits
 
