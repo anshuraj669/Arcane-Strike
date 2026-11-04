@@ -67,6 +67,10 @@ namespace ArcaneStrike.Core
 
         void Awake()
         {
+            // World lock moves the rig's tracking space to keep the real room in place, but the story moves the rig
+            // itself (the intro walk, walking, the Ascension lift and landing): the two fight and the view drifts.
+            var mruk = GetComponent<MRUK>();
+            if (mruk != null) mruk.EnableWorldLock = false;
             showMesh = Application.isEditor ? showRoomMeshInEditor : showRoomMeshOnDevice;
             foreach (EffectMesh effectMesh in FindObjectsByType<EffectMesh>(FindObjectsSortMode.None))
             {

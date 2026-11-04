@@ -25,14 +25,6 @@ namespace ArcaneStrike.Core
             "OVRPassthroughLayer",
         };
 
-        // Switched off with their whole object. The comfort vignette draws a full-screen quad 0.3 m in front of the
-        // camera and opens a see-through window in it with a headset-only shader; without a headset the window
-        // never opens and the Game view is just grey.
-        static readonly HashSet<string> Hidden = new HashSet<string>
-        {
-            "Oculus.Interaction.TunnelingEffect",
-        };
-
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         static void Init()
         {
@@ -66,12 +58,6 @@ namespace ArcaneStrike.Core
             {
                 if (b == null) continue;
                 string type = b.GetType().FullName;
-                if (Hidden.Contains(type) && b.gameObject.activeSelf)
-                {
-                    b.gameObject.SetActive(false);
-                    names.Add($"{b.GetType().Name} on '{b.gameObject.name}'");
-                    continue;
-                }
                 if (!b.enabled || !Blocked.Contains(type)) continue;
                 b.enabled = false;
                 names.Add($"{b.GetType().Name} on '{b.gameObject.name}'");
