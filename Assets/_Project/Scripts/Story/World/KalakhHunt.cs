@@ -11,8 +11,8 @@ namespace ArcaneStrike.Story
     /// wave only comes when everyone in the last one is down to a fifth of their health (or dead). Soldiers leap in from
     /// random directions all round the player, over the ledge's edge, and no two of them share an attack
     /// (<see cref="KalakhMoves.DealDecks"/>, dealt afresh every fight). Which attack comes next, and who comes in to
-    /// make it, is random too (<see cref="KalakhWarrior"/>). When all fifteen are dead the Warlord bursts out of a
-    /// boulder (<see cref="SpawnRock"/>). Ember calls out each wave. Done when the Warlord falls.
+    /// make it, is random too (<see cref="KalakhWarrior"/>). When all fifteen are dead the Warlord leaps in over the
+    /// edge in front of the player. Ember calls out each wave. Done when the Warlord falls.
     /// </summary>
     public class KalakhHunt : MonoBehaviour
     {
@@ -58,8 +58,6 @@ namespace ArcaneStrike.Story
 
         public GameObject model;
         public GameObject bossModel;
-        [Tooltip("The boulders they break out of, in order (empty or broken: a rough boulder is made in front of the player).")]
-        public SpawnRock[] rocks = new SpawnRock[0];
         [Tooltip("The next one breaks out when the one fighting is down to this share of its health.")]
         [Range(0f, 1f)] public float nextAt = 0.2f;
         [Tooltip("Each Kalakh the Weaver kills gives back this share of the health they have at that moment.")]
@@ -80,7 +78,6 @@ namespace ArcaneStrike.Story
             total = soldiers + 1;
             Remaining = total;
             finished = false;
-            Scatter(head);
             List<KalakhMove>[] decks = KalakhMoves.DealDecks(soldiers);
             int dealt = 0;
 
@@ -186,7 +183,7 @@ namespace ArcaneStrike.Story
                 land = centre + dir * UnityEngine.Random.Range(4.5f, 8f);
                 if (!KalakhFx.Footing(land, floor, out float ground) || Mathf.Abs(ground - floor) > 1.5f) continue;
                 land.y = ground;
-                found = !Blocked(land, null);
+                found = !Blocked(land);
             }
             if (!found)
             {
@@ -230,24 +227,36 @@ namespace ArcaneStrike.Story
             done(warrior);
         }
 
-        // The Warlord: out of a boulder, a leap towards the player, landing in a crouch, and a roar in their face.
+        // The Warlord: the ground rumbles and it roars from beyond the edge, then a huge leap in over it in front of the
+        // player (straight ahead if there's room, else to one side), landing in a crouch, and a roar in their face.
         IEnumerator Summon(Foe foe, Transform head, Func<string, float, IEnumerator> line, RiftPlayer player, Action<KalakhWarrior> done)
         {
-            SpawnRock rock = PickRock(head);
             if (foe.emberLines != null && foe.emberLines.Length > 0) StartCoroutine(Lines(line, foe.emberLines));
-            Debug.Log($"[Hunt] {foe.title} (tier {foe.tier}, {foe.health} health) breaks out of {rock.name}");
-            yield return rock.Burst(2.6f);
-
-            Vector3 toPlayer = StoryFx.Flat(new Vector3(head.position.x, 0f, head.position.z) - new Vector3(rock.Base.x, 0f, rock.Base.z));
-            var warrior = Make(foe, foe.title, foe.tier, foe.health, foe.height, null, rock.Base, Quaternion.LookRotation(toPlayer), player);
-            Vector3 start = rock.Base, land = rock.Base + toPlayer * (1.6f + foe.height * 0.4f);
-            for (int i = 0; i < 4 && !KalakhFx.Footing(land, start.y, out _); i++) land = Vector3.Lerp(land, start, 0.4f);
-            land.y = KalakhFx.Ground(land, start.y);
-            warrior.Body.Act(KalakhMoves.Air(), 0.1f, true);
-            for (float t = 0f; t < 0.6f; t += Time.deltaTime)
+            Vector3 centre = head.position, fwd = StoryFx.Flat(head.forward);
+            float floor = KalakhFx.Ground(centre, centre.y - 1.6f);
+            Vector3 dir = fwd, land = centre + fwd * 5f;
+            bool found = false;
+            for (int tries = 0; tries < 12 && !found; tries++)
             {
-                float k = t / 0.6f;
-                warrior.transform.position = Vector3.Lerp(start, land, k) + Vector3.up * Mathf.Sin(k * Mathf.PI) * (0.8f + foe.height * 0.2f);
+                dir = Quaternion.Euler(0f, (tries % 2 == 0 ? 1f : -1f) * ((tries + 1) / 2) * 20f, 0f) * fwd;
+                land = centre + dir * (4f + foe.height * 0.4f);
+                if (!KalakhFx.Footing(land, floor, out float ground) || Mathf.Abs(ground - floor) > 1.5f) continue;
+                land.y = ground;
+                found = !Blocked(land);
+            }
+            if (!found) land.y = KalakhFx.Ground(land, floor);
+            Debug.Log($"[Hunt] {foe.title} (tier {foe.tier}, {foe.health} health) leaps in over the edge");
+            Vector3 start = land + dir * 12f + Vector3.down * 4f;
+            CombatAudio.Play(CombatAudio.Roar, start, 1f, 0.1f); // heard before it's seen
+            CombatFx.Rumble(null, 0.6f, 1.2f);
+            for (float t = 0f; t < 1.4f; t += Time.deltaTime) yield return null;
+
+            var warrior = Make(foe, foe.title, foe.tier, foe.health, foe.height, null, start, Quaternion.LookRotation(-dir), player);
+            warrior.Body.Act(KalakhMoves.Air(), 0.1f, true);
+            for (float t = 0f; t < 1.2f; t += Time.deltaTime)
+            {
+                float k = t / 1.2f;
+                warrior.transform.position = Vector3.Lerp(start, land, k) + Vector3.up * Mathf.Sin(k * Mathf.PI) * (3.5f + foe.height * 0.5f);
                 FacePlayer(warrior, head);
                 yield return null;
             }
@@ -277,65 +286,12 @@ namespace ArcaneStrike.Story
             done(warrior);
         }
 
-        // A fresh fight: the boulders move to new places round the ledge each time (somewhere in the stretch of ground
-        // they were put on, at their range from the player, on solid rock clear of lava, other rocks and each other).
-        void Scatter(Transform head)
-        {
-            if (head == null || rocks == null || rocks.Length == 0) return;
-            Vector3 centre = head.position, fwd = StoryFx.Flat(head.forward);
-            float floor = KalakhFx.Ground(centre, centre.y - 1.6f);
-            float near = float.MaxValue, far = 0f, left = 0f, right = 0f;
-            foreach (SpawnRock r in rocks)
-            {
-                if (r == null) continue;
-                Vector3 to = StoryFx.Flat(r.Base - centre);
-                near = Mathf.Min(near, to.magnitude);
-                far = Mathf.Max(far, to.magnitude);
-                float angle = Vector3.SignedAngle(fwd, to, Vector3.up);
-                left = Mathf.Min(left, angle);
-                right = Mathf.Max(right, angle);
-            }
-            if (far <= 0f) return;
-            near = Mathf.Clamp(near, 5f, 12f);
-            far = Mathf.Clamp(far, near + 2f, 18f);
-            left = Mathf.Min(left - 15f, -60f);
-            right = Mathf.Max(right + 15f, 60f);
-            var placed = new List<Vector3>();
-            int moved = 0;
-            foreach (SpawnRock r in rocks)
-            {
-                if (r == null || r.Broken) continue;
-                for (int tries = 0; tries < 40; tries++)
-                {
-                    Vector3 dir = Quaternion.Euler(0f, UnityEngine.Random.Range(left, right), 0f) * fwd;
-                    Vector3 at = centre + dir * UnityEngine.Random.Range(near, far);
-                    if (!KalakhFx.Footing(at, floor, out float ground) || Mathf.Abs(ground - floor) > 1.2f) continue;
-                    at.y = ground;
-                    bool crowded = false;
-                    foreach (Vector3 p in placed)
-                        if (StoryFx.Flat(p - at).magnitude < 4f) crowded = true;
-                    if (crowded || Blocked(at, r)) continue;
-                    // (each spot around the edge has solid ground under it too: not hanging over lava or a drop)
-                    bool edge = false;
-                    for (int i = 0; i < 6 && !edge; i++)
-                        if (!KalakhFx.Footing(at + Quaternion.Euler(0f, i * 60f, 0f) * Vector3.forward * 1.6f, ground, out _)) edge = true;
-                    if (edge) continue;
-                    r.MoveTo(at, UnityEngine.Random.Range(0f, 360f));
-                    placed.Add(at);
-                    moved++;
-                    break;
-                }
-            }
-            Physics.SyncTransforms();
-            Debug.Log($"[Hunt] {moved}/{rocks.Length} boulders scattered to new spots round the ledge");
-        }
-
-        // Something of the world's in the way where a boulder would stand (another rock, a wall of the ledge).
-        static bool Blocked(Vector3 at, SpawnRock rock)
+        // Something of the world's in the way where a Kalakh would land (a rock, a wall of the ledge).
+        static bool Blocked(Vector3 at)
         {
             Collider[] near = Physics.OverlapSphere(at + Vector3.up * 1.3f, 1f, ~0, QueryTriggerInteraction.Ignore);
             foreach (Collider c in near)
-                if (KalakhFx.IsWorld(c) && (rock == null || !c.transform.IsChildOf(rock.transform))) return true;
+                if (KalakhFx.IsWorld(c)) return true;
             return false;
         }
 
@@ -349,28 +305,6 @@ namespace ArcaneStrike.Story
             if (warrior == null || head == null) return;
             Vector3 to = StoryFx.Flat(head.position - warrior.transform.position);
             if (to.sqrMagnitude > 1e-4f) warrior.transform.rotation = Quaternion.LookRotation(to);
-        }
-
-        // Any unbroken boulder, at random (not right on top of the player): usually one in view, but now and then one
-        // off to the side or behind, so the crash is what they turn to. None left: a rough one ahead.
-        SpawnRock PickRock(Transform head)
-        {
-            Vector3 fwd = StoryFx.Flat(head.forward);
-            var seen = new List<SpawnRock>();
-            var any = new List<SpawnRock>();
-            foreach (SpawnRock r in rocks)
-            {
-                if (r == null || r.Broken) continue;
-                Vector3 to = StoryFx.Flat(r.Base - head.position);
-                if (to.magnitude < 4f) continue;
-                any.Add(r);
-                if (Vector3.Angle(fwd, to) < 75f) seen.Add(r);
-            }
-            if (seen.Count > 0 && (any.Count == seen.Count || UnityEngine.Random.value < 0.6f)) return seen[UnityEngine.Random.Range(0, seen.Count)];
-            if (any.Count > 0) return any[UnityEngine.Random.Range(0, any.Count)];
-            Vector3 at = head.position + fwd * 9f;
-            at.y = KalakhFx.Ground(at, head.position.y - 1.6f);
-            return SpawnRock.Makeshift(at);
         }
     }
 }

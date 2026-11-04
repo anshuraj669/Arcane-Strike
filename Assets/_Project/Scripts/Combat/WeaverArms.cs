@@ -7,7 +7,7 @@ namespace ArcaneStrike.Combat
 {
     /// <summary>
     /// The Weaver's two arms, once the outfit is worn: each reaches from its shoulder to its hand, bending at the elbow
-    /// (two-bone IK), and ends in a gauntlet with five real fingers, bronze across the knuckles and at the cuff. A
+    /// (two-bone IK), and ends in a gauntlet with five real fingers, steel across the knuckles and at the cuff. A
     /// tracked hand's fingers follow the player's own. The right hand closes round the sword whenever it is drawn, so
     /// the hand goes wherever the blade goes (the draw over the shoulder, every swing, tracked or on the keys). A hand
     /// that isn't tracked rests low in front, fingers relaxed. Each arm is one skinned mesh made here (three materials,
@@ -26,7 +26,7 @@ namespace ArcaneStrike.Combat
         [Tooltip("How far the wrist sits above the grip, so the palm rests on it (m).")]
         [SerializeField] float palmOverGrip = 0.028f;
         [SerializeField] Color leather = new Color(0.075f, 0.05f, 0.04f);
-        [SerializeField] Color bronze = new Color(0.62f, 0.44f, 0.2f);
+        [SerializeField] Color plate = new Color(0.74f, 0.76f, 0.8f);
 
         // Finger bones: from joint, to joint, radius (HandJoint order).
         static readonly (int a, int b, float r)[] Fingers =
@@ -52,7 +52,7 @@ namespace ArcaneStrike.Combat
         WeaverSword weapon;
         HandInputService input;
         Transform head;
-        Material leatherMaterial, bronzeMaterial;
+        Material leatherMaterial, plateMaterial;
         float nextLook;
         bool built, shown;
 
@@ -196,7 +196,7 @@ namespace ArcaneStrike.Combat
             built = true;
             Material cloth = outfit != null ? outfit.SleeveMaterial : null;
             leatherMaterial = Surface("WeaverGlove", leather, 0f, 0.35f);
-            bronzeMaterial = Surface("WeaverGloveBronze", bronze, 0.9f, 0.55f);
+            plateMaterial = Surface("WeaverGlovePlate", plate, 0.9f, 0.55f);
             if (cloth == null) cloth = leatherMaterial;
             Mesh mesh = ArmMesh();
             foreach (Arm arm in arms)
@@ -214,7 +214,7 @@ namespace ArcaneStrike.Combat
                 smr.sharedMesh = mesh;
                 smr.bones = arm.bones;
                 smr.rootBone = arm.bones[Palm];
-                smr.sharedMaterials = new[] { cloth, leatherMaterial, bronzeMaterial };
+                smr.sharedMaterials = new[] { cloth, leatherMaterial, plateMaterial };
                 smr.updateWhenOffscreen = true;
                 smr.quality = SkinQuality.Bone1;
                 smr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
@@ -280,11 +280,11 @@ namespace ArcaneStrike.Combat
             // The sleeves (unit radius: Bone() scales them), tapering a little to the shoulder and the wrist.
             Tube(Upper, 0, new[] { (-0.06f, 0.55f, 0.55f, 0f), (0f, 0.95f, 0.95f, 0f), (0.5f, 1.05f, 1.05f, 0f), (1f, 0.85f, 0.85f, 0f), (1.06f, 0.5f, 0.5f, 0f) });
             Tube(Fore, 0, new[] { (-0.06f, 0.6f, 0.6f, 0f), (0f, 1.05f, 1.05f, 0f), (0.35f, 1.1f, 1.1f, 0f), (0.72f, 0.82f, 0.82f, 0f) });
-            // The bronze bracer flaring to the cuff, over the end of the sleeve.
+            // The steel bracer flaring to the cuff, over the end of the sleeve.
             Tube(Fore, 2, new[] { (0.7f, 0.92f, 0.92f, 0f), (0.86f, 0.88f, 0.88f, 0f), (0.98f, 1.12f, 1.12f, 0f), (1.02f, 1.02f, 1.02f, 0f) }, 10);
             // The palm (real metres: wrist at 0, fingers up +Y, the back of the hand +Z).
             Tube(Palm, 1, new[] { (-0.004f, 0.026f, 0.021f, 0f), (0.03f, 0.038f, 0.023f, 0f), (0.07f, 0.045f, 0.021f, 0f), (0.098f, 0.043f, 0.015f, 0f), (0.106f, 0.03f, 0.009f, 0f) }, 10);
-            // Bronze plates on the back of the hand and across the knuckles.
+            // Steel plates on the back of the hand and across the knuckles.
             Tube(Palm, 2, new[] { (0.02f, 0.022f, 0.004f, 0.021f), (0.05f, 0.032f, 0.005f, 0.022f), (0.07f, 0.03f, 0.004f, 0.02f) }, 8);
             Tube(Palm, 2, new[] { (0.082f, 0.043f, 0.0045f, 0.016f), (0.094f, 0.045f, 0.0055f, 0.016f), (0.104f, 0.04f, 0.004f, 0.012f) }, 8);
             for (int i = 0; i < Fingers.Length; i++)

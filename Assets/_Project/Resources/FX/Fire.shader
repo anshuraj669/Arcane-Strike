@@ -17,6 +17,7 @@ Shader "ArcaneStrike/Fire"
         _Centre ("Centre (wall)", Vector) = (0, 0, 0, 0)
         _WindowDir ("Window Direction (x, z)", Vector) = (0, 1, 0, 0)
         _WindowOn ("Window", Range(0, 1)) = 0
+        _Light ("Light Blue (tips paler)", Range(0, 1)) = 0
     }
     SubShader
     {
@@ -38,7 +39,7 @@ Shader "ArcaneStrike/Fire"
             SAMPLER(sampler_NoiseTex);
             CBUFFER_START(UnityPerMaterial)
                 float4 _NoiseTex_ST, _Centre, _WindowDir;
-                float _Shape, _TileX, _Flow, _Seed, _Power, _WindowOn;
+                float _Shape, _TileX, _Flow, _Seed, _Power, _WindowOn, _Light;
             CBUFFER_END
 
             struct Attributes
@@ -118,9 +119,11 @@ Shader "ArcaneStrike/Fire"
                     heat *= 1.0 - _WindowOn * smoothstep(0.5, 0.74, abs(dot(d, _WindowDir.xy)));
                 }
 
-                // Blue at the tips, through azure and cyan, to a white heart at the base.
-                float3 c = lerp(float3(0.02, 0.08, 0.5), float3(0.03, 0.2, 0.85), saturate(heat / 0.25));
-                c = lerp(c, float3(0.08, 0.48, 1.0), saturate((heat - 0.25) / 0.25));
+                // Blue at the tips, through azure and cyan, to a white heart at the base (with _Light, pale blue tips).
+                float3 tip = lerp(float3(0.02, 0.08, 0.5), float3(0.3, 0.62, 1.0), _Light);
+                float3 azure = lerp(float3(0.03, 0.2, 0.85), float3(0.42, 0.76, 1.0), _Light);
+                float3 c = lerp(tip, azure, saturate(heat / 0.25));
+                c = lerp(c, lerp(float3(0.08, 0.48, 1.0), float3(0.55, 0.86, 1.0), _Light), saturate((heat - 0.25) / 0.25));
                 c = lerp(c, float3(0.4, 0.85, 1.0), saturate((heat - 0.5) / 0.25));
                 c = lerp(c, float3(0.92, 0.99, 1.0), saturate((heat - 0.75) / 0.2));
                 float alpha = smoothstep(0.02, 0.42, heat);

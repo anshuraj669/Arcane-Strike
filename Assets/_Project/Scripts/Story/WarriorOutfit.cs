@@ -10,11 +10,11 @@ using Random = UnityEngine.Random;
 namespace ArcaneStrike.Story
 {
     /// <summary>
-    /// The Weaver: the main character's body, his outfit (the plague assassin's hooded leather coat, beak mask, gloves
-    /// and boots) and his sword (Resources/Characters/Weaver.prefab, from Tools/blender/build_weaver.py). It is a separate model so the attic loads light: <see cref="Load"/> brings
+    /// The Weaver: the main character's body, his outfit (the Weaver's armour: silver plate over dark padding, a white
+    /// tabard and half cape, gilt trim, a blue gem on the chest) and his sword (Resources/Characters/Weaver.prefab, from Tools/blender/build_weaver.py). It is a separate model so the attic loads light: <see cref="Load"/> brings
     /// it in when the Ascension begins (or the first time anything needs it).
-    /// <see cref="EquipNext"/> forms the next part (sleeves and gloves, boots, coat, the hood and mask, the coat's long
-    /// back, then the sword) in a shower of
+    /// <see cref="EquipNext"/> forms the next part (sleeves and gauntlets, boots and greaves, the breastplate and tabard,
+    /// the gorget and pauldrons, the cape, then the sword) in a shower of
     /// golden sparks; <see cref="Equip"/> forms whatever is left.
     /// Two views of it:
     /// - Worn (first person): Outfit_* pieces follow the player every frame: the sleeves on the forearms (from the
@@ -23,10 +23,11 @@ namespace ArcaneStrike.Story
     /// - The body (<see cref="ShowBody"/>): while the player's soul is out of it in the Ascension, the whole boy hangs
     ///   in the light in his hoodie and joggers (Body_*). <see cref="SuitUp"/> wraps the suit onto him in one wave
     ///   (Avatar_*): it spreads out from his chest over the arms, legs and boots, eating his own clothes as it goes,
-    ///   with ribbons of light spiralling down each limb ahead of it, his body arching back in the light; the hood
-    ///   wraps up over his head last and the mask's eyes light. The katana then appears before his chest, turns, and
+    ///   with ribbons of light spiralling down each limb ahead of it, his body arching back in the light; the gorget
+    ///   and pauldrons close round his neck and shoulders last (his head stays his own). The sword then appears before his chest, turns, and
     ///   slides into the sheath on his back.
-    /// Appearances tint the outfit's leather (coat, gloves, boots, back of the coat, hood); O cycles them. The look and
+    /// Appearances tint the outfit's cloth and leather (tabard, padding, boots and gloves, cape, collar) over their own
+    /// colours; the steel and gilt stay as they are. O cycles them. The look and
     /// whether it is on carry over to the next scene. <see cref="DrawSword"/> hands the sword to whoever wields it;
     /// <see cref="SheathedPose"/> says where it hangs on the back, to draw it from there.
     /// </summary>
@@ -58,16 +59,12 @@ namespace ArcaneStrike.Story
         [Header("Appearances")]
         [SerializeField] Appearance[] appearances =
         {
-            // Tints over the assassin's own (near-black) leather texture: white keeps it as it is.
-            new Appearance { name = "Plague Shadow", coat = Color.white, trim = Color.white, boots = Color.white, cape = Color.white, scarf = Color.white },
-            new Appearance { name = "Ember Crimson", coat = new Color(1f, 0.55f, 0.5f), trim = new Color(1f, 0.8f, 0.6f),
-                             boots = Color.white, cape = new Color(1f, 0.4f, 0.35f), scarf = new Color(1f, 0.55f, 0.5f) },
-            new Appearance { name = "Midnight Indigo", coat = new Color(0.6f, 0.65f, 1f), trim = new Color(0.8f, 0.85f, 1f),
-                             boots = new Color(0.8f, 0.8f, 0.9f), cape = new Color(0.5f, 0.55f, 1f), scarf = new Color(0.6f, 0.65f, 1f) },
-            new Appearance { name = "Saffron Weaver", coat = new Color(1f, 0.8f, 0.5f), trim = new Color(1f, 0.85f, 0.5f),
-                             boots = new Color(1f, 0.9f, 0.75f), cape = new Color(1f, 0.75f, 0.3f), scarf = new Color(1f, 0.8f, 0.5f) },
-            new Appearance { name = "Forest Ranger", coat = new Color(0.7f, 0.85f, 0.6f), trim = new Color(0.9f, 0.85f, 0.65f),
-                             boots = new Color(0.9f, 0.85f, 0.75f), cape = new Color(0.6f, 0.8f, 0.55f), scarf = new Color(0.7f, 0.85f, 0.6f) },
+            // Tints over the armour's own cloth colours (white keeps them as they are).
+            new Appearance { name = "Silver Weaver", coat = Color.white, trim = Color.white, boots = Color.white, cape = Color.white, scarf = Color.white },
+            new Appearance { name = "Ember Crimson", coat = new Color(0.8f, 0.16f, 0.13f), trim = new Color(1f, 0.7f, 0.6f), boots = Color.white, cape = new Color(0.75f, 0.14f, 0.12f), scarf = new Color(0.8f, 0.16f, 0.13f) },
+            new Appearance { name = "Midnight Indigo", coat = new Color(0.22f, 0.27f, 0.62f), trim = new Color(0.8f, 0.85f, 1f), boots = new Color(0.8f, 0.8f, 0.9f), cape = new Color(0.18f, 0.22f, 0.55f), scarf = new Color(0.22f, 0.27f, 0.62f) },
+            new Appearance { name = "Saffron Weaver", coat = new Color(1f, 0.62f, 0.2f), trim = new Color(1f, 0.85f, 0.6f), boots = new Color(1f, 0.9f, 0.75f), cape = new Color(0.95f, 0.5f, 0.12f), scarf = new Color(1f, 0.62f, 0.2f) },
+            new Appearance { name = "Forest Ranger", coat = new Color(0.28f, 0.5f, 0.28f), trim = new Color(0.85f, 1f, 0.8f), boots = new Color(0.9f, 0.85f, 0.75f), cape = new Color(0.22f, 0.42f, 0.22f), scarf = new Color(0.28f, 0.5f, 0.28f) },
         };
         [SerializeField] int appearance;
         [Tooltip("Keyboard (GameInput): O switches to the next appearance.")]
@@ -98,7 +95,7 @@ namespace ArcaneStrike.Story
         static readonly string[] Steps = { "Sleeve", "Boots", "Coat", "Scarf", "Cape", "Sword" };
         static readonly Dictionary<string, string> Replaces = new Dictionary<string, string>
         {
-            { "Body_Arms", "Sleeve" }, { "Body_Feet", "Boots" }, { "Body_Torso", "Coat" }, { "Body_Head", "Scarf" }, // the hood and mask cover his head
+            { "Body_Arms", "Sleeve" }, { "Body_Feet", "Boots" }, { "Body_Torso", "Coat" }, // (his head stays his own)
         };
 
         // How the sheathed katana hangs, relative to the body's anchor: the same numbers as back_frame() in
@@ -283,7 +280,7 @@ namespace ArcaneStrike.Story
                     foreach (Renderer r in p.renderers) r.enabled = !taken && !bodyShown;
         }
 
-        /// <summary>What the sleeves are made of (the coat's cloth if it can be found).</summary>
+        /// <summary>What the sleeves are made of (the vambraces' steel if it can be found).</summary>
         public Material SleeveMaterial
         {
             get
@@ -295,7 +292,7 @@ namespace ArcaneStrike.Story
                             foreach (Material m in r.sharedMaterials)
                             {
                                 if (m == null) continue;
-                                if (m.name.Contains("OutfitCoat")) return m;
+                                if (m.name.Contains("OutfitSteel")) return m;
                                 if (first == null) first = m;
                             }
                 return first;
@@ -388,6 +385,9 @@ namespace ArcaneStrike.Story
 
         // ---------------------------------------------------------------- appearances
 
+        // Each tinted material's own colour, which the appearance's tint multiplies.
+        readonly Dictionary<Material, Color> ownColour = new Dictionary<Material, Color>();
+
         /// <summary>Recolours the outfit with one of the appearances.</summary>
         public void SetAppearance(int index)
         {
@@ -401,7 +401,9 @@ namespace ArcaneStrike.Story
                 string n = m.name;
                 Color? c = n.Contains("OutfitCoat") ? a.coat : n.Contains("OutfitTrim") && !n.Contains("Sword") ? a.trim : n.Contains("OutfitBoots") ? a.boots
                          : n.Contains("OutfitCape") ? a.cape : n.Contains("OutfitScarf") ? a.scarf : (Color?)null;
-                if (c.HasValue) m.SetColor("_BaseColor", c.Value);
+                if (!c.HasValue) return;
+                if (!ownColour.TryGetValue(m, out Color own)) ownColour[m] = own = m.GetColor("_BaseColor");
+                m.SetColor("_BaseColor", own * c.Value);
             }
             foreach (Piece p in pieces)
                 foreach (Renderer r in p.renderers)

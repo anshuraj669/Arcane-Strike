@@ -166,86 +166,35 @@ namespace ArcaneStrike.Story
     }
 
     /// <summary>
-    /// Blue lightning crackling outward across a surface from a point: jagged, forking bolts that leap and change
-    /// every few frames, then fade. Made here from lines, gone when it's done.
+    /// A ring of light blue flame racing outward across the floor from a point: it rises as it spreads, slowing, and
+    /// sinks away as it fades. A wall of the fire shader, made here and gone when it's done.
     /// </summary>
-    public static class GroundLightning
+    public static class FlameRing
     {
-        const int Bolts = 12, Points = 10;
-        static readonly Color Bolt = new Color(0.2f, 0.6f, 1f, 1f);
-        static readonly Color Hot = new Color(0.82f, 0.96f, 1f, 1f);
+        /// <summary>Starts a ring at `at`, out to `radius` metres, `height` tall at its fullest, for `seconds`. `host`
+        /// runs it.</summary>
+        public static void Strike(MonoBehaviour host, Vector3 at, float radius, float seconds, float height = 1f) =>
+            host.StartCoroutine(Run(at, radius, seconds, height));
 
-        /// <summary>Starts a burst at `at`, over `radius` metres, for `seconds`. `host` runs it.</summary>
-        public static void Strike(MonoBehaviour host, Vector3 at, float radius, float seconds) => host.StartCoroutine(Run(at, radius, seconds));
-
-        static IEnumerator Run(Vector3 at, float radius, float seconds)
+        static IEnumerator Run(Vector3 at, float radius, float seconds, float height)
         {
-            var root = new GameObject("GroundLightning");
-            var glow = new LineRenderer[Bolts];
-            var core = new LineRenderer[Bolts];
-            var way = new float[Bolts];
-            var reach = new float[Bolts];
-            for (int i = 0; i < Bolts; i++)
+            var root = new GameObject("FlameRing");
+            root.transform.position = at;
+            MeshRenderer ring = FireFx.Wall(root.transform, "FlameRing", 1f, 0f, 1f, Mathf.Max(10f, radius * 3.5f), Random.value);
+            Material m = ring.sharedMaterial;
+            m.SetFloat("_Light", 1f);
+            m.SetFloat("_WindowOn", 0f);
+            for (float t = 0f; t < seconds; t += Time.deltaTime)
             {
-                way[i] = (i + Random.value * 0.8f) / Bolts * Mathf.PI * 2f;
-                reach[i] = radius * Random.Range(0.55f, 1f);
-                glow[i] = Line(root.transform, 0.11f, Bolt);
-                core[i] = Line(root.transform, 0.03f, Hot);
-            }
-            for (float t = 0f, next = 0f; t < seconds; t += Time.deltaTime)
-            {
-                float grow = Mathf.Clamp01(t / (seconds * 0.3f)), fade = Mathf.Clamp01((seconds - t) / (seconds * 0.45f));
-                if (t >= next)
-                {
-                    next = t + 0.055f; // lightning jumps, it doesn't slide
-                    for (int i = 0; i < Bolts; i++)
-                    {
-                        bool lit = Random.value < 0.82f;
-                        glow[i].enabled = core[i].enabled = lit;
-                        if (!lit) continue;
-                        Jag(glow[i], core[i], at, way[i], reach[i] * Mathf.Lerp(0.15f, 1f, grow));
-                    }
-                }
-                for (int i = 0; i < Bolts; i++)
-                {
-                    glow[i].startColor = glow[i].endColor = StoryFx.WithAlpha(Bolt, 0.75f * fade);
-                    core[i].startColor = core[i].endColor = StoryFx.WithAlpha(Hot, fade);
-                }
+                float k = t / seconds;
+                float r = Mathf.Lerp(0.15f, radius, 1f - (1f - k) * (1f - k)); // out fast, slowing
+                ring.transform.localScale = new Vector3(r, height, r);
+                m.SetFloat("_Power", Mathf.Clamp01(k / 0.15f) * Mathf.Clamp01((1f - k) / 0.45f));
                 yield return null;
             }
+            Object.Destroy(ring.GetComponent<MeshFilter>().sharedMesh);
+            Object.Destroy(m);
             Object.Destroy(root);
-        }
-
-        static LineRenderer Line(Transform parent, float width, Color color)
-        {
-            var go = new GameObject("Bolt");
-            go.transform.SetParent(parent, false);
-            var l = go.AddComponent<LineRenderer>();
-            l.sharedMaterial = StoryFx.Additive;
-            l.positionCount = Points;
-            l.useWorldSpace = true;
-            l.startWidth = width;
-            l.endWidth = width * 0.25f;
-            l.startColor = l.endColor = color;
-            l.numCapVertices = 0;
-            l.alignment = LineAlignment.View;
-            l.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-            l.receiveShadows = false;
-            return l;
-        }
-
-        static void Jag(LineRenderer a, LineRenderer b, Vector3 from, float angle, float length)
-        {
-            Vector3 dir = new Vector3(Mathf.Cos(angle), 0f, Mathf.Sin(angle)), side = new Vector3(-dir.z, 0f, dir.x);
-            float wander = 0f;
-            for (int p = 0; p < Points; p++)
-            {
-                float k = (float)p / (Points - 1);
-                wander += Random.Range(-1f, 1f) * length * 0.075f;
-                Vector3 at = from + dir * (length * k) + side * wander * Mathf.Min(1f, k * 4f);
-                a.SetPosition(p, at);
-                b.SetPosition(p, at);
-            }
         }
     }
 }
