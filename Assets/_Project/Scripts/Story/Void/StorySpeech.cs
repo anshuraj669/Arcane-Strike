@@ -91,6 +91,12 @@ namespace ArcaneStrike.Story
             if (text != null) text.gameObject.name = $"{speaker} Subtitles";
         }
 
+        /// <summary>0: the voice is inside the player's head (both ears alike); 1: it comes from the speaker.</summary>
+        public void SetSpatial(float blend)
+        {
+            if (voice != null) voice.spatialBlend = blend;
+        }
+
         /// <summary>Shows text without saying it (a prompt), until <see cref="ClearText"/> or the next line.</summary>
         public void ShowText(string line)
         {

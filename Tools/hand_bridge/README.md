@@ -24,6 +24,17 @@ Options: `--camera 1` (another webcam), `--fov 70` (camera field of view), `--sw
 
 Tips: webcam at chest height, light in front of you (not a bright window or tube light behind you), plain clothes with sleeves that contrast with the wall.
 
+## Head tracking
+
+After calibrating (press **C**, or wait a second with your upper body in view), the game head follows yours:
+- **Lean or duck** and the view moves with you (dodges count).
+- **Turn your head** left or right and the view turns. The turn is multiplied (about 2.5×) so your eyes can stay on the screen.
+- **Nod** up or down and the view tilts. In the Meta XR Simulator, tilting stays on the Simulator's mouse look.
+
+Small head movements (under 4°) are ignored, so the view holds still while you watch the screen. Press **C** again to make the way you're facing now straight ahead. The settings (gain, dead zone, smoothing) are on the `WebcamHeadDriver` component. It adds itself in the editor to every scene that has the bridge.
+
+In the Meta XR Simulator (Windows), turn the Simulator's own **Webcam tracking** off, because only one program can use the webcam. The bridge then supplies both your hands and your head.
+
 ## In Unity
 1. Press **Play**, then start the bridge (either order works).
 2. Hold your hands up at a comfortable casting distance and press **C** to calibrate depth.

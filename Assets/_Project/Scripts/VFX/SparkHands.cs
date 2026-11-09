@@ -39,6 +39,9 @@ namespace ArcaneStrike.VFX
         [SerializeField] Material skinMaterial;
         [SerializeField] Color spiritColor = new Color(1f, 0.86f, 0.55f, 0.28f);
         [SerializeField] Color solidColor = new Color(0.8f, 0.8f, 0.82f, 1f);
+        [Tooltip("The player's own hands before the Jyoti Seal glows in them (the attic is fully virtual, so without these " +
+                 "there would be no hands at all).")]
+        [SerializeField] Color plainColor = new Color(0.78f, 0.57f, 0.45f, 1f);
         [Tooltip("Finger thickness (radius, m). The thumb is a bit thicker and the pinky thinner.")]
         [SerializeField] float fingerRadius = 0.0095f;
 
@@ -94,9 +97,17 @@ namespace ArcaneStrike.VFX
             public Color FlashColor = Color.white;
             public Transform[] SkinParts; // Segments, then the palm
             public Renderer[] SkinRenderers;
+            public bool Plain;            // wearing the plain-hand material right now
         }
 
         MaterialPropertyBlock skinBlock;
+        Material glowSkin, plainSkin;
+
+        /// <summary>Something else draws the player's arms and hands (WeaverArms, once the armour is on): no plain hands.</summary>
+        public static bool ArmsDrawnElsewhere { get; set; }
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        static void ResetStatics() => ArmsDrawnElsewhere = false;
 
         readonly HandRig[] rigs = { new HandRig(), new HandRig() };
         readonly ParticleSystem.Particle[] dotBuffer = new ParticleSystem.Particle[2 * (HandFrame.JointCount + 1)];
@@ -154,7 +165,7 @@ namespace ArcaneStrike.VFX
                 }
             }
 
-            if (skin != HandSkin.None) BuildSkin();
+            BuildSkin(); // (plain hands need the shapes even when the glow has no skin)
 
             dots = MakeParticleSystem("SparkJoints", dotBuffer.Length, false);
             sparkles = MakeParticleSystem("SparkSparkles", 1000, true);
@@ -182,7 +193,12 @@ namespace ArcaneStrike.VFX
             bool visible = rig.Alpha > 0.01f;
             foreach (LineRenderer line in rig.Lines)
                 if (line.enabled != visible) line.enabled = visible;
-            UpdateSkin(f, rig, visible);
+            // Without the glow (or while it fades in), the player still sees their own plain hands.
+            // (RealHands draws proper skinned hands when its models load: then the simple skin here stays hidden.)
+            bool plain = f.IsTracked && !visible && !ArmsDrawnElsewhere;
+            if (RealHands.Active) UpdateSkin(f, rig, false, rig.Plain);
+            else if (plain || glowSkin == null) UpdateSkin(f, rig, plain, true);
+            else UpdateSkin(f, rig, visible && !ArmsDrawnElsewhere, false);
             if (!visible) return;
 
             Color c = Color.Lerp(sparkColor, rig.FlashColor, rig.Flash);
@@ -224,9 +240,12 @@ namespace ArcaneStrike.VFX
 
         void BuildSkin()
         {
-            Material material = skin == HandSkin.Spirit && skinMaterial != null
-                ? skinMaterial
+            glowSkin = skin == HandSkin.None ? null
+                : skin == HandSkin.Spirit && skinMaterial != null ? skinMaterial
                 : CreateSkinMaterial(skin, skin == HandSkin.Solid ? solidColor : spiritColor);
+            plainSkin = CreateSkinMaterial(HandSkin.Solid, plainColor);
+            plainSkin.name = "HandPlain";
+            Material material = glowSkin != null ? glowSkin : plainSkin;
             skinBlock = new MaterialPropertyBlock();
             for (int h = 0; h < 2; h++)
             {
@@ -252,11 +271,16 @@ namespace ArcaneStrike.VFX
             }
         }
 
-        void UpdateSkin(HandFrame f, HandRig rig, bool visible)
+        void UpdateSkin(HandFrame f, HandRig rig, bool visible, bool plain)
         {
             if (rig.SkinParts == null) return;
-            Color baseColor = skin == HandSkin.Solid ? solidColor : spiritColor;
-            skinBlock.SetColor(BaseColorId, WithAlpha(baseColor, baseColor.a * rig.Alpha));
+            if (rig.Plain != plain)
+            {
+                rig.Plain = plain;
+                foreach (Renderer r in rig.SkinRenderers) r.sharedMaterial = plain ? plainSkin : glowSkin;
+            }
+            Color baseColor = plain ? plainColor : skin == HandSkin.Solid ? solidColor : spiritColor;
+            skinBlock.SetColor(BaseColorId, plain ? baseColor : WithAlpha(baseColor, baseColor.a * rig.Alpha));
 
             for (int i = 0; i < rig.SkinParts.Length; i++)
             {

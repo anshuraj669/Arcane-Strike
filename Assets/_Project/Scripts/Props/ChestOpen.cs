@@ -62,6 +62,19 @@ namespace ArcaneStrike.Props
         Story.AtticIntro intro;
 
         public bool IsOpen { get; private set; }
+        /// <summary>Shut fast: the lid won't lift (a box still thick with dust).</summary>
+        public bool Locked { get; set; }
+        /// <summary>E opens this box by itself (off when something else decides which box a key opens).</summary>
+        public bool KeyboardFallback { get => keyboardFallback; set => keyboardFallback = value; }
+        /// <summary>Raised as the lid starts to open.</summary>
+        public event System.Action<ChestOpen> Opened;
+
+        /// <summary>No knocking from inside (until <see cref="Rattle"/> is called).</summary>
+        public void Quiet()
+        {
+            idleRattleEvery = 0f;
+            shakeUntil = 0f;
+        }
 
         void Awake()
         {
@@ -93,7 +106,7 @@ namespace ArcaneStrike.Props
 
         public void OpenChest()
         {
-            if (IsOpen || lid == null) return;
+            if (IsOpen || lid == null || Locked) return;
             IsOpen = true;
             opening = animateLid;
             openedAt = Time.time;
@@ -103,6 +116,7 @@ namespace ArcaneStrike.Props
             Combat.CombatFx.Rumble(liftedBy, 0.35f, 0.12f);
             Debug.Log($"[ChestOpen] {name} opened");
             onOpened?.Invoke();
+            Opened?.Invoke(this);
         }
 
         void Update()
@@ -120,7 +134,7 @@ namespace ArcaneStrike.Props
 
         void UpdateHand(HandFrame f, int i)
         {
-            if (!f.IsTracked || Vector3.Distance(f.PalmCenter, handle.position) > reach)
+            if (Locked || !f.IsTracked || Vector3.Distance(f.PalmCenter, handle.position) > reach)
             {
                 holdStartY[i] = float.NaN;
                 return;

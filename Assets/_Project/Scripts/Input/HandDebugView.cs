@@ -15,8 +15,9 @@ namespace ArcaneStrike.HandInput
         [SerializeField] float jointSize = 0.015f;
         [SerializeField] Color leftColor = new Color(0.3f, 0.7f, 1f);
         [SerializeField] Color rightColor = new Color(1f, 0.6f, 0.2f);
-        [Tooltip("Draws the webcam upper-body skeleton (shoulders, arms, hips) as thin green lines.")]
-        [SerializeField] bool showBody = true;
+        [Tooltip("Draws the webcam upper-body skeleton (shoulders, arms, hips) as thin green lines. Off by default: your body is " +
+                 "round the camera, so the lines run right across the view.")]
+        [SerializeField] bool showBodyLines;
         [SerializeField] Color bodyColor = new Color(0.45f, 1f, 0.45f, 0.8f);
 
         // Pairs of UpperBodyJoint indices drawn as lines.
@@ -36,7 +37,7 @@ namespace ArcaneStrike.HandInput
 
         void Start()
         {
-            if (showBody) CreateBodyLines();
+            if (showBodyLines) CreateBodyLines();
             if (!showJoints) return;
             for (int h = 0; h < 2; h++)
             {

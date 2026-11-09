@@ -27,6 +27,8 @@ namespace ArcaneStrike.Combat
         [SerializeField] float palmOverGrip = 0.028f;
         [SerializeField] Color leather = new Color(0.84f, 0.8f, 0.72f); // (the armour's pale leather and white enamel)
         [SerializeField] Color plate = new Color(0.96f, 0.95f, 0.92f);
+        [Tooltip("How long (s) an arm stays after its hand is lost, so a dropped frame doesn't make it blink.")]
+        [SerializeField] float lostGrace = 0.25f;
 
         // Finger bones: from joint, to joint, radius (HandJoint order).
         static readonly (int a, int b, float r)[] Fingers =
@@ -45,6 +47,7 @@ namespace ArcaneStrike.Combat
             public Renderer renderer;
             public Transform[] bones;
             public readonly Vector3[] joints = new Vector3[HandFrame.JointCount];
+            public float lastSeen = float.NegativeInfinity; // when its hand was last tracked (or holding the sword)
         }
 
         readonly Arm[] arms = { new Arm { side = HandSide.Left }, new Arm { side = HandSide.Right } };
@@ -80,7 +83,19 @@ namespace ArcaneStrike.Combat
                 weapon = FindAnyObjectByType<WeaverSword>();
             }
             Transform held = weapon != null && weapon.Drawn ? weapon.Held : null;
-            foreach (Arm arm in arms) Pose(arm, held);
+            foreach (Arm arm in arms)
+            {
+                // The arm is the player's own: where their hand isn't tracked (behind their back, out of view) it
+                // isn't drawn at all, rather than held up in a pose they aren't making.
+                bool seen = Pose(arm, held);
+                if (seen) arm.lastSeen = Time.time;
+                if (arm.renderer != null) arm.renderer.enabled = Time.time - arm.lastSeen <= lostGrace;
+            }
+        }
+
+        void OnDestroy()
+        {
+            if (shown) VFX.SparkHands.ArmsDrawnElsewhere = false; // (a new scene: the plain hands come back until arms do)
         }
 
         void Show(bool on)
@@ -88,16 +103,22 @@ namespace ArcaneStrike.Combat
             if (on == shown) return;
             shown = on;
             foreach (Arm arm in arms)
+            {
                 if (arm.renderer != null) arm.renderer.enabled = on;
+                if (on) arm.lastSeen = Time.time; // (shown as it appears; hidden after if its hand isn't tracked)
+            }
             if (outfit != null) outfit.TakeArms(on);
+            VFX.SparkHands.ArmsDrawnElsewhere = on; // (the gauntlets are the hands now)
         }
 
-        void Pose(Arm arm, Transform held)
+        /// <summary>Poses the arm; true while it follows the player's real hand (tracked, or closed on the drawn sword).</summary>
+        bool Pose(Arm arm, Transform held)
         {
             bool right = arm.side == HandSide.Right;
             Vector3 flat = StoryFx.Flat(head.forward), across = Vector3.Cross(Vector3.up, flat), side = right ? across : -across;
             HandFrame f = input != null ? input.Get(arm.side) : null;
             Vector3 wrist, forward, back;
+            bool real = true;
             if (right && held != null)
             {
                 // Closed round the grip: the thumb along the blade, the knuckles towards the edge.
@@ -121,6 +142,7 @@ namespace ArcaneStrike.Combat
                 if (Vector3.Dot(back, Vector3.up) < 0f) back = -back;
                 wrist = head.position + flat * 0.3f - Vector3.up * 0.42f + side * 0.17f;
                 Template(arm.joints, wrist, forward, back, -side, 0.3f);
+                real = false;
             }
 
             // Shoulder to wrist, the elbow dropping down and out.
@@ -145,6 +167,7 @@ namespace ArcaneStrike.Combat
             arm.bones[Palm].SetPositionAndRotation(wrist, Quaternion.LookRotation(back, forward));
             for (int i = 0; i < Fingers.Length; i++)
                 Bone(arm.bones[FirstFinger + i], arm.joints[Fingers[i].a], arm.joints[Fingers[i].b], Fingers[i].r);
+            return real;
         }
 
         // A bone's mesh is a unit tube along +Y: scale stretches it from `from` to `to`.

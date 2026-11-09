@@ -6,7 +6,7 @@ namespace ArcaneStrike.EditorTools
 {
     /// <summary>
     /// Menu: Arcane Strike → Put Scenes In Story Order. Build Settings in the order the story plays: the Attic first
-    /// (the scene a build starts in), then the Ascension cave, then the monster world. Scenes the story no longer
+    /// (the scene a build starts in), then the Ascension cave, then the monster world, then Chapter 2's scenes. Scenes the story no longer
     /// visits (the Shadow Rift, the Lantern Void, the template SampleScene) stay listed but switched off. The scene builders call this
     /// too. (Order only decides which scene a build starts in: each scene loads the next one itself.)
     /// </summary>
@@ -17,6 +17,9 @@ namespace ArcaneStrike.EditorTools
             "Assets/_Project/Scenes/Attic.unity",
             "Assets/_Project/Scenes/AscensionCave.unity",
             "Assets/_Project/Scenes/MonsterWorld.unity",
+            // Chapter 2 (scenes not built yet are skipped)
+            "Assets/_Project/Scenes/Chapter2_AtticWake.unity",
+            "Assets/_Project/Scenes/Chapter2_Bedroom.unity",
         };
 
         [MenuItem("Arcane Strike/Put Scenes In Story Order")]

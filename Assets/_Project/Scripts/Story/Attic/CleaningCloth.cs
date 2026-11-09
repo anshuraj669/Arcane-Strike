@@ -81,6 +81,20 @@ namespace ArcaneStrike.Story
             IsAutoCleaning = false;
         }
 
+        /// <summary>A cleaning cloth in either hand, or null.</summary>
+        public static CleaningCloth Held
+        {
+            get
+            {
+                foreach (CleaningCloth c in All)
+                    if (c.grab.IsHeld) return c;
+                return null;
+            }
+        }
+
+        /// <summary>The middle of the cloth: where it rubs.</summary>
+        public Vector3 RubPoint => body != null ? body.bounds.center : transform.position;
+
         /// <summary>True when this hand is holding a cleaning cloth.</summary>
         public static bool IsHeldBy(HandSide side)
         {

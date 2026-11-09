@@ -10,7 +10,7 @@ namespace ArcaneStrike.HandInput
         // Moving
         MoveForward, MoveBack, MoveLeft, MoveRight, TurnLeft, TurnRight, Look, Jump, ToggleSmoothMove,
         // The story
-        Interact, Skip, PointGrab, Throw, RaisePalms, ChooseTrain, ChooseOnward,
+        Interact, Skip, PointGrab, Throw, RaisePalms, ChooseTrain, ChooseOnward, ChoiceA, ChoiceB,
         // Powers
         Firebolt, Aegis, Seal, VoltBurst, Lumen, Sunwheel, SparkBlade, Skyhammer, Grab,
         // Bare hands and dodging
@@ -86,6 +86,8 @@ namespace ArcaneStrike.HandInput
             Bind(GameAction.RaisePalms, Key.P, "Story", "Raise both palms to your face (hold)");
             Bind(GameAction.ChooseTrain, Key.Enter, "Story", "Cave: choose TRAIN WITH EMBER");
             Bind(GameAction.ChooseOnward, Key.Backspace, "Story", "Cave: choose ONWARD (also stops the practice)");
+            Bind(GameAction.ChoiceA, Key.Digit1, "Story", "Dialogue: choose [A] (when a choice is shown)");
+            Bind(GameAction.ChoiceB, Key.Digit2, "Story", "Dialogue: choose [B] (when a choice is shown)");
 
             Bind(GameAction.Firebolt, Key.Digit1, "Powers", "Firebolt");
             Bind(GameAction.Aegis, Key.Digit2, "Powers", "Aegis shield (hold)");

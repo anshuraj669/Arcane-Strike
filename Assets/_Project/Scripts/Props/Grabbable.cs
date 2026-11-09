@@ -108,6 +108,15 @@ namespace ArcaneStrike.Props
 
         Vector3 HomePosition => homeParent != null ? homeParent.TransformPoint(homePos) : homePos;
 
+        /// <summary>Where it is now becomes where it returns to if it is ever lost (after a script moves it).</summary>
+        public void Rehome()
+        {
+            homeParent = transform.parent;
+            homePos = transform.localPosition;
+            homeRot = transform.localRotation;
+            hasHome = true;
+        }
+
         // Fell through the floor (or off the set): back where it was found, with a puff of dust, instead of lost for good.
         void ReturnHome()
         {

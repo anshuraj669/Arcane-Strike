@@ -32,6 +32,10 @@ namespace ArcaneStrike.Story
 
         public enum Placement { Auto, RoomScale, Desk }
 
+        [Tooltip("Several boxes to open (AtticBoxes): the lantern turns up in the third or fourth one opened.")]
+        [SerializeField] bool severalBoxes = true;
+        AtticBoxes boxes;
+
         [Header("Placement")]
         [Tooltip("Move the set in front of the player at start.")]
         [SerializeField] bool placeInFrontOfPlayer = true;
@@ -109,6 +113,12 @@ namespace ArcaneStrike.Story
 
         IEnumerator Start()
         {
+            if (severalBoxes && chest != null && pickup != null)
+            {
+                boxes = gameObject.AddComponent<AtticBoxes>();
+                var cloth = FindAnyObjectByType<CleaningCloth>();
+                boxes.Setup(chest, pickup.transform, cloth != null ? cloth.transform : null);
+            }
             SetBeat(Beat.ChestClosed);
             if (!placeInFrontOfPlayer) yield break;
 
@@ -184,7 +194,15 @@ namespace ArcaneStrike.Story
 
         void Update()
         {
-            if (Current == Beat.ChestClosed && chest != null && chest.IsOpen) HandleChestOpened();
+            if (Current == Beat.ChestClosed)
+            {
+                ChestOpen found = boxes != null ? boxes.LanternBox : chest; // (with several boxes, only the lantern's counts)
+                if (found != null && found.IsOpen)
+                {
+                    chest = found;
+                    HandleChestOpened();
+                }
+            }
 
             if (!keyboardFallback) return;
             if (!introSearched)
@@ -209,7 +227,10 @@ namespace ArcaneStrike.Story
         {
             switch (Current)
             {
-                case Beat.ChestClosed: if (chest != null) chest.OpenChest(); break;
+                case Beat.ChestClosed:
+                    if (boxes != null) boxes.OpenNearest();
+                    else if (chest != null) chest.OpenChest();
+                    break;
                 case Beat.LanternFound: if (pickup != null) pickup.PickUp(HandSide.Right); break;
                 case Beat.LanternHeld:
                 case Beat.Cleaning:
@@ -288,7 +309,7 @@ namespace ArcaneStrike.Story
         {
             switch (beat)
             {
-                case Beat.ChestClosed: return ": reach to the front of the chest lid and lift (E or N)";
+                case Beat.ChestClosed: return ": take the cloth from the chest's table, wipe a box clean with it, then lift its lid (E or N wipes, then opens, the nearest). The lantern is in one of them";
                 case Beat.LanternFound: return ": close a fist around the lantern's top ring, or point your left index finger at it (N)";
                 case Beat.LanternHeld: return ": with your other hand take the old cloth from the chest (a fist on it, or point your left index finger at it) and rub the lantern (N)";
                 case Beat.Cleaned: return ": touch the glinting edge with a fingertip (N)";

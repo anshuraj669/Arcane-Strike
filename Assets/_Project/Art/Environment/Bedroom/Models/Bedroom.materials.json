@@ -1,0 +1,630 @@
+{
+ "materials": [
+  {
+   "name": "M_Bedroom_Plaster",
+   "color": [
+    0.72,
+    0.76,
+    0.82
+   ],
+   "smoothness": 0.050000000000000044,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Plaster007",
+   "tile": 1.5,
+   "emissive": false
+  },
+  {
+   "name": "M_Bedroom_Ceiling",
+   "color": [
+    0.85,
+    0.86,
+    0.88
+   ],
+   "smoothness": 0.050000000000000044,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Plaster007",
+   "tile": 1.8,
+   "emissive": false
+  },
+  {
+   "name": "M_Bedroom_Floor",
+   "color": [
+    0.78,
+    0.66,
+    0.55
+   ],
+   "smoothness": 0.30000000000000004,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Wood049",
+   "tile": 1.1,
+   "emissive": false
+  },
+  {
+   "name": "M_Bedroom_Trim",
+   "color": [
+    0.55,
+    0.42,
+    0.32
+   ],
+   "smoothness": 0.4,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Wood060",
+   "tile": 0.8,
+   "emissive": false
+  },
+  {
+   "name": "M_Bedroom_Wood",
+   "color": [
+    0.8,
+    0.66,
+    0.52
+   ],
+   "smoothness": 0.35,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Wood049",
+   "tile": 0.8,
+   "emissive": false
+  },
+  {
+   "name": "M_Bedroom_DarkWood",
+   "color": [
+    0.5,
+    0.38,
+    0.3
+   ],
+   "smoothness": 0.4,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Wood060",
+   "tile": 0.8,
+   "emissive": false
+  },
+  {
+   "name": "M_Bedroom_Mattress",
+   "color": [
+    0.86,
+    0.86,
+    0.84
+   ],
+   "smoothness": 0.0,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Fabric085",
+   "tile": 0.4,
+   "emissive": false
+  },
+  {
+   "name": "M_Bedroom_Duvet",
+   "color": [
+    0.42,
+    0.52,
+    0.75
+   ],
+   "smoothness": 0.0,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Fabric061",
+   "tile": 0.3,
+   "emissive": false
+  },
+  {
+   "name": "M_Bedroom_Sheet",
+   "color": [
+    0.9,
+    0.9,
+    0.88
+   ],
+   "smoothness": 0.0,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Fabric061",
+   "tile": 0.3,
+   "emissive": false
+  },
+  {
+   "name": "M_Bedroom_Pillow",
+   "color": [
+    0.92,
+    0.92,
+    0.9
+   ],
+   "smoothness": 0.0,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Fabric061",
+   "tile": 0.25,
+   "emissive": false
+  },
+  {
+   "name": "M_Bedroom_Rug",
+   "color": [
+    0.5,
+    0.17,
+    0.13
+   ],
+   "smoothness": 0.0,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Fabric085",
+   "tile": 0.3,
+   "emissive": false
+  },
+  {
+   "name": "M_Bedroom_Shirt",
+   "color": [
+    0.25,
+    0.27,
+    0.3
+   ],
+   "smoothness": 0.0,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Fabric061",
+   "tile": 0.2,
+   "emissive": false
+  },
+  {
+   "name": "M_Bedroom_Blind",
+   "color": [
+    0.86,
+    0.85,
+    0.8
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false
+  },
+  {
+   "name": "M_Bedroom_NightGlass",
+   "color": [
+    0.1,
+    0.13,
+    0.2
+   ],
+   "smoothness": 0.95,
+   "metallic": 0.0,
+   "alpha": 0.3,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false
+  },
+  {
+   "name": "M_Bedroom_Brass",
+   "color": [
+    1.0,
+    0.78,
+    0.4
+   ],
+   "smoothness": 0.65,
+   "metallic": 0.8,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Metal063",
+   "tile": 0.3,
+   "emissive": false
+  },
+  {
+   "name": "M_Bedroom_Plastic",
+   "color": [
+    0.08,
+    0.08,
+    0.09
+   ],
+   "smoothness": 0.55,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false
+  },
+  {
+   "name": "M_Bedroom_ClockFace",
+   "color": [
+    0.02,
+    0.01,
+    0.01
+   ],
+   "smoothness": 0.8,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false
+  },
+  {
+   "name": "M_Bedroom_Lampshade",
+   "color": [
+    0.85,
+    0.78,
+    0.62
+   ],
+   "smoothness": 0.0,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Fabric061",
+   "tile": 0.3,
+   "emissive": false
+  },
+  {
+   "name": "M_Bedroom_Poster",
+   "color": [
+    0.75,
+    0.72,
+    0.66
+   ],
+   "smoothness": 0.09999999999999998,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Paper006",
+   "tile": 0.6,
+   "emissive": false
+  },
+  {
+   "name": "M_Bedroom_PosterInk",
+   "color": [
+    0.15,
+    0.22,
+    0.4
+   ],
+   "smoothness": 0.09999999999999998,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Paper006",
+   "tile": 0.6,
+   "emissive": false
+  },
+  {
+   "name": "M_Bedroom_BookRed",
+   "color": [
+    0.6,
+    0.15,
+    0.12
+   ],
+   "smoothness": 0.15000000000000002,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Paper006",
+   "tile": 0.3,
+   "emissive": false
+  },
+  {
+   "name": "M_Bedroom_BookBlue",
+   "color": [
+    0.15,
+    0.25,
+    0.5
+   ],
+   "smoothness": 0.15000000000000002,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Paper006",
+   "tile": 0.3,
+   "emissive": false
+  },
+  {
+   "name": "M_Bedroom_BookGreen",
+   "color": [
+    0.18,
+    0.4,
+    0.25
+   ],
+   "smoothness": 0.15000000000000002,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Paper006",
+   "tile": 0.3,
+   "emissive": false
+  },
+  {
+   "name": "M_Bedroom_BookOchre",
+   "color": [
+    0.7,
+    0.52,
+    0.2
+   ],
+   "smoothness": 0.15000000000000002,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "Paper006",
+   "tile": 0.3,
+   "emissive": false
+  },
+  {
+   "name": "M_Bedroom_Mug",
+   "color": [
+    0.85,
+    0.82,
+    0.75
+   ],
+   "smoothness": 0.7,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false
+  },
+  {
+   "name": "M_Bedroom_Laptop",
+   "color": [
+    0.45,
+    0.46,
+    0.48
+   ],
+   "smoothness": 0.65,
+   "metallic": 0.6,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false
+  },
+  {
+   "name": "M_Prop_ClassicNightstand_01",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/ClassicNightstand_01/M_Prop_ClassicNightstand_01_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/ClassicNightstand_01/M_Prop_ClassicNightstand_01_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/ClassicNightstand_01/M_Prop_ClassicNightstand_01_MetalSmooth.png"
+  },
+  {
+   "name": "M_Prop_GothicCabinet_01",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/GothicCabinet_01/M_Prop_GothicCabinet_01_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/GothicCabinet_01/M_Prop_GothicCabinet_01_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/GothicCabinet_01/M_Prop_GothicCabinet_01_MetalSmooth.png"
+  },
+  {
+   "name": "M_Prop_painted_wooden_chair_02",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/painted_wooden_chair_02/M_Prop_painted_wooden_chair_02_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/painted_wooden_chair_02/M_Prop_painted_wooden_chair_02_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/painted_wooden_chair_02/M_Prop_painted_wooden_chair_02_MetalSmooth.png"
+  },
+  {
+   "name": "M_Prop_standing_picture_frame_01_0",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 0.3,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/standing_picture_frame_01/M_Prop_standing_picture_frame_01_0_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/standing_picture_frame_01/M_Prop_standing_picture_frame_01_0_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/standing_picture_frame_01/M_Prop_standing_picture_frame_01_0_MetalSmooth.png"
+  },
+  {
+   "name": "M_Prop_standing_picture_frame_01_1",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/standing_picture_frame_01/M_Prop_standing_picture_frame_01_1_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/standing_picture_frame_01/M_Prop_standing_picture_frame_01_1_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/standing_picture_frame_01/M_Prop_standing_picture_frame_01_1_MetalSmooth.png"
+  },
+  {
+   "name": "M_Prop_standing_picture_frame_01_2",
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "smoothness": 0.5,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false,
+   "baseMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/standing_picture_frame_01/M_Prop_standing_picture_frame_01_2_Color.jpg",
+   "normalMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/standing_picture_frame_01/M_Prop_standing_picture_frame_01_2_Normal.jpg",
+   "maskMap": "Assets/_Project/Art/Environment/Attic/Textures/Props/standing_picture_frame_01/M_Prop_standing_picture_frame_01_2_MetalSmooth.png"
+  }
+ ]
+}
