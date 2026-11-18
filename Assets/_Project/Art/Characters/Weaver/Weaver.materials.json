@@ -3,49 +3,11 @@
   {
    "name": "M_Weaver_OutfitCoat",
    "color": [
-    0.1,
-    0.2,
-    0.52
+    0.93,
+    0.93,
+    0.92
    ],
-   "smoothness": 0.19999999999999996,
-   "metallic": 0.0,
-   "alpha": 1.0,
-   "emission": [
-    0,
-    0,
-    0
-   ],
-   "texture": "Fabric061",
-   "tile": 0.25,
-   "emissive": false
-  },
-  {
-   "name": "M_Weaver_OutfitTrim",
-   "color": [
-    0.07,
-    0.13,
-    0.34
-   ],
-   "smoothness": 0.15000000000000002,
-   "metallic": 0.0,
-   "alpha": 1.0,
-   "emission": [
-    0,
-    0,
-    0
-   ],
-   "texture": "Fabric061",
-   "tile": 0.25,
-   "emissive": false
-  },
-  {
-   "name": "M_Weaver_OutfitBoots",
-   "color": [
-    0.84,
-    0.8,
-    0.72
-   ],
-   "smoothness": 0.5,
+   "smoothness": 0.21999999999999997,
    "metallic": 0.0,
    "alpha": 1.0,
    "emission": [
@@ -54,56 +16,94 @@
     0
    ],
    "texture": "",
-   "tile": 0.2,
+   "tile": 1.0,
+   "emissive": false
+  },
+  {
+   "name": "M_Weaver_OutfitTrim",
+   "color": [
+    0.9,
+    0.9,
+    0.89
+   ],
+   "smoothness": 0.18000000000000005,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false
+  },
+  {
+   "name": "M_Weaver_OutfitBoots",
+   "color": [
+    0.13,
+    0.13,
+    0.14
+   ],
+   "smoothness": 0.4,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false
+  },
+  {
+   "name": "M_Weaver_OutfitGloves",
+   "color": [
+    0.09,
+    0.09,
+    0.1
+   ],
+   "smoothness": 0.35,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false
+  },
+  {
+   "name": "M_Weaver_OutfitSole",
+   "color": [
+    0.88,
+    0.88,
+    0.86
+   ],
+   "smoothness": 0.30000000000000004,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
    "emissive": false
   },
   {
    "name": "M_Weaver_OutfitCape",
    "color": [
     0.08,
-    0.16,
-    0.44
+    0.08,
+    0.09
    ],
-   "smoothness": 0.19999999999999996,
+   "smoothness": 0.4,
    "metallic": 0.0,
-   "alpha": 1.0,
-   "emission": [
-    0,
-    0,
-    0
-   ],
-   "texture": "Fabric061",
-   "tile": 0.3,
-   "emissive": false
-  },
-  {
-   "name": "M_Weaver_OutfitScarf",
-   "color": [
-    0.95,
-    0.94,
-    0.9
-   ],
-   "smoothness": 0.19999999999999996,
-   "metallic": 0.0,
-   "alpha": 1.0,
-   "emission": [
-    0,
-    0,
-    0
-   ],
-   "texture": "Fabric061",
-   "tile": 0.2,
-   "emissive": false
-  },
-  {
-   "name": "M_Weaver_OutfitSteel",
-   "color": [
-    0.96,
-    0.95,
-    0.92
-   ],
-   "smoothness": 0.7,
-   "metallic": 0.1,
    "alpha": 1.0,
    "emission": [
     0,
@@ -111,36 +111,55 @@
     0
    ],
    "texture": "",
-   "tile": 0.25,
+   "tile": 1.0,
    "emissive": false
   },
   {
-   "name": "M_Weaver_OutfitGilt",
+   "name": "M_Weaver_OutfitScarf",
    "color": [
-    1.0,
-    0.76,
-    0.32
+    0.94,
+    0.94,
+    0.93
    ],
-   "smoothness": 0.7,
-   "metallic": 0.55,
+   "smoothness": 0.19999999999999996,
+   "metallic": 0.0,
    "alpha": 1.0,
    "emission": [
     0,
     0,
     0
    ],
-   "texture": "Metal063",
-   "tile": 0.1,
+   "texture": "",
+   "tile": 1.0,
+   "emissive": false
+  },
+  {
+   "name": "M_Weaver_OutfitMask",
+   "color": [
+    0.07,
+    0.07,
+    0.08
+   ],
+   "smoothness": 0.09999999999999998,
+   "metallic": 0.0,
+   "alpha": 1.0,
+   "emission": [
+    0,
+    0,
+    0
+   ],
+   "texture": "",
+   "tile": 1.0,
    "emissive": false
   },
   {
    "name": "M_Weaver_OutfitBelt",
    "color": [
     0.1,
-    0.17,
-    0.42
+    0.1,
+    0.11
    ],
-   "smoothness": 0.5,
+   "smoothness": 0.30000000000000004,
    "metallic": 0.0,
    "alpha": 1.0,
    "emission": [
@@ -149,46 +168,46 @@
     0
    ],
    "texture": "",
-   "tile": 0.15,
+   "tile": 1.0,
    "emissive": false
   },
   {
-   "name": "M_Weaver_OutfitGem",
+   "name": "M_Weaver_OutfitStrap",
    "color": [
-    0.2,
-    0.55,
-    1.0
+    0.16,
+    0.16,
+    0.17
    ],
-   "smoothness": 0.9,
+   "smoothness": 0.4,
    "metallic": 0.0,
    "alpha": 1.0,
    "emission": [
-    0.15,
-    0.5,
-    1.0
+    0,
+    0,
+    0
    ],
    "texture": "",
    "tile": 1.0,
-   "emissive": true
+   "emissive": false
   },
   {
-   "name": "M_Weaver_OutfitGlow",
+   "name": "M_Weaver_OutfitSteel",
    "color": [
-    0.45,
-    0.8,
-    1.0
+    0.55,
+    0.56,
+    0.58
    ],
-   "smoothness": 0.8,
-   "metallic": 0.0,
+   "smoothness": 0.65,
+   "metallic": 0.5,
    "alpha": 1.0,
    "emission": [
-    0.35,
-    0.75,
-    1.0
+    0,
+    0,
+    0
    ],
    "texture": "",
    "tile": 1.0,
-   "emissive": true
+   "emissive": false
   },
   {
    "name": "M_Weaver_Skin",

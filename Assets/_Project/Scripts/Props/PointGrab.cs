@@ -9,7 +9,8 @@ namespace ArcaneStrike.Props
     /// Point to grab: point the index finger of this hand (the other fingers curled) at something and hold it
     /// there for a moment; a faint beam shows what you're aiming at, and then it flies into your hand. Works on
     /// every <see cref="Grabbable"/> and on the lantern once the chest is open. Open the hand to drop or throw it.
-    /// (The right index finger walks, see PlayerLocomotion, so this is the left hand by default.)
+    /// (The right index finger walks, see PlayerLocomotion, so this is the left hand by default. By default the left
+    /// index finger now walks you up to what it points at instead, see PointToWalk; turn on pullByPointing to pull.)
     /// Keyboard (no tracked hand, <see cref="GameInput"/>): look at it and press T to pull it into your hand (it
     /// sparkles while you look at it); T again drops it, Y throws it where you look.
     /// </summary>
@@ -24,6 +25,9 @@ namespace ArcaneStrike.Props
         [Tooltip("Keep pointing at it this long (s) to pull it in.")]
         [SerializeField] float aimTime = 0.4f;
         [SerializeField] Color beamColor = new Color(0.55f, 0.85f, 1f, 0.35f);
+        [Tooltip("Pull things in by pointing this hand's index finger at them. Off: the left index finger walks you to " +
+                 "what it points at instead (PointToWalk); T still pulls things in from the keyboard.")]
+        [SerializeField] bool pullByPointing = false;
 
         LineRenderer beam;
         ParticleSystem marks;
@@ -54,7 +58,7 @@ namespace ArcaneStrike.Props
         void Update()
         {
             HandFrame f = input != null ? input.Get(hand) : null;
-            if (f == null || !f.IsTracked)
+            if (f == null || !f.IsTracked || !pullByPointing)
             {
                 UpdateKeyboard();
                 return;

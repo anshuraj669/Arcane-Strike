@@ -50,7 +50,7 @@ namespace ArcaneStrike.Props
         void FixedUpdate()
         {
             if (input == null) return;
-            bool webcam = input.ActiveSource is WebcamHandSource;
+            bool webcam = input.WebcamHands;
             for (int hand = 0; hand < 2; hand++)
             {
                 HandFrame f = input.Get((HandSide)hand);

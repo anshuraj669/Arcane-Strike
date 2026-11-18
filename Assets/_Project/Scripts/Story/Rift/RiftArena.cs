@@ -125,7 +125,7 @@ namespace ArcaneStrike.Story
             if (player == null) player = gameObject.AddComponent<RiftPlayer>();
             player.OnDown += () =>
             {
-                if (dying) return; // (already falling: a second blow or the lava mustn't get them up, or start it again)
+                if (dying || ending) return; // (already falling, or the fight is won: nothing can bring them down now)
                 StartCoroutine(Dies() ? Death() : GetUp());
             };
             if (ascensionOnArrival && (outfit == null || !outfit.ArrivesDressed))
@@ -625,12 +625,35 @@ namespace ArcaneStrike.Story
                     if (k.HealthFraction <= 0.2f) k.Kill();
                     else k.Weaken(0.15f);
             }
-            if (GameInput.Pressed(GameAction.DebugSkipToEnd) && !ending && (ascension == null || !ascension.IsRunning))
+            // F10 (End too: on Linux the editor's GTK menu bar can swallow F10).
+            var kb = Keyboard.current;
+            if (GameInput.Pressed(GameAction.DebugSkipToEnd) || (kb != null && kb.endKey.wasPressedThisFrame))
+                WinNow();
+        }
+
+        /// <summary>For the demo video (F10 / End, or Arcane Strike → Demo Video → Win the Fight): every monster dies at
+        /// once, no more come, and the ending plays (the Warlord falls, CHAPTER 1 COMPLETE) and goes on to Chapter 2.</summary>
+        public void WinNow()
+        {
+            if (ending || dying)
             {
-                ending = true;
-                StopAllCoroutines();
-                StartCoroutine(Ending());
+                Debug.Log("[Rift] F10: the ending is already playing.");
+                return;
             }
+            if (ascension != null && ascension.IsRunning)
+            {
+                Debug.Log("[Rift] F10: wait for the Ascension to finish (N skips it).");
+                return;
+            }
+            Debug.Log("[Rift] F10: every monster falls; on to the ending and Chapter 2.");
+            ending = true;
+            StopAllCoroutines();
+            if (hunt != null) hunt.StopAllCoroutines(); // (no more waves leaping in)
+            foreach (KalakhWarrior k in KalakhWarrior.Alive.ToArray()) k.Kill();
+            foreach (ShadowMonster m in ShadowMonster.Alive.ToArray()) m.Kill();
+            if (ScreenFade.Current.a > 0.01f) ScreenFade.Set(StoryFx.WithAlpha(ScreenFade.Current, 0f));
+            if (ember == null) SpawnEmber();
+            StartCoroutine(Ending());
         }
 
         void OnDestroy()

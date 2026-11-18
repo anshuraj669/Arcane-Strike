@@ -116,6 +116,14 @@ namespace ArcaneStrike.Story
 
         public IEnumerator Say(string line, AudioClip clip, float hold)
         {
+            // A voiced line is heard, not read: with a recording (the scene's own, or the voice bank's) it is spoken
+            // with no subtitle. Only a line with no clip at all falls back to the typed subtitle and the crackle.
+            if (clip == null) clip = VoiceBank.Find(speakerName, line);
+            if (clip != null)
+            {
+                yield return Speak(clip, line, hold);
+                yield break;
+            }
             int id = ++lineId;
             IsSpeaking = true;
             skipLine = false;

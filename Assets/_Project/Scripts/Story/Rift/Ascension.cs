@@ -362,15 +362,61 @@ namespace ArcaneStrike.Story
                 if (hand < touchReach) break;
                 if (GameInput.Pressed(GameAction.Interact))
                 {
-                    if (near < 2.2f) break;
-                    CombatFx.Popup("Closer...", pommel + Vector3.up * 0.3f, new Color(0.7f, 0.85f, 1f), 0.5f);
+                    // E: the character walks up to the cauldron by itself, faces it and lays a hand on its rim.
+                    yield return WalkUpAndTouch(head, locomotion, b, guard);
+                    break;
                 }
                 yield return null;
             }
             if (locomotion != null) locomotion.Paused = true;
+            StartCoroutine(LetGoOfCauldron(0.6f));
             yield return Shockwave(guard, head);
             Destroy(hum);
             StartCoroutine(FadeLight(glow, 1.5f));
+        }
+
+        // The keyboard's touch: walk over (stopping an arm's length from the rim), turn to face the cauldron (on a screen;
+        // in a headset the player turns themselves), then reach the right hand out onto the rim nearest the player.
+        IEnumerator WalkUpAndTouch(Transform head, PlayerLocomotion locomotion, Bounds b, Vector3 centre)
+        {
+            float radius = Mathf.Max(b.extents.x, b.extents.z);
+            float stopAt = radius + 0.5f;
+            float flat = new Vector2(head.position.x - centre.x, head.position.z - centre.z).magnitude;
+            if (locomotion != null && flat > stopAt + 0.1f)
+            {
+                locomotion.WalkTo(centre, stopAt);
+                float giveUp = Time.time + 12f;
+                while (locomotion.WalkingTo && Time.time < giveUp) yield return null;
+                if (locomotion.WalkingTo) locomotion.CancelWalkTo();
+            }
+            if (!UnityEngine.XR.XRSettings.isDeviceActive)
+            {
+                Transform rig = head.root;
+                for (float t = 0f; t < 0.5f; t += Time.deltaTime)
+                {
+                    Vector3 to = StoryFx.Flat(centre - head.position);
+                    float angle = Vector3.SignedAngle(StoryFx.Flat(head.forward), to, Vector3.up);
+                    rig.RotateAround(head.position, Vector3.up, angle * (1f - Mathf.Exp(-Time.deltaTime * 9f)));
+                    yield return null;
+                }
+            }
+            // The hand: flat on the rim, on the side facing the player, fingers pointing in over the mouth.
+            Vector3 toPlayer = StoryFx.Flat(head.position - centre);
+            Vector3 across = Vector3.Cross(Vector3.up, toPlayer);
+            Vector3 rim = new Vector3(centre.x, b.max.y, centre.z) + toPlayer * radius * 0.85f - across * 0.08f + Vector3.up * 0.03f;
+            Quaternion flatHand = Quaternion.LookRotation(Vector3.Slerp(-toPlayer, Vector3.down, 0.35f).normalized, Vector3.up);
+            for (float t = 0f; t < 0.9f; t += Time.deltaTime)
+            {
+                ActedHands.Hold(HandSide.Right, rim, flatHand, 0.15f);
+                yield return null;
+            }
+        }
+
+        // The hand stays on the rim as the shockwave rings out, then drops away.
+        static IEnumerator LetGoOfCauldron(float after)
+        {
+            yield return new WaitForSeconds(after);
+            ActedHands.Release(HandSide.Right);
         }
 
         // How close (m) the nearest tracked fingertip or palm is to the hilt (from guard to pommel), and where it is.

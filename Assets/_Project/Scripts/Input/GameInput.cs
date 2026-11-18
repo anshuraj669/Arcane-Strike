@@ -20,6 +20,8 @@ namespace ArcaneStrike.HandInput
         // Settings and testing
         NextAppearance, NextChapter, PreviousChapter, ToggleRoomMesh, CalibrateWebcam, ReplaceSet,
         DebugKillAll, DebugSkipToEnd, ShowControls,
+        // (added later: kept at the end so saved values don't shift)
+        WalkToTarget,
     }
 
     /// <summary>
@@ -55,6 +57,8 @@ namespace ArcaneStrike.HandInput
         static void ResetStatics()
         {
             KeyboardEnabled = true;
+            ReplayPressed = ReplayHeld = ReplayReleased = null;
+            ReplayMouse = null;
             held.Clear();
             pressedFrame.Clear();
             releasedFrame.Clear();
@@ -78,6 +82,7 @@ namespace ArcaneStrike.HandInput
             BindMouse(GameAction.Look, Mouse.Right, "Move", "Look around (hold, move the mouse)");
             Bind(GameAction.Jump, Key.Space, "Move", "Jump");
             Bind(GameAction.ToggleSmoothMove, Key.L, "Move", "Smooth walking on/off");
+            Bind(GameAction.WalkToTarget, Key.M, "Move", "Walk to what you look at, stop an arm's length away (M again stops). Hands: point the left index finger at it");
 
             Bind(GameAction.Interact, Key.E, "Story", "Interact / do the next story step");
             Bind(GameAction.Skip, Key.N, "Story", "Skip the line / the step");
@@ -143,18 +148,36 @@ namespace ArcaneStrike.HandInput
 
         // ---------------------------------------------------------------- reading
 
+        // ---------------------------------------------------------------- replaying a recorded demo take
+
+        /// <summary>Set while a recorded take replays (Demo/DemoDirector): the keys, controller buttons and mouse
+        /// come from the recording instead of the real ones. Gestures (Press / SetHeld) still work as usual.</summary>
+        public static System.Func<GameAction, bool> ReplayPressed, ReplayHeld, ReplayReleased;
+        public static System.Func<Vector2> ReplayMouse;
+        public static bool Replaying => ReplayHeld != null;
+
+        /// <summary>The real keyboard / mouse / controller only (no gestures, no replay): what a take records.</summary>
+        public static bool RawPressed(GameAction action) =>
+            KeyState(action, k => k.wasPressedThisFrame, m => m.wasPressedThisFrame) || ControllerButtons.Pressed(action);
+        public static bool RawHeld(GameAction action) =>
+            KeyState(action, k => k.isPressed, m => m.isPressed) || ControllerButtons.Held(action);
+        public static bool RawReleased(GameAction action) =>
+            KeyState(action, k => k.wasReleasedThisFrame, m => m.wasReleasedThisFrame) || ControllerButtons.Released(action);
+        public static Vector2 RawMouseDelta() =>
+            KeyboardEnabled && UnityEngine.InputSystem.Mouse.current != null ? UnityEngine.InputSystem.Mouse.current.delta.ReadValue() : Vector2.zero;
+
         /// <summary>Started this frame (key went down, or <see cref="Press"/> / <see cref="SetHeld"/> this frame).</summary>
         public static bool Pressed(GameAction action) =>
-            KeyState(action, k => k.wasPressedThisFrame, m => m.wasPressedThisFrame)
+            (Replaying ? ReplayPressed(action) : RawPressed(action))
             || pressedFrame.TryGetValue(action, out int frame) && frame == Time.frameCount;
 
         /// <summary>Held down right now (key, or a held gesture).</summary>
         public static bool Held(GameAction action) =>
-            KeyState(action, k => k.isPressed, m => m.isPressed) || held.Contains(action);
+            (Replaying ? ReplayHeld(action) : RawHeld(action)) || held.Contains(action);
 
         /// <summary>Let go this frame.</summary>
         public static bool Released(GameAction action) =>
-            KeyState(action, k => k.wasReleasedThisFrame, m => m.wasReleasedThisFrame)
+            (Replaying ? ReplayReleased(action) : RawReleased(action))
             || releasedFrame.TryGetValue(action, out int frame) && frame == Time.frameCount;
 
         /// <summary>WASD as a stick: x right, y forward (zero when nothing is held).</summary>
@@ -166,8 +189,7 @@ namespace ArcaneStrike.HandInput
         }
 
         /// <summary>Mouse movement this frame (pixels).</summary>
-        public static Vector2 MouseDelta() =>
-            KeyboardEnabled && UnityEngine.InputSystem.Mouse.current != null ? UnityEngine.InputSystem.Mouse.current.delta.ReadValue() : Vector2.zero;
+        public static Vector2 MouseDelta() => Replaying ? (ReplayMouse != null ? ReplayMouse() : Vector2.zero) : RawMouseDelta();
 
         // ---------------------------------------------------------------- driving actions from gestures or code
 
@@ -187,6 +209,13 @@ namespace ArcaneStrike.HandInput
         public static string KeyName(GameAction action)
         {
             if (!Bindings.TryGetValue(action, out Binding b)) return "-";
+            string pad = ControllerButtons.Label(action);
+            if (pad != null) return KeyNameOnly(b) + "  (" + pad + ")";
+            return KeyNameOnly(b);
+        }
+
+        static string KeyNameOnly(Binding b)
+        {
             if (b.mouse == Mouse.Left) return "Left click";
             if (b.mouse == Mouse.Right) return "Right mouse";
             return b.key switch

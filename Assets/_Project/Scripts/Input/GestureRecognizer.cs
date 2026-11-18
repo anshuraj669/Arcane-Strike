@@ -130,7 +130,7 @@ namespace ArcaneStrike.HandInput
 
         public event Action<GestureEvent> OnGesture;
 
-        bool Relaxed => relaxForWebcam && input != null && input.ActiveSource is WebcamHandSource;
+        bool Relaxed => relaxForWebcam && input != null && input.WebcamHands;
         float FireboltSpeed => Relaxed ? fireboltSpeed * 0.6f : fireboltSpeed;
         float AegisRise => Relaxed ? Mathf.Min(aegisRise, 0.07f) : aegisRise;
         float BladeDrawRise => Relaxed ? Mathf.Min(bladeDrawRise, 0.2f) : bladeDrawRise;

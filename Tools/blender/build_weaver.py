@@ -11,16 +11,19 @@ which WarriorOutfit loads when the Ascension begins).
 
 Source (OBJ, 1 unit tall, feet at -0.5, facing +Z, an A-pose):
 - props/weaver_body.obj: the boy himself (arkane 1.obj: hoodie, joggers, shoes).
-The outfit is the Weaver's armour, modelled here (no outside model): silver plate over dark padding, a white
-tabard and half cape, gilt trim and a blue gem at the heart. Each piece is lofted from rings fitted round the boy's
+The outfit is modelled here (no outside model): white techwear after the user's img_1.png reference (18 Nov): a deep
+white hood over a black ribbed face mask, a fitted jacket with dark seams, a zip and slanting zip pockets, black
+ribbed cuffs and dark gloves, a black harness strap with buckles, cargo joggers (thigh pockets, a thigh strap,
+drawstrings, gathered ankles) and dark sneaker-boots. Plain colours: no photo textures (they tinted the white brown).
+The "Cape" step is the harness and thigh strap. Each piece is lofted from rings fitted round the boy's
 own body (the furthest the body reaches in each direction round an axis, then pushed out), so it sits on him.
 
 Objects (all under the root "Weaver", in Unity metres, 1.70 m tall):
 - Body_Head, Body_Arms, Body_Torso, Body_Feet: the boy in his own clothes. Each outfit part that forms replaces
   one of them (sleeves → arms, boots → feet, coat → torso); his head stays his own.
-- Avatar_Sleeve, Avatar_Boots, Avatar_Coat, Avatar_Scarf, Avatar_Cape, Avatar_Sword: the armour on the whole figure
-  (sleeves: padded arms, elbow guards, vambraces and gauntlets; boots: boots, greaves, knee guards; coat: padding,
-  breastplate, belt, faulds, tabard; Scarf: the gorget, collar and pauldrons; cape: the half cape), the sword
+- Avatar_Sleeve, Avatar_Boots, Avatar_Coat, Avatar_Scarf, Avatar_Cape, Avatar_Sword: the outfit on the whole figure
+  (sleeves: the jacket's sleeves and gloves; boots: leather boots; coat: the jacket, belt and trousers; Scarf: the
+  collar and the cape's clasp; cape: the long white cape), the sword
   sheathed across his back.
 - Outfit_Sleeve_L/R, Outfit_Boots, Outfit_Coat, Outfit_Cape, Outfit_Sword_Hilt/_Scabbard: the parts
   fastened to the player in first person (no head, collar, upper arms or hands). Sleeves: anchor at the wrist, the sleeve runs back
@@ -28,7 +31,7 @@ Objects (all under the root "Weaver", in Unity metres, 1.70 m tall):
 - Weaver_Sword: the bare sword (a broad straight short sword, bronze-hilted with a red wrapped grip), pivot in the middle of the grip, blade up (+Y),
   flats facing ±Z, the edge's curve towards +X.
 The sheath hangs diagonally across the back: the hilt over the right shoulder (to draw it with the right hand), the
-tip at the left hip, over the backplate and in front of the cape.
+tip at the left hip, over the jacket and in front of the cape.
 Everything except the sleeves and Weaver_Sword shares one anchor (WarriorOutfit's): 0.38 m below and 0.08 m behind
 the eyes, front +Z.
 """
@@ -96,21 +99,20 @@ def material(name, color, roughness=0.8, metallic=0.0, emission=None, tex=None, 
     return m
 
 
-# The armour. WarriorOutfit tints the cloth and leather by name for each appearance (OutfitCoat, OutfitTrim,
-# OutfitBoots, OutfitCape, OutfitScarf); the plate, gilt and gem keep their own colours.
-# White enamelled plate edged in gold over royal-blue cloth, with lines of the Jyoti's blue light set into it. Mostly
-# not metallic on purpose: a fully metal surface only shows what it reflects, and the temple and the monster world have
-# little to reflect, so polished steel came out nearly black there.
-COAT = material("OutfitCoat", (0.1, 0.2, 0.52), 0.8, tex="Fabric061", tile=0.25)        # the tabard
-TRIM = material("OutfitTrim", (0.07, 0.13, 0.34), 0.85, tex="Fabric061", tile=0.25)    # the padding under the plate
-BOOTS = material("OutfitBoots", (0.84, 0.8, 0.72), 0.5, tile=0.2)                     # boots and gloves: pale leather
-CAPE = material("OutfitCape", (0.08, 0.16, 0.44), 0.8, tex="Fabric061", tile=0.3)
-SCARF = material("OutfitScarf", (0.95, 0.94, 0.9), 0.8, tex="Fabric061", tile=0.2)     # the standing collar
-PLATE = material("OutfitSteel", (0.96, 0.95, 0.92), 0.3, 0.1, tile=0.25)                 # white enamel
-GILT = material("OutfitGilt", (1.0, 0.76, 0.32), 0.3, 0.55, tex="Metal063", tile=0.1)
-BELT = material("OutfitBelt", (0.1, 0.17, 0.42), 0.5, tile=0.15)
-GEM = material("OutfitGem", (0.2, 0.55, 1.0), 0.1, emission=(0.15, 0.5, 1.0))
-GLOW = material("OutfitGlow", (0.45, 0.8, 1.0), 0.2, emission=(0.35, 0.75, 1.0))     # the light set into the plate
+# The outfit: white techwear (the user's img_1.png reference). WarriorOutfit tints the cloth by name for each
+# appearance (OutfitCoat, OutfitTrim, OutfitBoots, OutfitCape, OutfitScarf); the rest keep their own colours.
+# Plain colours, no photo textures: the leather texture is brown and turned the white brown in Unity.
+COAT = material("OutfitCoat", (0.93, 0.93, 0.92), 0.78)      # the jacket
+TRIM = material("OutfitTrim", (0.9, 0.9, 0.89), 0.82)        # the cargo joggers
+BOOTS = material("OutfitBoots", (0.13, 0.13, 0.14), 0.6)     # dark sneaker-boots
+GLOVES = material("OutfitGloves", (0.09, 0.09, 0.1), 0.65)   # dark gloves
+SOLE = material("OutfitSole", (0.88, 0.88, 0.86), 0.7)       # white soles
+CAPE = material("OutfitCape", (0.08, 0.08, 0.09), 0.6)       # the harness and thigh straps (black webbing)
+SCARF = material("OutfitScarf", (0.94, 0.94, 0.93), 0.8)     # the hood
+MASK = material("OutfitMask", (0.07, 0.07, 0.08), 0.9)       # the ribbed face mask and cuffs
+BELT = material("OutfitBelt", (0.1, 0.1, 0.11), 0.7)         # the belt, drawstrings
+STRAP = material("OutfitStrap", (0.16, 0.16, 0.17), 0.6)     # seams, zips, pocket edges
+BUCKLE = material("OutfitSteel", (0.55, 0.56, 0.58), 0.35, 0.5)  # buckles, zip pulls
 # The boy.
 SKIN = material("Skin", (0.72, 0.48, 0.36), 0.6)
 HAIR = material("Hair", (0.13, 0.08, 0.05), 0.5)
@@ -373,7 +375,9 @@ def along_arm(side, start, end, count):
 
 UP = (0.0, 1.0, 0.0)
 FRONT = Vector((0.0, 0.0, 1.0))  # (Unity)
-HOOD = lambda v: (v[:, 1] > 0.72) & (v[:, 2] < -0.075)  # the boy's hood, lying on his back: not the body
+# The boy's hood, lying on his back: not the body. Round the neck (y > 0.79) his own back is at about z -0.05, and
+# everything further back (to -0.1) is that hood, which would push the collar and the mask out through the cowl.
+HOOD = lambda v: (v[:, 1] > 0.72) & ((v[:, 2] < -0.075) | ((v[:, 1] > 0.79) & (v[:, 2] < -0.058)))
 
 
 def torso_reach(y):
@@ -391,74 +395,84 @@ def torso(y0, y1, count, offset, extra=None, shoulders=0.2):
     return rings
 
 
-def chest_out(v, t):
-    """The breastplate: rounded out in front (most at the chest, little at the waist), a ridge down the middle."""
-    f = max(0.0, v[2])  # (OBJ +z is the front)
-    return (0.3 + 0.7 * t) * (0.011 * f * f + 0.005 * max(0.0, f - 0.94) / 0.06)
+def jacket_hem(v, t):
+    """The jacket hangs a little loose, flaring out towards its hem."""
+    return 0.004 * (1.0 - t) ** 2
+
+
+JACKET_YS = steps(0.49, 0.845, 26)
+
+
+def wrinkles(amp, freq=9.0, phase=0.0):
+    """Soft cloth folds for rings_round's `extra`: ripples round the ring that drift along it (amp in OBJ units)."""
+    def fold(v, t):
+        a = math.atan2(v[2], v[0])
+        return amp * (0.55 * math.sin(a * 5.0 + t * freq + phase) + 0.3 * math.sin(a * 9.0 - t * freq * 1.7 + 1.3 * phase)
+                      + 0.15 * math.sin(a * 2.0 + t * freq * 0.6))
+    return fold
+
+
+def on_rings(rings, ys, y, x, lift=0.0):
+    """The point on the front of the ring nearest height y (OBJ frame), at Unity x, pushed out by `lift`."""
+    i = min(range(len(ys)), key=lambda k: abs(ys[k] - y))
+    return front_point(rings[i], x) + Vector((0.0, 0.0, lift))
+
+
+def front_arc(ring, lift=0.003, spread=0.55):
+    """The front part of a ring (Unity), pushed out a little: a seam across the chest."""
+    c = sum(ring, Vector()) / len(ring)
+    half = max((p - c).length for p in ring)
+    return [p + (p - c).normalized() * lift for p in ring if (p.z - c.z) > half * (1.0 - spread)]
 
 
 def coat(shape):
-    # The padding: the whole torso, to the neck.
-    shape.sheet(torso(0.385, 0.845, 30, 0.004), TRIM, closed=True, cap=True)
-    # The breastplate and backplate, one shell, with gilt at its edges and the sun and gem on the chest.
-    plate = torso(0.57, 0.785, 15, 0.016, chest_out, shoulders=0.165)  # (its top under the gorget, its foot under the belt)
-    shape.sheet(plate, PLATE, closed=True, thickness=0.005)
-    heart = plate[10]
-    centre = max(heart, key=lambda p: p.z) + Vector((0.0, 0.0, 0.007))
-    shape.sphere(centre, 0.034, GILT, squash=(1, 1, 0.22), segs=16)
-    for k in range(12):  # rays of the sun round the gem
-        a = k / 12 * math.tau
-        shape.sphere(centre + Vector((math.cos(a), math.sin(a), 0.0)) * 0.047, 0.008 if k % 2 else 0.011, GILT,
-                     squash=(1, 1, 0.5), segs=8)
-    shape.sphere(centre + Vector((0.0, 0.0, 0.007)), 0.016, GEM, squash=(1, 1.25, 0.6), segs=12)
-    # The Jyoti's light set into the plate: a line down from the sun to the belt, and two climbing to the shoulders.
-    shape.rim(front_line(plate[1:9], 0.0), 0.0032, GLOW)
-    for side in (1, -1):
-        rows = plate[9:15]
-        shape.rim(front_line(rows, [side * (0.03 + 0.024 * i) for i in range(len(rows))], 0.003), 0.0028, GLOW)
-        rows = plate[2:9]
-        shape.rim(front_line(rows, [side * (0.05 + 0.012 * i) for i in range(len(rows))], 0.003), 0.0026, GILT)
-    # The belt and its buckle.
-    belt = torso(0.548, 0.588, 3, 0.03)
-    shape.sheet(belt, BELT, closed=True, thickness=0.004)
-    front = max(belt[1], key=lambda p: p.z)
-    shape.box(front + Vector((0.0, 0.0, 0.006)), (0.05, 0.04, 0.012), GILT)
-    # The faulds: three plates round the hips under the belt, each flaring out over the next.
-    for k, (top, bottom) in enumerate(((0.555, 0.51), (0.525, 0.48), (0.495, 0.45))):
-        lame = facing(torso(bottom, top, 4, 0.02 + 0.007 * k, lambda v, t: 0.008 * (1.0 - t)), FRONT, 118)
-        shape.sheet(lame, PLATE, thickness=0.004)
-        shape.rim(lame[0], 0.004, GILT)
-    # The legs' padding, from the knees into the torso.
-    for side in (1, -1):
-        ys = steps(0.2, 0.44, 14)
-        shape.sheet(rings_round([middle(y, 0.065 * side, 0.05) for y in ys], [UP] * len(ys), (1, 0, 0), 20, 0.075, 0.005),
-                    TRIM, closed=True, thickness=0.003)
-    # The tabard: a front and a back panel hanging from under the faulds to the knees, edged and studded in steel.
-    for facing_front in (True, False):
-        rows, depth = [], None
-        for k, y in enumerate(steps(0.5, 0.2, 14)):
-            t = k / 13
-            w = 0.068 + 0.03 * t
-            v = body_vertices()
-            s = v[(np.abs(v[:, 1] - y) < 0.01) & (np.abs(v[:, 0]) < w + 0.02)]
-            z = (s[:, 2].max() + 0.05) if facing_front else (s[:, 2].min() - 0.03)  # (in front of the knee guards)
-            depth = z if depth is None else (max(z, depth - 0.008) if facing_front else min(z, depth + 0.008))
-            row = []
-            for j in range(9):
-                u = -1.0 + 2.0 * j / 8
-                fold = 0.005 * t * math.sin(u * math.pi * 1.5)
-                row.append(to_unity(Vector((u * w, y, depth + (fold if facing_front else -fold)))))
-            rows.append(row)
-        shape.sheet(rows, COAT, thickness=0.004)
-        out = Vector((0.0, 0.0, 0.004 if facing_front else -0.004))
-        shape.rim([r[0] + out for r in rows], 0.005, GILT)
-        shape.rim([r[-1] + out for r in rows], 0.005, GILT)
-        shape.rim([p + out for p in rows[-1]], 0.005, GILT)
-        shape.rim([r[1] + out for r in rows], 0.0022, GILT)
-        shape.rim([r[-2] + out for r in rows], 0.0022, GILT)
-        if facing_front:
-            sun(shape, rows[5][4] + out * 1.5, 0.017, GILT, GEM)
-            shape.rim([r[4] + out * 1.2 for r in rows[7:13]], 0.0025, GLOW)
+    """Loose white cargo joggers gathered at the ankles, with thigh pockets and drawstrings, a dark belt, and a fitted
+    white jacket: dark seams, a front zip and two slanting zip pockets on the chest."""
+    for side in (1, -1):  # the trouser legs, a little baggy, gathered into the ankle cuffs
+        ys = steps(0.1, 0.5, 21)
+        leg = rings_round([middle(y, 0.065 * side, 0.05) for y in ys], [UP] * len(ys), (1, 0, 0), 20, 0.075, 0.004,
+                          lambda v, t: 0.006 * math.sin(min(1.0, t * 1.6) * math.pi * 0.5) - 0.007 * (1.0 - t) ** 4 - 0.008 * max(0.0, t - 0.85) / 0.15
+                          + wrinkles(0.004, 22.0, side)(v, t) * (1.0 - t) ** 0.5)
+        shape.sheet(leg, TRIM, closed=True, thickness=0.003)
+        shape.sheet(leg[:3], MASK, closed=True, thickness=0.004)  # the gathered dark ankle band
+        # The cargo pocket on the outside of the thigh, its flap and zip; a seam down the outside of the leg.
+        out = Vector((-side, 0.0, 0.0))
+        i = ys.index(min(ys, key=lambda y: abs(y - 0.33)))
+        p = max(leg[i], key=lambda q: q.dot(out))
+        shape.box(p + out * 0.006, (0.02, 0.15, 0.11), TRIM)
+        shape.box(p + out * 0.016 + Vector((0.0, 0.07, 0.0)), (0.008, 0.035, 0.115), TRIM)
+        shape.box(p + out * 0.021 + Vector((0.0, 0.05, 0.0)), (0.003, 0.004, 0.09), STRAP)
+        shape.rim([max(r, key=lambda q: q.dot(out)) + out * 0.002 for r in leg[4:]], 0.0018, STRAP)
+    shape.sheet(torso(0.47, 0.56, 5, 0.0), TRIM, closed=True, thickness=0.003)
+    belt = torso(0.53, 0.55, 2, 0.01)
+    shape.sheet(belt, BELT, closed=True, thickness=0.003)
+    front = front_point(belt[0], 0.0)
+    shape.box(front + Vector((0.0, 0.017, 0.006)), (0.05, 0.03, 0.008), BUCKLE)
+    for x, length in ((-0.1, 0.3), (0.075, 0.22)):  # loose black straps hanging from the belt at the hips
+        top = front_point(belt[0], x) + Vector((0.0, 0.0, 0.006))
+        rows = [[top + Vector((-0.011, -length * t, 0.008 * t)), top + Vector((0.011, -length * t, 0.008 * t))] for t in steps(0.0, 1.0, 6)]
+        shape.sheet(rows, BELT, thickness=0.003)
+        shape.box(top + Vector((0.0, -length * 0.55, 0.008)), (0.03, 0.022, 0.007), BUCKLE)
+    for x in (-0.022, 0.022):  # the drawstrings, hanging from the waistband
+        top = front + Vector((x, 0.0, 0.01))
+        cord = [top + Vector((0.004 * math.sin(t * 2.0), -0.2 * t, 0.012 * t)) for t in steps(0.0, 1.0, 8)]
+        shape.rim(cord, 0.0022, BELT)
+        shape.cylinder(cord[-1] - Vector((0.0, 0.01, 0.0)), 0.004, 0.022, BUCKLE, segs=8)
+    # The jacket, close to the body, from the hips to the neck.
+    folds = wrinkles(0.0035, 14.0)
+    jacket = torso(0.49, 0.845, 26, -0.009, lambda v, t: folds(v, t) * (1.0 - t) + 0.006 * max(0.0, 0.25 - t) / 0.25)
+    ys = JACKET_YS
+    shape.sheet(jacket, COAT, closed=True, thickness=0.004)
+    shape.rim(jacket[0], 0.0045, COAT, closed=True)
+    shape.rim(front_line(jacket[1:24], 0.008, 0.004), 0.0025, STRAP)                 # the main zip, a little off centre
+    for x in (-0.085, 0.09):                                                       # seams down the front panels
+        shape.rim(front_line(jacket[1:21], x, 0.003), 0.0016, STRAP)
+    shape.rim(front_arc(jacket[ys.index(min(ys, key=lambda y: abs(y - 0.77)))]), 0.0016, STRAP)  # the chest yoke
+    shape.rim(front_arc(jacket[ys.index(min(ys, key=lambda y: abs(y - 0.6)))], spread=0.4), 0.0016, STRAP)
+    for (y0, x0), (y1, x1) in (((0.73, 0.03), (0.715, 0.075)), ((0.735, -0.03), (0.72, -0.075)), ((0.65, 0.035), (0.64, 0.075))):
+        a, b = on_rings(jacket, ys, y0, x0, 0.004), on_rings(jacket, ys, y1, x1, 0.004)
+        shape.rim([a, a.lerp(b, 0.5) + Vector((0.0, 0.0, 0.002)), b], 0.0022, STRAP)  # a slanting zip pocket
+        shape.box(a + Vector((0.0, -0.012, 0.003)), (0.006, 0.016, 0.003), BUCKLE)    # its pull
 
 
 def front_point(ring, x):
@@ -480,157 +494,165 @@ def front_line(rings, x, lift=0.004):
     return [pts[0]] + [(pts[i - 1] + pts[i] * 2 + pts[i + 1]) / 4 for i in range(1, len(pts) - 1)] + [pts[-1]]
 
 
-def sun(shape, centre, radius, mat, gem=None, normal=Vector((0.0, 0.0, 1.0))):
-    """A gilt sun: a boss with twelve rays round it, facing `normal` (+Z or -Z), and maybe a gem at its heart."""
-    s = 1.0 if normal.z >= 0 else -1.0
-    shape.sphere(centre, radius, mat, squash=(1, 1, 0.22), segs=16)
-    for k in range(12):
-        a = k / 12 * math.tau
-        shape.sphere(centre + Vector((math.cos(a), math.sin(a), 0.0)) * radius * 1.45, radius * (0.24 if k % 2 else 0.34), mat,
-                     squash=(1, 1, 0.5), segs=8)
-    if gem is not None:
-        shape.sphere(centre + Vector((0.0, 0.0, 0.007 * s)), radius * 0.48, gem, squash=(1, 1.25, 0.6), segs=12)
-
-
 def boots(shape):
+    """Dark sneaker-boots up over the ankle, white soles, laced."""
     for side in (1, -1):
         x0 = 0.065 * side
-        ys = steps(0.004, 0.25, 22)
-        shape.sheet(rings_round([middle(y, x0, 0.06) for y in ys], [UP] * len(ys), (1, 0, 0), 24, 0.092, 0.007),
+        ys = steps(0.004, 0.11, 12)
+        shape.sheet(rings_round([middle(y, x0, 0.06) for y in ys], [UP] * len(ys), (1, 0, 0), 24, 0.092, 0.003),
                     BOOTS, closed=True, cap=True)
-        ys = steps(0.222, 0.258, 3)  # the boot's turned-down top
-        shape.sheet(rings_round([middle(y, x0, 0.06) for y in ys], [UP] * 3, (1, 0, 0), 24, 0.09, 0.017),
-                    BOOTS, closed=True, thickness=0.004)
-        # The greave down the shin, the knee guard over the knee, the plates over the toes.
-        ys = steps(0.09, 0.235, 10)
-        greave = facing(rings_round([middle(y, x0, 0.06) for y in ys], [UP] * len(ys), (1, 0, 0), 24, 0.09, 0.02), FRONT, 95)
-        shape.sheet(greave, PLATE, thickness=0.005)
-        shape.rim(greave[-1], 0.004, GILT)
-        shape.rim([row[len(row) // 2] + Vector((0.0, 0.0, 0.005)) for row in greave[1:-1]], 0.003, GLOW)
-        ys = steps(0.255, 0.335, 8)
-        knee = facing(rings_round([middle(y, x0, 0.06) for y in ys], [UP] * len(ys), (1, 0, 0), 24, 0.08, 0.022,
-                                  lambda v, t: 0.014 * math.sin(math.pi * t) * max(0.0, v[2])), FRONT, 85)
-        shape.sheet(knee, PLATE, thickness=0.005)
-        shape.rim([row[0] for row in knee], 0.004, GILT)
-        shape.rim([row[-1] for row in knee], 0.004, GILT)
-        ys = steps(0.028, 0.075, 5)
-        toes = facing(rings_round([middle(y, x0, 0.06) for y in ys], [UP] * len(ys), (1, 0, 0), 24, 0.092, 0.012), FRONT, 55)
-        shape.sheet(toes, PLATE, thickness=0.004)
+        ys = steps(0.002, 0.026, 3)  # the sole
+        shape.sheet(rings_round([middle(y, x0, 0.06) for y in ys], [UP] * 3, (1, 0, 0), 24, 0.092, 0.011),
+                    SOLE, closed=True, cap=True)
 
 
 def forearm(shape, side):
-    """The padded forearm and the vambrace over it (also the first-person sleeve)."""
-    centres, dirs = along_arm(side, 1.0, 2.0, 12)
-    shape.sheet(rings_round(centres, dirs, (side, 0, 0), 16, 0.065, 0.005), TRIM, closed=True, thickness=0.003)
-    centres, dirs = along_arm(side, 1.25, 2.0, 10)
-    vambrace = rings_round(centres, dirs, (side, 0, 0), 16, 0.065, 0.015, lambda v, t: 0.008 * t * t)
-    shape.sheet(vambrace, PLATE, closed=True, thickness=0.004)
-    shape.rim(vambrace[0], 0.004, GILT, closed=True)
-    shape.rim(vambrace[-1], 0.004, GILT, closed=True)
-    shape.rim([p + (p - sum(vambrace[5], Vector()) / len(vambrace[5])).normalized() * 0.004 for p in vambrace[5]], 0.0028, GLOW, closed=True)
+    """The jacket's forearm, its folds bunching towards the wrist, and the long black ribbed cuff that runs on over
+    the back of the hand to the knuckles (thumb-hole style) (also the first-person sleeve)."""
+    centres, dirs = along_arm(side, 1.0, 1.8, 10)
+    sleeve = rings_round(centres, dirs, (side, 0, 0), 16, 0.065, 0.001,
+                         lambda v, t: 0.002 * t + wrinkles(0.004, 20.0, side)(v, t) * (0.3 + 0.7 * t))
+    shape.sheet(sleeve, COAT, closed=True, thickness=0.003)
+    centres, dirs = along_arm(side, 1.72, 2.42, 10)
+    cuff = rings_round(centres, dirs, (side, 0, 0), 16, 0.065, 0.002)
+    shape.sheet(cuff, MASK, closed=True, thickness=0.003)
+    for ring in cuff[1:6]:
+        shape.rim(ring, 0.0016, MASK, closed=True)
 
 
 def sleeves(shape):
+    """The jacket's sleeves (a seam round the upper arm) and dark gloves."""
     for side in (1, -1):
         centres, dirs = along_arm(side, 0.1, 1.05, 12)
-        shape.sheet(rings_round(centres, dirs, (side, 0, 0), 16, 0.065, 0.005), TRIM, closed=True, thickness=0.003)
+        upper = rings_round(centres, dirs, (side, 0, 0), 16, 0.065, -0.002, wrinkles(0.003, 12.0, side))
+        shape.sheet(upper, COAT, closed=True, thickness=0.003)
+        shape.rim([p + (p - sum(upper[3], Vector()) / 16).normalized() * 0.003 for p in upper[3]], 0.0016, STRAP, closed=True)
         forearm(shape, side)
-        # The elbow guard: a cup over the back of the elbow.
-        centres, dirs = along_arm(side, 0.85, 1.2, 7)
-        couter = facing(rings_round(centres, dirs, (side, 0, 0), 16, 0.065, 0.017,
-                                    lambda v, t: 0.013 * math.sin(math.pi * t)), Vector((side * -0.5, 0.0, -1.0)), 100)
-        shape.sheet(couter, PLATE, thickness=0.004)
-        # The gauntlet: a leather glove, a flared steel cuff, a plate over the back of the hand.
-        centres, dirs = along_arm(side, 2.0, 2.97, 10)
-        shape.sheet(rings_round(centres, dirs, (side, 0, 0), 16, 0.06, 0.004), BOOTS, closed=True, cap=True)
-        centres, dirs = along_arm(side, 1.9, 2.3, 5)
-        cuff = rings_round(centres, dirs, (side, 0, 0), 16, 0.06, 0.017, lambda v, t: 0.01 * t)
-        shape.sheet(cuff, PLATE, closed=True, thickness=0.004)
-        shape.rim(cuff[-1], 0.004, GILT, closed=True)
-        centres, dirs = along_arm(side, 2.3, 2.62, 5)
-        shape.sheet(facing(rings_round(centres, dirs, (side, 0, 0), 16, 0.06, 0.011), Vector((-side, 0.0, 0.0)), 60),
-                    PLATE, thickness=0.003)
+        centres, dirs = along_arm(side, 2.38, 2.97, 8)  # bare fingers out of the cuff
+        shape.sheet(rings_round(centres, dirs, (side, 0, 0), 16, 0.06, 0.0005), SKIN, closed=True, cap=True)
 
 
-CHIN = 0.024  # how much lower the gorget sits at the front (his chin is low)
+CHIN = 0.024  # how much lower the collar sits at the front (his chin is low)
 
 
-def gorget_rings():
-    """The neck guard: wide on the shoulders, closing up round the neck (y, half width, half depth, middle z); lower
-    at the front, under the chin."""
-    out = []
-    for y, rx, rz, zc in ((0.772, 0.15, 0.112, -0.012), (0.792, 0.132, 0.1, -0.009), (0.812, 0.108, 0.088, -0.006),
-                          (0.83, 0.084, 0.077, -0.003), (0.845, 0.069, 0.07, 0.0)):
-        out.append([to_unity(Vector((rx * math.cos(a), y - CHIN * (y - 0.772) / 0.073 * max(0.0, math.sin(a)), zc + rz * math.sin(a))))
-                    for a in (k / 28 * math.tau for k in range(28))])
-    return out
+def collar_ring(y, rx, rz, zc, base):
+    return [to_unity(Vector((rx * math.cos(a), y - CHIN * (y - base) / 0.05 * max(0.0, math.sin(a)), zc + rz * math.sin(a))))
+            for a in (k / 28 * math.tau for k in range(28))]
 
 
-def pauldron(shape, side):
-    """Three overlapping plates over the shoulder, each a band of a dome, edged in gilt."""
-    out = np.array((side, 0.0, 0.0))
-    up = np.array(UP)
-    arm = np.array(BOY_ARM[1]) - np.array(BOY_ARM[0])
-    arm = np.array((arm[0] * side, arm[1], arm[2]))
-    arm /= np.linalg.norm(arm)
-    axis = up * 0.85 + out * 0.45
-    axis /= np.linalg.norm(axis)
-    across = out - axis * np.dot(out, axis)  # round the dome from its outer side, front and back alike
-    across /= np.linalg.norm(across)
-    fwd = np.cross(axis, across)
-    top = np.array((0.158 * side, 0.742, -0.012))
-    for k, (r, a0, a1) in enumerate(((0.074, 3, 50), (0.079, 40, 74), (0.084, 64, 94))):
-        centre = top + arm * 0.022 * k
-        rows = []
-        for phi in steps(math.radians(a0), math.radians(a1), 7):
-            row = []
-            for psi in steps(math.radians(-115), math.radians(115), 15):
-                around = across * math.cos(psi) + fwd * math.sin(psi)
-                p = centre + r * (math.cos(phi) * axis + math.sin(phi) * around)
-                row.append(to_unity(Vector(p.tolist())))
-            rows.append(row)
-        shape.sheet(rows, PLATE, thickness=0.006)
-        shape.rim(rows[-1], 0.005, GILT)
-        if k == 0:
-            shape.rim(rows[len(rows) // 2], 0.0026, GLOW)
+def hood(shape):
+    """A tall, soft white hood up over the head: it rises to a peak above the brow (the crown leaning forward), opens
+    in a narrow oval round the eyes (the mask fills it below), is lined dark so the face sits in shadow, and falls in
+    soft folds onto the shoulders like a cowl, longer behind.
+    Fitted to the boy's head (OBJ frame: about ±0.065 wide, z -0.06 behind to +0.09 at the nose, crown at y 1.0), a
+    finger or two clear of it all round, so it reads as cloth and not a helmet; the cowl ends at the shoulders' width
+    instead of flaring past them. The face inside is a black shadow (as in the reference), so only the mask shows."""
+    rows, shadow = [], []
+    for t in steps(0.0, 1.0, 30):
+        y = 0.79 + 0.245 * t
+        if y < 0.87:                                  # the cowl, settling onto the shoulders
+            u = (0.87 - y) / 0.08
+            # (deeper behind: the jacket's collar and the boy's own hood bulk out his upper back)
+            rx, rz, zc = 0.08 + 0.038 * u ** 1.3, 0.088 + 0.022 * u, 0.008 - 0.012 * u
+            front_rz = 0.088 - 0.012 * u
+            fold = 0.004 * u
+        elif y < 0.96:                                # round the head
+            rx, rz, zc, front_rz, fold = 0.08, 0.088, 0.008, 0.088, 0.0
+        else:                                         # up to a low peak over the brow, the crown leaning forward
+            u = min(1.0, (y - 0.96) / 0.075)
+            rx = 0.08 * math.sqrt(max(0.0, 1.0 - u ** 1.6)) + 0.002
+            rz = 0.088 * math.sqrt(max(0.0, 1.0 - u ** 2.2)) + 0.002
+            zc = 0.008 + 0.022 * u ** 1.5
+            front_rz, fold = rz, 0.0
+        if y < 0.855:
+            open_ = 0.5
+        elif y < 0.875:
+            open_ = 0.5 + 0.32 * (y - 0.855) / 0.02
+        elif y < 0.965:
+            open_ = 0.82
+        else:
+            open_ = max(0.04, 0.82 * (1.0 - min(1.0, (y - 0.965) / 0.035)) ** 0.7)
+        row = []
+        for a in steps(open_, math.tau - open_, 36):
+            back = max(0.0, -math.cos(a))
+            yy = y - (0.02 * back * (1.0 - t / 0.3) if t < 0.3 else 0.0)
+            depth = (rz if math.cos(a) < 0.0 else front_rz) + fold * math.sin(a * 6.0)
+            row.append(to_unity(Vector(((rx + fold * math.sin(a * 6.0)) * math.sin(a), yy, zc + depth * math.cos(a)))))
+        rows.append(row)
+        if 0.895 < y < 0.995 and open_ > 0.05:
+            # The shadow across the opening, from the mask's top to under the peak: just inside the hood's front
+            # (still clear of the nose, which reaches z 0.091).
+            shadow.append([to_unity(Vector((rx * math.sin(a), y, zc + (front_rz - 0.003) * math.cos(a))))
+                           for a in steps(-open_ - 0.08, open_ + 0.08, 9)])
+    shape.sheet(rows, SCARF, thickness=0.007)
+    if len(shadow) > 1:
+        shape.sheet(shadow, MASK, thickness=0.002)
+    edge = [r[0] for r in rows] + [r[-1] for r in reversed(rows)]
+    shape.rim(edge, 0.005, SCARF)
+    shape.rim(rows[0], 0.0045, SCARF)
+    # The dark lining showing just inside the opening (the face in the hood's shadow), and a seam over the crown.
+    inner = [[p.lerp(q, 0.0) + (sum(r, Vector()) / len(r) - p).normalized() * 0.006 for p, q in zip(r[:4], r[1:5])] for r in rows[5:]]
+    shape.sheet(inner, MASK, thickness=0.002)
+    inner = [[p + (sum(r, Vector()) / len(r) - p).normalized() * 0.006 for p in r[-4:]] for r in rows[5:]]
+    shape.sheet(inner, MASK, thickness=0.002)
+    shape.rim([r[len(r) // 2] for r in rows[10:]], 0.0016, STRAP)
+
+
+def mask(shape):
+    """The black ribbed mask: a snug tube from the collar up over the chin and mouth to just under the nose."""
+    ys = steps(0.81, 0.905, 9)
+    head = lambda v: HOOD(v) | ((v[:, 1] > 0.72) & (np.abs(v[:, 0]) > 0.075))
+    rings = rings_round([middle(y, ignore=HOOD) for y in ys], [UP] * len(ys), (1, 0, 0), 28, 0.1, 0.006,
+                        lambda v, t: 0.008 * (1.0 - t) ** 2 - 0.014 * max(0.0, -v[2]), ignore=head)  # (tucked in behind, under the cowl)
+    shape.sheet(rings, MASK, closed=True, thickness=0.004)
+    for ring in rings[1:]:
+        shape.rim(ring, 0.0022, MASK, closed=True)
 
 
 def scarf(shape):
-    rings = gorget_rings()
-    shape.sheet(rings, PLATE, closed=True, thickness=0.005)
-    shape.rim(rings[0], 0.006, GILT, closed=True)
-    top = [to_unity(Vector((0.066 * math.cos(a), 0.858 - (CHIN + 0.012) * max(0.0, math.sin(a)), 0.001 + 0.068 * math.sin(a))))
-           for a in (k / 28 * math.tau for k in range(28))]
-    shape.sheet([rings[-1], top], SCARF, closed=True, thickness=0.004)
-    shape.rim(top, 0.004, GILT, closed=True)
-    for side in (1, -1):
-        pauldron(shape, side)
+    """The jacket's high collar, the hood and the mask."""
+    hood(shape)
+    mask(shape)
+    rings = [collar_ring(y, rx, rz, zc, 0.815) for y, rx, rz, zc in
+             ((0.8, 0.098, 0.09, -0.01), (0.83, 0.088, 0.084, -0.006))]
+    shape.sheet(rings, COAT, closed=True, thickness=0.004)
+    shape.rim(rings[-1], 0.004, COAT, closed=True)
 
 
 def cape(shape):
-    """A half cape from the backs of the shoulders to the calves, falling in folds, gilt at the top and hem."""
+    """The black webbing: a harness strap over the right shoulder down the chest to the belt (two buckles), and a strap
+    round the left thigh with a buckle and a hanging end. (Kept under the name Cape for the suit-up's steps.)"""
+    jacket = torso(0.49, 0.845, 26, 0.004)
+    ys = JACKET_YS
+    x = -0.1  # (Unity: the figure's right)
+    path = [on_rings(jacket, ys, y, x + 0.025 * (y - 0.55) / 0.27, 0.006) for y in steps(0.55, 0.82, 12)]
+    over = jacket[-1]
+    top = min(over, key=lambda q: abs(q.x - x) - q.y)
+    back = max((q for q in over if q.z < top.z), key=lambda q: -abs(q.x - x), default=top)
+    path += [top + Vector((0.0, 0.012, -0.02))]  # (ends on the shoulder, under the hood's cowl)
     rows = []
-    for t in steps(0.0, 1.0, 16):
-        y = 0.8 - 0.63 * t
-        w = 0.17 + 0.09 * t
-        row = []
-        for s in steps(-1.0, 1.0, 15):
-            z = -0.118 - 0.07 * t + s * s * (0.07 - 0.02 * t) + 0.014 * t * math.sin(s * math.pi * 3.0)
-            row.append(to_unity(Vector((s * w, y, z))))
-        rows.append(row)
-    shape.sheet(rows, CAPE, thickness=0.005)
-    shape.rim(rows[0], 0.006, GILT)
-    shape.rim(rows[-1], 0.005, GILT)
-    shape.rim([p + Vector((0.0, 0.03, -0.004)) for p in rows[-1]], 0.003, GILT)
-    for row in (rows[:-1],):
-        shape.rim([r[0] for r in row], 0.004, GILT)
-        shape.rim([r[-1] for r in row], 0.004, GILT)
-    back = rows[4][7] + Vector((0.0, 0.0, -0.008))
-    sun(shape, back, 0.03, GILT, GLOW, normal=Vector((0.0, 0.0, -1.0)))
+    for i, p in enumerate(path):
+        t = (path[min(i + 1, len(path) - 1)] - path[max(i - 1, 0)]).normalized()
+        w = t.cross(Vector((0.0, 0.0, 1.0))).normalized() * 0.015 if abs(t.z) < 0.9 else Vector((0.015, 0.0, 0.0))
+        rows.append([p - w, p + w])
+    shape.sheet(rows, CAPE, thickness=0.004)
+    for k in (3, 8):  # the buckles
+        shape.box(path[k] + Vector((0.0, 0.0, 0.006)), (0.038, 0.026, 0.008), BUCKLE)
+        shape.box(path[k] + Vector((0.0, 0.0, 0.01)), (0.026, 0.012, 0.004), CAPE)
+    # The thigh strap.
+    side = -1  # (OBJ: the figure's left)
+    ys2 = steps(0.37, 0.39, 2)
+    ring = rings_round([middle(y, 0.065 * side, 0.05) for y in ys2], [UP] * 2, (1, 0, 0), 20, 0.075, 0.022)
+    shape.sheet(ring, CAPE, closed=True, thickness=0.003)
+    out = Vector((-side, 0.0, 0.0))
+    p = max(ring[0], key=lambda q: q.dot(out + Vector((0.0, 0.0, 0.6))))
+    shape.box(p + out * 0.004, (0.012, 0.03, 0.036), BUCKLE)
+    end = [p + Vector((0.004 * k, -0.025 * k, 0.006 * k)) + out * 0.006 for k in range(6)]
+    shape.sheet([[q - Vector((0.0, 0.0, 0.012)), q + Vector((0.0, 0.0, 0.012))] for q in end], CAPE, thickness=0.003)
 
 
 def build_outfit(root):
-    """The armour: each part twice, on the whole figure (Avatar_*) and worn in first person (Outfit_*)."""
+    """The outfit: each part twice, on the whole figure (Avatar_*) and worn in first person (Outfit_*)."""
     place = Matrix.Translation(-ANCHOR)
     for name, make, worn in (("Sleeve", sleeves, False), ("Boots", boots, True), ("Coat", coat, True),
                              ("Scarf", scarf, False), ("Cape", cape, True)):

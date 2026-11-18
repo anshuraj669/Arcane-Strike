@@ -40,6 +40,7 @@ namespace ArcaneStrike.Story
         Quaternion facing;
         bool hasTarget;
         bool hovering;
+        bool actedHolding;
         float revealedAt;
         Vector3 revealFrom;
         Quaternion revealRot;
@@ -82,6 +83,8 @@ namespace ArcaneStrike.Story
         /// <summary>Let go for good: the lantern stays where it is (the awakening makes it float) and can't be grabbed again.</summary>
         public void Release()
         {
+            if (actedHolding) ActedHands.Release(HeldBy);
+            actedHolding = false;
             IsPickedUp = false;
             IsAvailable = false;
             hovering = false;
@@ -124,16 +127,23 @@ namespace ArcaneStrike.Story
         {
             Transform head = StoryFx.Head(input);
             HandFrame f = input != null ? input.Get(HeldBy) : null;
-            if (f != null && f.IsTracked)
+            // (The acted hand below is ours: following it would chase our own tail.)
+            bool acted = input != null && input.ActiveSource != null && ReferenceEquals(input.ActiveSource, HandInputService.ActedSource);
+            if (f != null && f.IsTracked && !acted)
             {
                 lastTarget = f.PalmCenter;
                 hasTarget = true;
             }
-            else if (!hasTarget && head != null)
+            else if ((!hasTarget || acted) && head != null)
             {
-                // Picked up with the keyboard and no hands: hold it in front of the player.
-                float side = HeldBy == HandSide.Right ? 0.15f : -0.15f; // in that hand, a little to the side
-                lastTarget = head.position + StoryFx.Flat(head.forward) * 0.4f + StoryFx.Flat(head.right) * side + Vector3.down * 0.45f + handleOffset;
+                // Picked up with the keyboard and no hands: the hand comes up and holds it by the ring, in front of
+                // the player and a little to that side.
+                float side = HeldBy == HandSide.Right ? 0.17f : -0.17f;
+                Vector3 forward = StoryFx.Flat(head.forward);
+                lastTarget = head.position + forward * 0.38f + StoryFx.Flat(head.right) * side + Vector3.down * 0.3f;
+                ActedHands.Hold(HeldBy, lastTarget + Vector3.up * 0.025f - forward * 0.03f,
+                    Quaternion.LookRotation(Vector3.Slerp(forward, Vector3.down, 0.15f), Vector3.up), 0.85f);
+                actedHolding = true;
             }
 
             float dt = Mathf.Max(Time.deltaTime, 1e-4f);

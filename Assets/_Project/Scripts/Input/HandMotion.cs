@@ -72,7 +72,7 @@ namespace ArcaneStrike.HandInput
         public event Action<StrikeEvent> OnStrike;
 
         // Webcams see pushes toward the camera poorly, so punches need less forward speed there. No effect on Quest.
-        float PunchSpeed => input != null && input.ActiveSource is WebcamHandSource ? punchSpeed * 0.6f : punchSpeed;
+        float PunchSpeed => input != null && input.WebcamHands ? punchSpeed * 0.6f : punchSpeed;
         public StrikeEvent? LastStrike { get; private set; }
 
         struct Sample { public float T; public Vector3 Palm; }

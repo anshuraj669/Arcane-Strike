@@ -31,6 +31,9 @@ namespace ArcaneStrike.Story
         public Vector3 Normal => -transform.forward;
         /// <summary>It is on the real tracked hand (not floating where the hand should be).</summary>
         public bool OnHand { get; private set; }
+        /// <summary>While set, where it floats when no left hand is tracked (instead of following the head), so a camera
+        /// turning to look at it can settle on it.</summary>
+        public Pose? Fallback { get; set; }
 
         static readonly int RevealId = Shader.PropertyToID("_Reveal"), PulseId = Shader.PropertyToID("_Pulse"), FadeId = Shader.PropertyToID("_Fade");
         Material crest, ring;
@@ -90,7 +93,12 @@ namespace ArcaneStrike.Story
             Quaternion rotation = Quaternion.identity;
             HandFrame left = input != null ? input.Get(HandSide.Left) : null;
             OnHand = left != null && left.IsTracked && Wrist(left.Joints, out position, out rotation);
-            if (!OnHand)
+            if (!OnHand && Fallback.HasValue)
+            {
+                position = Fallback.Value.position;
+                rotation = Fallback.Value.rotation;
+            }
+            else if (!OnHand)
             {
                 // Where a raised left wrist would be: low and to the left, the back of the wrist towards the eyes.
                 Vector3 f = StoryFx.Flat(head.forward), right = Vector3.Cross(Vector3.up, f);
@@ -133,6 +141,19 @@ namespace ArcaneStrike.Story
         // ---------------------------------------------------------------- the crest, drawn from code
 
         // R: the lines (soft-edged); G: when each bit is drawn (0 first .. 1 last). Linear, so G stays exact.
+        /// <summary>The crest as a white shape in the alpha channel (for the title cards' faint emblem).</summary>
+        public static Texture2D CrestAlpha(int n)
+        {
+            Texture2D src = DrawCrest(n);
+            Color[] px = src.GetPixels();
+            for (int i = 0; i < px.Length; i++) px[i] = new Color(1f, 1f, 1f, px[i].r);
+            var tex = new Texture2D(n, n, TextureFormat.RGBA32, true) { name = "JyotiCrestAlpha", wrapMode = TextureWrapMode.Clamp };
+            tex.SetPixels(px);
+            tex.Apply();
+            Destroy(src);
+            return tex;
+        }
+
         static Texture2D DrawCrest(int n)
         {
             var strokes = new System.Collections.Generic.List<(Vector2[] points, float width)>();

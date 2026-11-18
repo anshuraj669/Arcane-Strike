@@ -138,7 +138,7 @@ namespace ArcaneStrike.Story
             if (head == null) return;
 
             bool desk = placement == Placement.Desk ||
-                        (placement == Placement.Auto && (!XRSettings.isDeviceActive || (input != null && input.ActiveSource is WebcamHandSource)));
+                        (placement == Placement.Auto && (!XRSettings.isDeviceActive || (input != null && input.WebcamHands)));
             Vector3 forward = StoryFx.Flat(head.forward);
             float floorY;
             float pullBack = 0f;
@@ -309,7 +309,7 @@ namespace ArcaneStrike.Story
         {
             switch (beat)
             {
-                case Beat.ChestClosed: return ": take the cloth from the chest's table, wipe a box clean with it, then lift its lid (E or N wipes, then opens, the nearest). The lantern is in one of them";
+                case Beat.ChestClosed: return ": rub the dust off a box (the cloth on the table is quickest, a bare hand works too), then lift its lid (E or N wipes, then opens, the nearest). The lantern is in one of them";
                 case Beat.LanternFound: return ": close a fist around the lantern's top ring, or point your left index finger at it (N)";
                 case Beat.LanternHeld: return ": with your other hand take the old cloth from the chest (a fist on it, or point your left index finger at it) and rub the lantern (N)";
                 case Beat.Cleaned: return ": touch the glinting edge with a fingertip (N)";

@@ -36,9 +36,14 @@ namespace ArcaneStrike.HandInput
 
         [Header("Steady hands")]
         [Tooltip("How still a hand at rest is held (Hz): lower is steadier but slower to follow slow moves. One Euro filter.")]
-        [SerializeField] float handSteadiness = 1.0f;
-        [Tooltip("How quickly the filter lets fast moves through (per m/s of hand speed): higher keeps punches and swipes sharp.")]
-        [SerializeField] float handResponse = 2.5f;
+        [SerializeField] float restSteadiness = 0.6f;
+        [Tooltip("How quickly the filter lets real moves through (per m/s of hand speed). Too high and the webcam's own jitter " +
+                 "counts as movement and gets through; higher keeps punches sharp.")]
+        [SerializeField] float moveResponse = 0.7f;
+        [Tooltip("The hand's distance from the webcam is its noisiest number (a webcam has no depth): held this much steadier (Hz).")]
+        [SerializeField] float depthSteadiness = 0.25f;
+        [Tooltip("The fingers' shape (relative to the wrist), held this much steadier than the hand's position (Hz).")]
+        [SerializeField] float fingerSteadiness = 0.9f;
         [Tooltip("How quickly the drawn hand glides to the latest webcam pose (per second), so it moves every frame, not 30 times a second.")]
         [SerializeField] float handGlide = 28f;
         [Tooltip("How quickly a finger bone's length settles (0..1 per packet): bones keep one length instead of stretching with the noise.")]
@@ -304,12 +309,13 @@ namespace ArcaneStrike.HandInput
         readonly Vector3[][] steady = { new Vector3[HandFrame.JointCount], new Vector3[HandFrame.JointCount] }; // filtered, webcam space
         readonly Vector3[][] shown = { new Vector3[HandFrame.JointCount], new Vector3[HandFrame.JointCount] };  // gliding to it
         readonly float[][] boneLength = { new float[HandFrame.JointCount], new float[HandFrame.JointCount] };
-        readonly OneEuro[][] filters = { NewFilters(), NewFilters() };
+        readonly OneEuro3[][] filters = { NewFilters(), NewFilters() };
+        readonly OneEuro1[] depthFilters = { new OneEuro1(), new OneEuro1() };
 
-        static OneEuro[] NewFilters()
+        static OneEuro3[] NewFilters()
         {
-            var f = new OneEuro[HandFrame.JointCount];
-            for (int j = 0; j < f.Length; j++) f[j] = new OneEuro();
+            var f = new OneEuro3[HandFrame.JointCount];
+            for (int j = 0; j < f.Length; j++) f[j] = new OneEuro3();
             return f;
         }
 
@@ -318,16 +324,30 @@ namespace ArcaneStrike.HandInput
         void Steady(int i, float[] p, float t, bool fresh)
         {
             Vector3 Raw(int j) => new Vector3(p[j * 3], p[j * 3 + 1], p[j * 3 + 2]);
-            OneEuro[] f = filters[i];
+            OneEuro3[] f = filters[i];
+            OneEuro1 depth = depthFilters[i];
             Vector3[] relative = new Vector3[HandFrame.JointCount];
             Vector3 wrist = Raw(0);
+            if (fresh) depth.Reset();
+            depth.minCutoff = depthSteadiness;
+            depth.beta = moveResponse * 0.5f;
             for (int j = 0; j < HandFrame.JointCount; j++)
             {
                 rawDepth[i][j] = Raw(j);
                 if (fresh) f[j].Reset();
-                f[j].minCutoff = j == 0 ? handSteadiness * 0.8f : handSteadiness;
-                f[j].beta = handResponse;
-                relative[j] = j == 0 ? f[0].Filter(wrist, t) : f[j].Filter(Raw(j) - wrist, t);
+                f[j].minCutoff = j == 0 ? restSteadiness : fingerSteadiness;
+                f[j].beta = j == 0 ? moveResponse : moveResponse * 0.5f;
+                if (j == 0)
+                {
+                    // Across and up from what the webcam sees directly; the distance, much steadier.
+                    Vector3 across = f[0].Filter(new Vector3(wrist.x, wrist.y, 0f), t);
+                    relative[0] = new Vector3(across.x, across.y, depth.Filter(wrist.z, t));
+                }
+                else
+                {
+                    Vector3 shape = Raw(j) - wrist;
+                    relative[j] = f[j].Filter(shape, t);
+                }
             }
             Vector3[] outJoints = steady[i];
             float[] lengths = boneLength[i];
@@ -340,40 +360,6 @@ namespace ArcaneStrike.HandInput
                 lengths[j] = fresh || lengths[j] <= 0f ? length : Mathf.Lerp(lengths[j], length, boneSettle);
                 Vector3 parentAt = Parent[j] == 0 ? outJoints[0] : outJoints[Parent[j]];
                 outJoints[j] = parentAt + (length > 1e-5f ? bone / length : Vector3.up) * lengths[j];
-            }
-        }
-
-        /// <summary>The One Euro filter (Casiez et al.): steady at rest, quick when moving.</summary>
-        class OneEuro
-        {
-            public float minCutoff = 1f, beta = 2f, derivativeCutoff = 1f;
-            Vector3 value, speed;
-            float last;
-            bool started;
-
-            public void Reset() => started = false;
-
-            public Vector3 Filter(Vector3 x, float t)
-            {
-                if (!started)
-                {
-                    started = true;
-                    value = x;
-                    speed = Vector3.zero;
-                    last = t;
-                    return x;
-                }
-                float dt = Mathf.Clamp(t - last, 1e-3f, 0.25f);
-                last = t;
-                speed = Vector3.Lerp(speed, (x - value) / dt, Alpha(derivativeCutoff, dt));
-                value = Vector3.Lerp(value, x, Alpha(minCutoff + beta * speed.magnitude, dt));
-                return value;
-            }
-
-            static float Alpha(float cutoff, float dt)
-            {
-                float tau = 1f / (2f * Mathf.PI * Mathf.Max(cutoff, 1e-3f));
-                return 1f / (1f + tau / dt);
             }
         }
 

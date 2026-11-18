@@ -26,6 +26,24 @@ namespace ArcaneStrike.HandInput
         public IHandSource ActiveSource { get; private set; }
         public string ActiveSourceName => ActiveSource == null ? "none" : ActiveSource.GetType().Name;
 
+        /// <summary>Set while a recorded demo take replays: the hands (and body) come from it instead.</summary>
+        public static IHandSource ReplaySource;
+        /// <summary>Hands acted out for keyboard play (<see cref="ActedHands"/>): used while no real hands are tracked.</summary>
+        public static IHandSource ActedSource;
+        /// <summary>The replayed take was played with webcam hands (so gestures are judged as for the webcam).</summary>
+        public static bool ReplayIsWebcam;
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        static void ResetStatics()
+        {
+            ReplaySource = null;
+            ReplayIsWebcam = false;
+            ActedSource = null;
+        }
+
+        /// <summary>The hands come from the webcam bridge (live, or a replayed webcam take): rougher than Quest hands.</summary>
+        public bool WebcamHands => ActiveSource is WebcamHandSource || (ActiveSource != null && ActiveSource == ReplaySource && ReplayIsWebcam);
+
         public HandFrame Left => frames[0];
         public HandFrame Right => frames[1];
         public HandFrame Get(HandSide side) => frames[(int)side];
@@ -61,12 +79,24 @@ namespace ArcaneStrike.HandInput
             {
                 HandFrame f = frames[i];
                 f.IsTracked = ActiveSource != null && ActiveSource.TryGetHand((HandSide)i, f);
+                // A hand the story is acting out (the wrist raised for the Jyoti Seal, say) stands in for that one hand
+                // when the active source (a replay, or a webcam that lost it) doesn't have it, so it's never missing.
+                if (!f.IsTracked && ActedSource != null && !ReferenceEquals(ActedSource, ActiveSource) && ActedSource.IsActive)
+                    f.IsTracked = ActedSource.TryGetHand((HandSide)i, f);
                 f.Side = (HandSide)i;
             }
             body.IsTracked = ActiveSource is IUpperBodySource bodySource && bodySource.TryGetBody(body);
         }
 
         IHandSource PickSource()
+        {
+            if (ReplaySource != null) return ReplaySource;
+            IHandSource real = PickRealSource();
+            if ((real == null || !real.IsActive) && ActedSource != null && ActedSource.IsActive) return ActedSource;
+            return real;
+        }
+
+        IHandSource PickRealSource()
         {
             bool webcamOk = webcamSource != null && webcamSource.isActiveAndEnabled;
             bool questOk = questSource != null && questSource.isActiveAndEnabled;

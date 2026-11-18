@@ -9,7 +9,7 @@ namespace ArcaneStrike.Story
     /// The player character's own words, which have no speaker in the room to float beside: a subtitle low in the
     /// view that follows the head lazily (it drifts after a turn rather than being glued to the eyes, which is
     /// easier in a headset). Also shows small hints ("Go downstairs") and full-view captions on a black screen
-    /// ("23:42 PM — Midnight Hours"). Everything draws over the screen fade, so it reads on black.
+    /// ("11:42 PM — Midnight Hours"). Everything draws over the screen fade, so it reads on black.
     /// A line plays a recording from Resources/VO/Chapter2/&lt;key&gt; when one is there; otherwise it is text only.
     /// </summary>
     public class InnerVoice : MonoBehaviour
@@ -46,7 +46,7 @@ namespace ArcaneStrike.Story
         {
             if (input == null) input = FindAnyObjectByType<HandInputService>();
             var font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-            overlay = new Material(font.material) { name = "InnerVoiceText", renderQueue = 5001 }; // over the screen fade
+            overlay = new Material(font.material) { name = "InnerVoiceText", renderQueue = 5000 }; // over the screen fade (4995); URP never draws queues above 5000
             overlay.SetFloat("unity_GUIZTestMode", (float)CompareFunction.Always);
             panel = new GameObject("Panel").transform;
             panel.SetParent(transform, false);
@@ -102,7 +102,22 @@ namespace ArcaneStrike.Story
             skip = false;
             Debug.Log($"[You] {text}");
             AudioClip clip = string.IsNullOrEmpty(key) ? null : Resources.Load<AudioClip>("VO/Chapter2/" + key);
-            if (clip != null) voice.PlayOneShot(clip);
+            if (clip == null) clip = VoiceBank.Find("You", text);
+            if (clip != null)
+            {
+                // Voiced: heard, with no subtitle on the screen.
+                line.text = "";
+                voice.PlayOneShot(clip);
+                for (float t = 0f; t < clip.length + hold * 0.5f && !skip; t += Time.deltaTime)
+                {
+                    yield return null;
+                    if (id != lineId) yield break;
+                }
+                if (skip) voice.Stop();
+                skip = false;
+                IsSpeaking = false;
+                yield break;
+            }
             line.fontStyle = italic ? FontStyle.Italic : FontStyle.Normal;
             float shown = 0f;
             while (shown < text.Length && !skip)
@@ -155,6 +170,13 @@ namespace ArcaneStrike.Story
 
         static string Wrap(string s, int width)
         {
+            if (s.IndexOf('\n') >= 0)
+            {
+                // Each line wrapped on its own, so the line breaks already in the text are kept.
+                string[] lines = s.Split('\n');
+                for (int i = 0; i < lines.Length; i++) lines[i] = Wrap(lines[i], width);
+                return string.Join("\n", lines);
+            }
             var sb = new System.Text.StringBuilder();
             int col = 0;
             foreach (string word in s.Split(' '))

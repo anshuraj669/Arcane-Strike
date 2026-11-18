@@ -31,6 +31,8 @@ namespace ArcaneStrike.Story
         }
 
         [SerializeField] bool playIntro = true;
+        [Tooltip("The game's opening title cards (TitleCards.Opening) on black before the walk in.")]
+        [SerializeField] bool showOpening = true;
         [SerializeField] HandInputService input;
         [SerializeField] ChestOpen chest;
         [Tooltip("Walking speed (m/s). Slow is comfortable in a headset.")]
@@ -100,6 +102,18 @@ namespace ArcaneStrike.Story
             TurnTowards(next - first, 360f);
             Debug.Log($"[Attic] Intro starts at {transform.InverseTransformPoint(head.position):F2} (attic space), " +
                       $"looking {transform.InverseTransformDirection(head.forward):F2}; the house is ahead (+Z).");
+            if (showOpening)
+            {
+                // The opening: the title; the Witness in the stars tells the player who they are and what to do;
+                // then CHAPTER 1. (This intro's own black quad stays up under the cards, and off for the stars.)
+                yield return TitleCards.Show(TitleCards.GameTitle);
+                fadeRenderer.enabled = false;
+                yield return CosmicPrologue.Play(head);
+                fadeRenderer.enabled = true;
+                SetFade(1f);
+                yield return TitleCards.Show(TitleCards.ChapterOne);
+                ScreenFade.Set(new Color(0f, 0f, 0f, 0f));
+            }
             fading = StartCoroutine(FadeTo(0f, fadeInTime));
 
             for (int i = 0; i < path.Length && !skip; i++)
@@ -139,7 +153,7 @@ namespace ArcaneStrike.Story
 
         void Update()
         {
-            if (!IsPlaying || skip) return;
+            if (!IsPlaying || skip || TitleCards.Showing || CosmicPrologue.Playing) return;
             bool key = GameInput.Pressed(GameAction.Skip) || GameInput.Pressed(GameAction.Interact);
             bool button = ButtonDown(XRNode.RightHand) || ButtonDown(XRNode.LeftHand);
             if (key || button)
@@ -294,7 +308,7 @@ namespace ArcaneStrike.Story
             quad.transform.localPosition = new Vector3(0f, 0f, 0.15f);
             quad.transform.localScale = new Vector3(1f, 1f, 1f);
             fadeMaterial = AegisShield.CreateFaceMaterial(Color.black);
-            fadeMaterial.renderQueue = 5000; // over everything
+            fadeMaterial.renderQueue = 4995; // over everything but the title and subtitle text (5000: URP draws queues up to 5000 only)
             fadeRenderer = quad.GetComponent<Renderer>();
             fadeRenderer.sharedMaterial = fadeMaterial;
             fadeRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;

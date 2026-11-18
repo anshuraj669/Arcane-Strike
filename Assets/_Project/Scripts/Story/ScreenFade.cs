@@ -143,7 +143,7 @@ namespace ArcaneStrike.Story
             if (material == null)
             {
                 material = AegisShield.CreateFaceMaterial(current);
-                material.renderQueue = 5000; // over everything
+                material.renderQueue = 4995; // over everything but the title and subtitle text (5000: URP draws queues up to 5000 only)
             }
             material.SetColor(BaseColorId, current);
             quad = go.GetComponent<Renderer>();

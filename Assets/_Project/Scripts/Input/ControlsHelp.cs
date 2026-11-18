@@ -30,6 +30,7 @@ namespace ArcaneStrike.HandInput
 
         void OnGUI()
         {
+            if (ArcaneStrike.Demo.DemoDirector.Filming) return; // (never in the demo video)
             if (style == null)
             {
                 style = new GUIStyle(GUI.skin.box) { alignment = TextAnchor.UpperLeft, fontSize = 13, richText = true };

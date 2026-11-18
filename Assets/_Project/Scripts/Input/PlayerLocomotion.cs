@@ -10,6 +10,8 @@ namespace ArcaneStrike.HandInput
     /// - controllers: left thumbstick walks (the way you look), right thumbstick turns in 30° steps;
     /// - hands: point with the right index finger (other fingers curled) and you walk the way it points
     ///   (the left index finger grabs things instead, see PointGrab);
+    /// - point at something with the LEFT index finger (or look at it and press M) and you walk up to it by yourself,
+    ///   a little faster, stopping an arm's length away (<see cref="PointToWalk"/>, <see cref="WalkTo"/>);
     /// - keyboard (<see cref="GameInput"/>): W A S D walk, Z / X turn, hold the right mouse button and move the mouse
     ///   to look, Space jumps.
     /// L switches smooth locomotion on and off. Walls stop you, and you follow floors and stairs up and down. A jump
@@ -32,12 +34,15 @@ namespace ArcaneStrike.HandInput
         [SerializeField] float stepHeight = 0.35f;
         [Tooltip("Eye height used when no headset is running (the editor without the Simulator).")]
         [SerializeField] float desktopEyeHeight = 1.6f;
-        [Tooltip("Point with the right index finger to walk (hand tracking). The left one grabs (PointGrab).")]
+        [Tooltip("Point with the right index finger to walk (Quest hand tracking only: webcam hands reaching for things " +
+                 "read as pointing and walked the player off; use WASD there). The left one grabs (PointGrab).")]
         [SerializeField] bool pointToWalk = true;
         [SerializeField] float mouseLook = 0.15f;
         [Tooltip("How high a jump lifts you (m).")]
         [SerializeField] float jumpHeight = 0.45f;
         [SerializeField] float gravity = 12f;
+        [Tooltip("m/s when walking by itself to something you pointed at (a little faster than walking).")]
+        [SerializeField] float walkToSpeed = 2f;
         [Tooltip("Switch off Meta's own FirstPersonLocomotor in the camera rig. It pins the player to its invisible " +
                  "capsule every frame (dropping the eyes to the floor without a headset, and catching on doors and the " +
                  "chest) and would also walk on the thumbstick, fighting this script.")]
@@ -55,6 +60,24 @@ namespace ArcaneStrike.HandInput
         public bool Stunned { get; set; }
         /// <summary>Walking speed multiplier (slowed by venom, say).</summary>
         public float SpeedScale { get; set; } = 1f;
+        /// <summary>Walking by itself to a place (<see cref="WalkTo"/>).</summary>
+        public bool WalkingTo => walkTarget.HasValue;
+
+        /// <summary>Walk by yourself to `point` (world), stopping when the eyes are `stopAt` metres from it across the
+        /// floor (or when something is in the way). Moving yourself, or pausing, cancels it.</summary>
+        public void WalkTo(Vector3 point, float stopAt)
+        {
+            walkTarget = point;
+            walkStop = Mathf.Max(0f, stopAt);
+            stuck = 0f;
+        }
+
+        public void CancelWalkTo()
+        {
+            if (walkTarget.HasValue) Debug.Log("[Move] Stopped walking there.");
+            walkTarget = null;
+        }
+
         /// <summary>In the air from a jump (clear of low sweeps).</summary>
         public bool Airborne => airborne && jumpOffset > 0.12f;
 
@@ -92,6 +115,8 @@ namespace ArcaneStrike.HandInput
         float pointSince = -1f, pitch;
         float jumpOffset, jumpSpeed; // height above the floor while in the air, and how fast it is changing
         bool airborne;
+        Vector3? walkTarget;
+        float walkStop, stuck;
         readonly RaycastHit[] hits = new RaycastHit[16];
 
         // Is a headset tracking the player's real height? Measured, not asked: XRSettings.isDeviceActive can
@@ -102,6 +127,7 @@ namespace ArcaneStrike.HandInput
         {
             if (input == null) input = FindAnyObjectByType<HandInputService>();
             if (replaceMetaLocomotor) DisableMetaLocomotor();
+            if (GetComponent<PointToWalk>() == null) gameObject.AddComponent<PointToWalk>();
         }
 
         void Start()
@@ -135,12 +161,17 @@ namespace ArcaneStrike.HandInput
             }
             if (Paused)
             {
+                walkTarget = null;
                 airborne = false; // something else is moving the player: drop any jump where it is
                 jumpOffset = jumpSpeed = 0f;
                 return;
             }
             UpdateJump();
-            if (!smoothLocomotion) return;
+            if (!smoothLocomotion)
+            {
+                walkTarget = null;
+                return;
+            }
 
             Vector2 move = Vector2.zero;
             float turn = 0f;
@@ -174,7 +205,7 @@ namespace ArcaneStrike.HandInput
                 Vector3 forward = Flat(head.forward), right = Flat(head.right);
                 direction = forward * move.y + right * move.x;
             }
-            else if (pointToWalk && input != null && IsPointing(input.Get(HandSide.Right)))
+            else if (pointToWalk && input != null && input.ActiveSource is QuestHandSource && IsPointing(input.Get(HandSide.Right)))
             {
                 if (pointSince < 0f) pointSince = Time.time;
                 HandFrame f = input.Get(HandSide.Right);
@@ -192,10 +223,43 @@ namespace ArcaneStrike.HandInput
             }
             if (direction.sqrMagnitude > 1e-4f && !Stunned)
             {
+                walkTarget = null; // walking yourself takes over
                 Walk(Vector3.ClampMagnitude(direction, 1f) * speed * SpeedScale * Time.deltaTime);
                 if (Headset) ComfortVignette.Moving(comfortVignette);
             }
+            else if (walkTarget.HasValue && !Stunned)
+            {
+                WalkToward();
+            }
         }
+
+        // Towards the place pointed at, a little faster than walking, easing in at the end; stops an arm's length
+        // away, or when a wall or the thing itself is in the way.
+        void WalkToward()
+        {
+            Vector3 to = walkTarget.Value - head.position;
+            to.y = 0f;
+            float left = to.magnitude - walkStop;
+            if (left <= 0.02f)
+            {
+                Debug.Log("[Move] Arrived.");
+                walkTarget = null;
+                return;
+            }
+            float step = Mathf.Min(walkToSpeed * SpeedScale * Mathf.Clamp(left / 0.35f, 0.35f, 1f) * Time.deltaTime, left);
+            Vector3 before = rig.position;
+            Walk(to.normalized * step);
+            if (Headset) ComfortVignette.Moving(comfortVignette);
+            float moved = Vector3.Distance(Flat3(rig.position), Flat3(before));
+            stuck = moved < step * 0.25f ? stuck + Time.deltaTime : 0f;
+            if (stuck > 0.3f)
+            {
+                Debug.Log("[Move] Something's in the way: stopped.");
+                walkTarget = null;
+            }
+        }
+
+        static Vector3 Flat3(Vector3 v) => new Vector3(v.x, 0f, v.z);
 
         // Space (or a gesture driving GameAction.Jump): up under gravity, and back down onto the floor.
         void UpdateJump()

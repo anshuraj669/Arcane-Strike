@@ -14,7 +14,7 @@ namespace ArcaneStrike.Story
     /// - the heartbeat slows and fades and the attic's own sounds come back (wind on the roof, creaking timber, dust settling);
     /// - they whisper "A dream... Just a damn hallucination. Get a grip.";
     /// - they walk back through the gate to the stairs, and are carried down them as the view fades to black;
-    /// - the caption "23:42 PM — Midnight Hours", then the bedroom (<see cref="nextScene"/>).
+    /// - the caption "11:42 PM — Midnight Hours", then the bedroom (<see cref="nextScene"/>).
     /// Lives on the attic model (attic space: floor y 0, the chest ahead at +Z). Keys: N skips the moment, E heads
     /// downstairs at once.
     /// </summary>
@@ -41,7 +41,7 @@ namespace ArcaneStrike.Story
         [Tooltip("Seconds for the heart to slow down and the ears to clear.")]
         [SerializeField] float calmDown = 16f;
         [SerializeField] Color pulseColor = new Color(0.45f, 0.02f, 0.02f, 1f);
-        [SerializeField] string caption = "23:42 PM — Midnight Hours";
+        [SerializeField] string caption = "11:42 PM — Midnight Hours";
 
         Transform head, rig;
         PlayerLocomotion locomotion;
@@ -74,6 +74,7 @@ namespace ArcaneStrike.Story
             }
             rig = head.root;
             if (locomotion != null) locomotion.Paused = true;
+            yield return TitleCards.Show(TitleCards.ChapterTwo); // (on black: the screen stays black for the waking)
             voice = InnerVoice.Create(input);
             startTime = Time.time;
             OpenGate();
@@ -111,7 +112,7 @@ namespace ArcaneStrike.Story
             if (locomotion != null) locomotion.Paused = false;
             voice.Hint("Go back downstairs");
             Debug.Log("[Chapter2] Walk back through the gate to the stairs (WASD / thumbstick). E goes down at once.");
-            while (!AtStairs() && !GameInput.Pressed(GameAction.Interact) && !GameInput.Pressed(GameAction.Skip)) yield return null;
+            while (!AtStairs() && !Strayed() && !GameInput.Pressed(GameAction.Interact) && !GameInput.Pressed(GameAction.Skip)) yield return null;
             yield return Descend();
         }
 
@@ -262,6 +263,14 @@ namespace ArcaneStrike.Story
         {
             Vector3 local = transform.InverseTransformPoint(head.position);
             return new Vector2(local.x - stairTop.x, local.z - stairTop.z).magnitude < reachStairs;
+        }
+
+        // Past the stairs or out of the attic altogether (missed the top step and wandered on over the porch roof, or
+        // climbed out): that's heading downstairs too, so nobody ends up lost on the roof.
+        bool Strayed()
+        {
+            Vector3 local = transform.InverseTransformPoint(head.position);
+            return local.z < stairTop.z - 0.3f || local.z > 4.6f || Mathf.Abs(local.x) > 2.9f || local.y > 3.4f || local.y < -1f;
         }
 
         IEnumerator Descend()

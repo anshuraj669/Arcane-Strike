@@ -27,29 +27,42 @@ namespace ArcaneStrike.HandInput
         [SerializeField] float followStrength = 1f;
         [Tooltip("Ignore head moves further than this (m) from where you calibrated (bad tracking frames).")]
         [SerializeField] float maxOffset = 0.6f;
+        [Tooltip("Head moves smaller than this (m) are ignored: the webcam's jitter would otherwise shake the whole view.")]
+        [SerializeField] float leanDeadZone = 0.02f;
+        [Tooltip("How still the view holds while your head is still (Hz). One Euro filter: lower is steadier.")]
+        [SerializeField] float steadiness = 0.5f;
 
         [Header("Turn and nod")]
         [SerializeField] bool turnWithHead = true;
         [Tooltip("How much more the view turns than your head (your eyes must stay on the screen).")]
         [SerializeField] float turnGain = 2.5f;
-        [SerializeField] float nodGain = 1.5f;
+        [SerializeField] float nodGain = 1f;
         [Tooltip("A held tilt up or down eases back to level over about this many seconds, so the view settles on wherever " +
                  "you look at the screen from (you may have been looking at the keyboard when it calibrated). 0 = never.")]
         [SerializeField] float nodSettle = 3f;
         [Tooltip("Head turns smaller than this (degrees) are ignored, so the view holds still while you look at the screen.")]
-        [SerializeField] float deadZone = 4f;
+        [SerializeField] float deadZone = 5f;
         [Tooltip("How quickly the view catches up with your head (per second). Lower is smoother but lags.")]
-        [SerializeField] float smoothing = 8f;
+        [SerializeField] float smoothing = 5f;
         [SerializeField] float maxTurn = 120f;
-        [SerializeField] float maxNod = 40f;
+        [SerializeField] float maxNod = 30f;
 
         // The nose sits further forward of the ears than half their spacing: this turns its sideways shift into an angle.
         const float NoseReach = 1.33f;
 
         Vector3 applied; // how far the rig is moved now for the real head's offset
         int seenCalibration;
-        float baseTurn, baseNod, turn, nod, appliedTurn, appliedNod;
-        bool hasBase;
+        /// <summary>Running totals of everything this driver has done to the view (for recording demo takes): how
+        /// far it moved the rig, how far it turned it, and how far it tipped the camera (degrees).</summary>
+        public Vector3 TotalLean { get; private set; }
+        public float TotalTurn { get; private set; }
+        public float TotalNod { get; private set; }
+
+        float baseTurn, baseNod, turn, nod, appliedTurn, appliedNod, lastBodyTime = -1f, rawTurn, rawNod;
+        bool hasBase, hasAngles;
+        Vector3 leanTarget;
+        readonly OneEuro3 leanFilter = new OneEuro3();
+        readonly OneEuro1 turnFilter = new OneEuro1(), nodFilter = new OneEuro1();
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         static void Hook()
@@ -86,28 +99,47 @@ namespace ArcaneStrike.HandInput
                 applied = Vector3.zero; // (the rig where it is now is the calibrated centre)
                 hasBase = false;        // (and the way you face now is straight ahead)
                 turn = nod = appliedTurn = appliedNod = 0f;
+                leanTarget = Vector3.zero;
+                hasAngles = false;
+                leanFilter.Reset();
+                turnFilter.Reset();
+                nodFilter.Reset();
             }
             if (!webcam.CalibratedFromBody || !webcam.IsActive) return;
 
             UpperBodyFrame body = input.Body;
             if (!body.IsVisible(UpperBodyJoint.Head)) return;
 
-            Vector3 offset = body[UpperBodyJoint.Head] - webcam.CalibratedBodyHead;
-            if (offset.magnitude <= maxOffset)
+            // Only a new webcam frame is new information: filter once per frame from the webcam, not per game frame.
+            bool fresh = body.Time != lastBodyTime;
+            lastBodyTime = body.Time;
+            if (fresh)
             {
-                // Move by the change only: walking (PlayerLocomotion) moves the rig too, and setting it outright would undo it.
-                Vector3 want = offset * followStrength;
-                rig.position += want - applied;
-                applied = want;
-                webcam.HeadFollowOffset = applied;
+                Vector3 offset = body[UpperBodyJoint.Head] - webcam.CalibratedBodyHead;
+                if (offset.magnitude <= maxOffset)
+                {
+                    leanFilter.minCutoff = steadiness;
+                    leanFilter.beta = 1.5f;
+                    Vector3 steady = leanFilter.Filter(offset, body.Time);
+                    // Small moves are the webcam's jitter, not the player's: hold still inside the dead zone.
+                    float size = steady.magnitude;
+                    leanTarget = size > leanDeadZone ? steady * ((size - leanDeadZone) / size) * followStrength : Vector3.zero;
+                }
+                if (turnWithHead) MeasureFacing(body);
             }
+            // Move by the change only: walking (PlayerLocomotion) moves the rig too, and setting it outright would undo it.
+            Vector3 want = Vector3.Lerp(applied, leanTarget, 1f - Mathf.Exp(-smoothing * 2f * Time.deltaTime));
+            rig.position += want - applied;
+            TotalLean += want - applied;
+            applied = want;
+            webcam.HeadFollowOffset = applied;
 
-            if (turnWithHead) Turn(body);
+            if (turnWithHead && hasAngles) Turn();
         }
 
         // Which way the head faces, from where the nose sits between the ears: turning shifts it towards one ear,
         // nodding drops or lifts it below or above them. Relative to the facing at calibration.
-        void Turn(UpperBodyFrame body)
+        void MeasureFacing(UpperBodyFrame body)
         {
             if (!body.IsVisible(UpperBodyJoint.LeftEar, 0.3f) || !body.IsVisible(UpperBodyJoint.RightEar, 0.3f)) return;
             Vector3 left = body[UpperBodyJoint.LeftEar], right = body[UpperBodyJoint.RightEar], nose = body[UpperBodyJoint.Head];
@@ -116,16 +148,25 @@ namespace ArcaneStrike.HandInput
             if (half < 0.02f) return;
             Vector3 fromMiddle = nose - (left + right) * 0.5f;
             // Towards the left ear = turned to the player's left = a negative turn in Unity.
-            float rawTurn = -Mathf.Asin(Mathf.Clamp(Vector3.Dot(fromMiddle, across / (half * 2f)) / half / NoseReach, -1f, 1f)) * Mathf.Rad2Deg;
+            float measuredTurn = -Mathf.Asin(Mathf.Clamp(Vector3.Dot(fromMiddle, across / (half * 2f)) / half / NoseReach, -1f, 1f)) * Mathf.Rad2Deg;
             // The nose dropping below the ears = looking down = a positive nod in Unity.
-            float rawNod = -Mathf.Asin(Mathf.Clamp(fromMiddle.y / half / NoseReach, -1f, 1f)) * Mathf.Rad2Deg;
+            float measuredNod = -Mathf.Asin(Mathf.Clamp(fromMiddle.y / half / NoseReach, -1f, 1f)) * Mathf.Rad2Deg;
+            turnFilter.minCutoff = nodFilter.minCutoff = steadiness;
+            turnFilter.beta = nodFilter.beta = 0.03f; // (per degree per second)
+            rawTurn = turnFilter.Filter(measuredTurn, body.Time);
+            rawNod = nodFilter.Filter(measuredNod, body.Time);
+            hasAngles = true;
             if (!hasBase)
             {
                 baseTurn = rawTurn;
                 baseNod = rawNod;
                 hasBase = true;
             }
+        }
 
+        // Turns the view towards the measured facing, smoothly, every game frame.
+        void Turn()
+        {
             float k = 1f - Mathf.Exp(-smoothing * Time.deltaTime);
             turn = Mathf.Lerp(turn, Mathf.Clamp(Beyond(rawTurn - baseTurn) * turnGain, -maxTurn, maxTurn), k);
             // Up and down re-centres itself: only a nod tilts the view, not the angle you happen to sit at.
@@ -136,12 +177,14 @@ namespace ArcaneStrike.HandInput
             if (head == null) return;
             // Turn by the change only, round the eyes (snap turns and walking turn the rig as well).
             rig.RotateAround(head.position, Vector3.up, turn - appliedTurn);
+            TotalTurn += turn - appliedTurn;
             appliedTurn = turn;
             // Up and down: on the camera itself without a headset. With one (the Simulator) the headset owns the
             // camera, and tipping the whole rig would tip the floor, so there the Simulator's mouse look does it.
             if (!Headset(head))
             {
                 head.localRotation = Quaternion.Euler(nod - appliedNod, 0f, 0f) * head.localRotation;
+                TotalNod += nod - appliedNod;
                 appliedNod = nod;
             }
         }

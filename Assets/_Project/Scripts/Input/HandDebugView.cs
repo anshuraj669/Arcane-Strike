@@ -111,7 +111,7 @@ namespace ArcaneStrike.HandInput
 
         void OnGUI()
         {
-            if (input == null) return;
+            if (input == null || ArcaneStrike.Demo.DemoDirector.Filming) return; // (never in the demo video)
             style ??= new GUIStyle(GUI.skin.box) { alignment = TextAnchor.UpperLeft, fontSize = 14, richText = true };
 
             var sb = new System.Text.StringBuilder();

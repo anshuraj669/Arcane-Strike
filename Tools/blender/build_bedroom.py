@@ -325,6 +325,15 @@ def main():
     build_decor(root)
     build_props(root)
 
+    # Export triangles: the rounded parts (pillows, the backpack) have pinched caps that Unity's importer would
+    # otherwise throw away as "self-intersecting" polygons, leaving holes.
+    for obj in bpy.data.objects:
+        if obj.type == "MESH" and not any(m.type == "TRIANGULATE" for m in obj.modifiers):
+            tri = obj.modifiers.new("Triangulate", "TRIANGULATE")
+            tri.min_vertices = 4
+            tri.quad_method = "BEAUTY"
+            tri.ngon_method = "BEAUTY"
+
     os.makedirs(os.path.dirname(OUT_FBX), exist_ok=True)
     bpy.ops.export_scene.fbx(
         filepath=OUT_FBX, use_selection=False, object_types={"EMPTY", "MESH"},

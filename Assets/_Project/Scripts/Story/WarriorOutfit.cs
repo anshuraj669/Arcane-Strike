@@ -10,11 +10,11 @@ using Random = UnityEngine.Random;
 namespace ArcaneStrike.Story
 {
     /// <summary>
-    /// The Weaver: the main character's body, his outfit (the Weaver's armour: silver plate over dark padding, a white
-    /// tabard and half cape, gilt trim, a blue gem on the chest) and his sword (Resources/Characters/Weaver.prefab, from Tools/blender/build_weaver.py). It is a separate model so the attic loads light: <see cref="Load"/> brings
+    /// The Weaver: the main character's body, his outfit (everyday clothes: a zipped jacket, trousers, a belt, leather
+    /// boots and gloves, and a long white cape) and his sword (Resources/Characters/Weaver.prefab, from Tools/blender/build_weaver.py). It is a separate model so the attic loads light: <see cref="Load"/> brings
     /// it in when the Ascension begins (or the first time anything needs it).
-    /// <see cref="EquipNext"/> forms the next part (sleeves and gauntlets, boots and greaves, the breastplate and tabard,
-    /// the gorget and pauldrons, the cape, then the sword) in a shower of
+    /// <see cref="EquipNext"/> forms the next part (sleeves and gloves, boots, the jacket and trousers,
+    /// the collar and clasp, the cape, then the sword) in a shower of
     /// golden sparks; <see cref="Equip"/> forms whatever is left.
     /// Two views of it:
     /// - Worn (first person): Outfit_* pieces follow the player every frame: the sleeves on the forearms (from the
@@ -23,8 +23,8 @@ namespace ArcaneStrike.Story
     /// - The body (<see cref="ShowBody"/>): while the player's soul is out of it in the Ascension, the whole boy hangs
     ///   in the light in his hoodie and joggers (Body_*). <see cref="SuitUp"/> wraps the suit onto him in one wave
     ///   (Avatar_*): it spreads out from his chest over the arms, legs and boots, eating his own clothes as it goes,
-    ///   with ribbons of light spiralling down each limb ahead of it, his body arching back in the light; the gorget
-    ///   and pauldrons close round his neck and shoulders last (his head stays his own). The sword then appears before his chest, turns, and
+    ///   with ribbons of light spiralling down each limb ahead of it, his body arching back in the light; the collar
+    ///   and the cape's clasp close round his neck last (his head stays his own). The sword then appears before his chest, turns, and
     ///   slides into the sheath on his back.
     /// Appearances tint the outfit's cloth and leather (tabard, padding, boots and gloves, cape, collar) over their own
     /// colours; the steel and gilt stay as they are. O cycles them. The look and
@@ -59,12 +59,12 @@ namespace ArcaneStrike.Story
         [Header("Appearances")]
         [SerializeField] Appearance[] appearances =
         {
-            // Tints over the armour's own cloth colours (white keeps them as they are).
+            // Tints over the outfit's own cloth colours (white keeps them as they are). The cape stays white in every one.
             new Appearance { name = "Silver Weaver", coat = Color.white, trim = Color.white, boots = Color.white, cape = Color.white, scarf = Color.white },
-            new Appearance { name = "Ember Crimson", coat = new Color(0.8f, 0.16f, 0.13f), trim = new Color(1f, 0.7f, 0.6f), boots = Color.white, cape = new Color(0.75f, 0.14f, 0.12f), scarf = new Color(0.8f, 0.16f, 0.13f) },
-            new Appearance { name = "Midnight Indigo", coat = new Color(0.22f, 0.27f, 0.62f), trim = new Color(0.8f, 0.85f, 1f), boots = new Color(0.8f, 0.8f, 0.9f), cape = new Color(0.18f, 0.22f, 0.55f), scarf = new Color(0.22f, 0.27f, 0.62f) },
-            new Appearance { name = "Saffron Weaver", coat = new Color(1f, 0.62f, 0.2f), trim = new Color(1f, 0.85f, 0.6f), boots = new Color(1f, 0.9f, 0.75f), cape = new Color(0.95f, 0.5f, 0.12f), scarf = new Color(1f, 0.62f, 0.2f) },
-            new Appearance { name = "Forest Ranger", coat = new Color(0.28f, 0.5f, 0.28f), trim = new Color(0.85f, 1f, 0.8f), boots = new Color(0.9f, 0.85f, 0.75f), cape = new Color(0.22f, 0.42f, 0.22f), scarf = new Color(0.28f, 0.5f, 0.28f) },
+            new Appearance { name = "Ember Crimson", coat = new Color(0.8f, 0.16f, 0.13f), trim = new Color(1f, 0.7f, 0.6f), boots = Color.white, cape = Color.white, scarf = new Color(0.8f, 0.16f, 0.13f) },
+            new Appearance { name = "Midnight Indigo", coat = new Color(0.22f, 0.27f, 0.62f), trim = new Color(0.8f, 0.85f, 1f), boots = new Color(0.8f, 0.8f, 0.9f), cape = Color.white, scarf = new Color(0.22f, 0.27f, 0.62f) },
+            new Appearance { name = "Saffron Weaver", coat = new Color(1f, 0.62f, 0.2f), trim = new Color(1f, 0.85f, 0.6f), boots = new Color(1f, 0.9f, 0.75f), cape = Color.white, scarf = new Color(1f, 0.62f, 0.2f) },
+            new Appearance { name = "Forest Ranger", coat = new Color(0.28f, 0.5f, 0.28f), trim = new Color(0.85f, 1f, 0.8f), boots = new Color(0.9f, 0.85f, 0.75f), cape = Color.white, scarf = new Color(0.28f, 0.5f, 0.28f) },
         };
         [SerializeField] int appearance;
         [Tooltip("Keyboard (GameInput): O switches to the next appearance.")]
@@ -762,7 +762,7 @@ namespace ArcaneStrike.Story
         /// The suit-up (while the body is shown): every part up to the sword wraps onto the body in one wave over
         /// `seconds`. It spreads from the chest over the arms and legs to the gloves and boots, eating his own
         /// clothes, with ribbons of light spiralling down each limb just ahead of it; the body arches back and
-        /// trembles; the hood wraps up over his head last, and the mask's eyes light. Without the body shown, the
+        /// trembles; the collar and the cape's clasp close round his neck last. Without the body shown, the
         /// parts simply form one after another.
         /// </summary>
         public IEnumerator SuitUp(float seconds = 9f)
@@ -817,7 +817,6 @@ namespace ArcaneStrike.Story
             AudioSource tone = StoryFx.CreateSource(hum, StoryFx.Hum(), true, 0.6f);
             tone.Play();
             float nextSwoosh = 0f;
-            bool eyesLit = false;
             float noise = Random.value * 10f;
 
             for (float t = 0f; t < seconds; t += Time.deltaTime)
@@ -841,11 +840,6 @@ namespace ArcaneStrike.Story
                     Combat.CombatAudio.Play(Combat.CombatAudio.Swoosh, BodyPoint(Core), 0.25f, 0.4f);
                     nextSwoosh = t + Random.Range(0.35f, 0.7f);
                 }
-                if (!eyesLit && front > HoodEnd - 0.02f)
-                {
-                    eyesLit = true;
-                    LightEyes();
-                }
                 yield return null;
             }
             arch = 0f;
@@ -862,7 +856,6 @@ namespace ArcaneStrike.Story
                     ribbon.emitting = false;
                     Destroy(ribbon.gameObject, ribbon.time + 0.1f);
                 }
-            if (!eyesLit) LightEyes();
             Destroy(hum);
             if (IsComplete) carriedDressed = true;
         }
@@ -955,45 +948,6 @@ namespace ArcaneStrike.Story
             point = path[path.Length - 1];
             along = Vector3.down;
             return false;
-        }
-
-        // The mask's eyes light up white (a soft flare, then a steady glow), on the hood so they go where it goes.
-        void LightEyes()
-        {
-            BodyPart hood = body.Find(b => b.isOutfit && b.step == "Scarf");
-            if (hood == null) return;
-            Material glow = AegisShield.CreateFaceMaterial(new Color(0.92f, 0.96f, 1f, 1f));
-            glow.name = "WeaverEyes";
-            foreach (float x in new[] { -0.034f, 0.034f })
-            {
-                var eye = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                Destroy(eye.GetComponent<Collider>());
-                eye.name = "WeaverEye";
-                eye.transform.SetParent(hood.transform, false);
-                eye.transform.localPosition = new Vector3(x, 0.325f, 0.012f);
-                eye.GetComponent<Renderer>().sharedMaterial = glow;
-                eye.GetComponent<Renderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-                StartCoroutine(Flare(eye.transform));
-            }
-            var light = new GameObject("EyeLight").AddComponent<Light>();
-            light.transform.SetParent(hood.transform, false);
-            light.transform.localPosition = new Vector3(0f, 0.325f, 0.06f);
-            light.color = new Color(0.85f, 0.92f, 1f);
-            light.range = 0.6f;
-            light.intensity = 1.2f;
-            light.shadows = LightShadows.None;
-            if (sparks != null) StoryFx.Burst(sparks, hood.transform.TransformPoint(new Vector3(0f, 0.325f, 0.03f)), 30, 0.4f, 0.01f, 0.5f, Color.white);
-        }
-
-        static IEnumerator Flare(Transform eye)
-        {
-            for (float t = 0f; t < 0.8f && eye != null; t += Time.deltaTime)
-            {
-                float k = t / 0.8f;
-                eye.localScale = Vector3.one * Mathf.Lerp(0.004f, 0.016f, Mathf.Sin(Mathf.Min(1f, k * 1.6f) * Mathf.PI * 0.5f)) * (1f + 0.6f * Mathf.Sin(k * Mathf.PI));
-                yield return null;
-            }
-            if (eye != null) eye.localScale = Vector3.one * 0.016f;
         }
 
         // ---------------------------------------------------------------- forming the outfit

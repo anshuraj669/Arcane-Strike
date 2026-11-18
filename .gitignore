@@ -128,3 +128,12 @@ InitTestScene*.unity*
 
 # Local-only docs (not shared on Git)
 /Docs/GAME_SCRIPT.*
+
+# Release signing key: never commit, back it up (updates must be signed with the same key)
+/Keys/
+/Builds/
+
+# Python caches and local IDE plugin settings
+__pycache__/
+*.pyc
+.idea/git_toolbox_prj.xml

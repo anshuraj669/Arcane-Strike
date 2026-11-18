@@ -106,8 +106,11 @@ namespace ArcaneStrike.Story
             StartCoroutine(StandUp(0.45f));
             yield return voice.Say("Who's there?! Show yourself!", "c2_me01", 1.0f);
 
-            // The Seal sears into the left wrist.
+            // The Seal sears into the left wrist: the wrist comes up into view and the player looks at it (held through
+            // the line about it, then let go).
             yield return Brand();
+            yield return voice.Say("A flame... burned right into my wrist?! These runes, they're glowing like fire...", "c2_me02b", 1.3f);
+            yield return LowerWrist();
             emberSpeech.SetSpatial(1f);
             yield return EmberSays("c2_e02", "Stand down. There is no enemy before you. It is me—Ember.", 1.4f);
             StartCoroutine(EmberComesCloser(2.5f));
@@ -120,7 +123,9 @@ namespace ArcaneStrike.Story
 
             // The choice.
             var choice = DialogueChoice.Create(input);
+            voice.Hint("Touch your answer  (1 / 2, or left / right trigger)");
             yield return choice.Ask("“You mean... those monsters were real?”", "“I'm not cut out for this. Leave me alone!”");
+            voice.Hint("");
             if (choice.Chosen == 1)
             {
                 yield return voice.Say("I'm not cut out for this. Leave me alone!", "c2_me05b", 1.0f);
@@ -139,7 +144,7 @@ namespace ArcaneStrike.Story
             if (ember != null) ember.SetMood(EmberFlame.Mood.Calm);
             yield return voice.Say("Cross over?! How am I supposed to get inside a rift?!", "c2_me07", 1.0f);
             yield return EmberSays("c2_e08", "Channel your intent. Touch the Jyoti Seal upon your wrist, and break the boundary.", 1.2f);
-            StartCoroutine(Fray(false));
+            yield return Fray(false); // (before the heat glow takes over the edges of the view)
 
             yield return IgnitePrompt();
             yield return Breach();
@@ -147,6 +152,13 @@ namespace ArcaneStrike.Story
 
         void Update()
         {
+            if (wristUp && head != null && !HeadsetActive)
+            {
+                // (On a screen or in a replay only: in the headset the player's own left wrist carries the Seal.)
+                Vector3 toEyes = head.position - wristPalm;
+                Vector3 back = (toEyes - wristFingers * Vector3.Dot(toEyes, wristFingers)).normalized;
+                ActedHands.Hold(HandSide.Left, wristPalm, Quaternion.LookRotation(wristFingers, back), 0.35f);
+            }
             if (GameInput.Pressed(GameAction.Skip))
             {
                 skip = true;
@@ -331,8 +343,63 @@ namespace ArcaneStrike.Story
         }
 
         // A crimson spark on the left wrist, a hiss, and the Seal burns in, line by line.
+        // ---------------------------------------------------------------- looking at the wrist
+
+        // The raised left wrist (while branded): in front of the chest, low and a little left, the back of the wrist
+        // turned to the eyes. Fixed in the room when it starts, so the look can settle on it.
+        bool wristUp;
+        Vector3 wristPalm, wristFingers;
+        // Without a headset (keyboard play, the demo video) the view turns to the wrist: aimWeight 0 = the player's own
+        // view .. 1 = looking straight at the Seal. Never in a headset (moving the view there is uncomfortable).
+        float aimWeight;
+        Quaternion aimBase;
+
+        void RaiseWrist()
+        {
+            Vector3 f = StoryFx.Flat(head.forward), right = Vector3.Cross(Vector3.up, f);
+            wristPalm = head.position + f * 0.36f - Vector3.up * 0.15f - right * 0.04f;
+            wristFingers = (right * 0.55f + Vector3.up * 0.55f + f * 0.3f).normalized; // across the body, fingers up
+            Vector3 toEyes = head.position - wristPalm;
+            Vector3 back = (toEyes - wristFingers * Vector3.Dot(toEyes, wristFingers)).normalized;
+            Vector3 wrist = wristPalm - wristFingers * 0.085f + back * 0.021f;
+            seal.Fallback = new Pose(wrist, Quaternion.LookRotation(-back, wristFingers));
+            wristUp = true;
+            aimBase = head.localRotation;
+            if (!HeadsetActive) StartCoroutine(AimTo(0.9f, 0.9f));
+        }
+
+        IEnumerator LowerWrist()
+        {
+            wristUp = false;
+            ActedHands.Release(HandSide.Left);
+            if (seal != null) seal.Fallback = null;
+            yield return AimTo(0f, 1.1f);
+        }
+
+        IEnumerator AimTo(float weight, float seconds)
+        {
+            float from = aimWeight;
+            for (float t = 0f; t < seconds; t += Time.deltaTime)
+            {
+                aimWeight = Mathf.Lerp(from, weight, Mathf.SmoothStep(0f, 1f, t / seconds));
+                yield return null;
+            }
+            aimWeight = weight;
+        }
+
+        void LateUpdate()
+        {
+            if (head == null || seal == null || HeadsetActive) return;
+            if (aimWeight <= 0.001f) return;
+            Vector3 to = seal.Position - head.position;
+            if (to.sqrMagnitude < 1e-4f || head.parent == null) return;
+            Quaternion look = Quaternion.Inverse(head.parent.rotation) * Quaternion.LookRotation(to, Vector3.up);
+            head.localRotation = Quaternion.Slerp(aimBase, look, aimWeight);
+        }
+
         IEnumerator Brand()
         {
+            RaiseWrist();
             var hiss = new GameObject("Hiss").AddComponent<AudioSource>();
             hiss.spatialBlend = 0f;
             hiss.PlayOneShot(Chapter2Sounds.Hiss(0.6f), 1f);
@@ -381,7 +448,7 @@ namespace ArcaneStrike.Story
         {
             seal.Target(1f);
             Debug.Log("[Chapter2] ▶ Touch the Jyoti Seal on your left wrist with two fingers of your right hand (E).");
-            voice.Hint("[ INTERACT ]   Touch the Seal with two fingers  (E)\n« ENTER THE BREACH »");
+            voice.Hint($"[ INTERACT ]   Touch the Seal with two fingers  ({GameInput.KeyName(GameAction.Interact)})\n« ENTER THE BREACH »");
             float t = 0f;
             while (!Touching() && !GameInput.Pressed(GameAction.Interact))
             {
@@ -439,7 +506,13 @@ namespace ArcaneStrike.Story
             if (!string.IsNullOrEmpty(nextScene) && Application.CanStreamedLevelBeLoaded(nextScene))
                 ScreenFade.LoadScene(nextScene, Color.black, 1.5f, 1.5f);
             else
-                Debug.Log($"[Chapter2] Scene 2 done. The next scene ('{nextScene}') isn't built yet.");
+            {
+                // The end of what's built so far: to be continued.
+                Debug.Log($"[Chapter2] Scene 2 done. The next scene ('{nextScene}') isn't built yet: to be continued.");
+                yield return ScreenFade.To(Color.black, 1.5f);
+                yield return TitleCards.Show(TitleCards.ToBeContinued);
+                Debug.Log("[Chapter2] The end of the demo. (Recording a take? F6 saves it.)");
+            }
         }
 
         IEnumerator Shockwave(Vector3 at)

@@ -56,6 +56,7 @@ namespace ArcaneStrike.Story
             {
                 Vector3 hand = head.position + StoryFx.Flat(head.forward) * 0.35f - StoryFx.Flat(head.right) * 0.2f + Vector3.down * 0.45f;
                 transform.position = Vector3.Lerp(from, hand, Mathf.SmoothStep(0f, 1f, t / 0.6f));
+                HoldCloth(head);
                 yield return null;
             }
 
@@ -72,13 +73,24 @@ namespace ArcaneStrike.Story
                 float speed = Vector3.Distance(p, previous) / Mathf.Max(Time.deltaTime, 1e-4f);
                 previous = p;
                 lantern.Rub(Vector3.Lerp(p, c, 0.5f), lantern.Required / seconds * Time.deltaTime, speed);
+                HoldCloth(head);
                 yield return null;
             }
             if (!lantern.IsCleaned) lantern.CompleteNow();
 
             // Done: the cloth drops.
             if (rb != null) rb.isKinematic = false;
+            HandInput.ActedHands.Release(HandInput.HandSide.Left);
             IsAutoCleaning = false;
+        }
+
+        // Keyboard play: the left hand is seen holding the cloth (its fingers closed round it, from the player's side).
+        void HoldCloth(Transform head)
+        {
+            if (head == null) return;
+            Vector3 toCloth = transform.position - head.position;
+            Vector3 palm = transform.position - toCloth.normalized * 0.04f;
+            HandInput.ActedHands.Hold(HandInput.HandSide.Left, palm, Quaternion.LookRotation(toCloth.normalized, Vector3.up), 0.7f);
         }
 
         /// <summary>A cleaning cloth in either hand, or null.</summary>

@@ -4,12 +4,12 @@ namespace ArcaneStrike.Story
 {
     /// <summary>
     /// Ember: the living flame in the cauldron. A fiery figure made of particles (a flickering body rising into a
-    /// head, two bright eyes that blink and look at the player) with a warm, flickering light. Moods change its
+    /// head that leans towards the player; no eyes) with a warm, flickering light. Moods change its
     /// colour and size: Calm (yellow), Excited (blinding white), Wild (a spinning tornado). It can lean towards
     /// something, reach a tendril of sparks at it, and flare while it talks.
     /// Sits on an empty at the cauldron's mouth; the figure rises from there.
     /// It adapts to its surroundings: glowing (additive) flames in the dark, but solid, deep-coloured flames with
-    /// dark eyes on a bright background (the white void), where glow would add nothing and vanish.
+    /// no glow on a bright background (the white void), where glow would add nothing and vanish.
     /// </summary>
     public class EmberFlame : MonoBehaviour
     {
@@ -30,12 +30,11 @@ namespace ArcaneStrike.Story
         /// <summary>True when drawn for a bright background (decided on the first frame).</summary>
         public bool BrightWorld { get; private set; }
 
-        static readonly float[] Sides = { -1f, 1f }; // the two eyes (no new array every frame)
-        ParticleSystem body, eyes, sparks;
+        ParticleSystem body, sparks;
         Light glow;
         Transform lookTarget, pointTarget;
         Vector3 lean;
-        float size, heat, blinkUntil, nextBlink, pointUntil;
+        float size, heat, pointUntil;
         Color colour;
 
         void Awake()
@@ -58,7 +57,6 @@ namespace ArcaneStrike.Story
             }
             bool additive = !BrightWorld; // glow only shows against the dark
             body = StoryFx.CreateParticles(transform, "EmberBody", additive, -0.15f, 1500);
-            eyes = StoryFx.CreateParticles(transform, "EmberEyes", additive, 0f, 40);
             sparks = StoryFx.CreateParticles(transform, "EmberSparks", additive, -0.05f, 600);
             var lightGo = new GameObject("EmberLight");
             lightGo.transform.SetParent(transform, false);
@@ -116,7 +114,6 @@ namespace ArcaneStrike.Story
             glow.intensity = (mood == Mood.Asleep ? 0.6f : 2.2f) * size * (0.85f + 0.3f * heat);
 
             EmitBody(dt);
-            EmitEyes();
             EmitTendril(dt);
         }
 
@@ -150,25 +147,6 @@ namespace ArcaneStrike.Story
             if (Random.value < 0.3f * size)
                 StoryFx.Emit(sparks, Point(Random.value * 0.6f), Vector3.up * Random.Range(0.6f, 1.4f) + Random.insideUnitSphere * 0.3f,
                              0.025f, Random.Range(0.8f, 1.6f), colour);
-        }
-
-        void EmitEyes()
-        {
-            if (mood == Mood.Asleep) return;
-            if (Time.time > nextBlink)
-            {
-                blinkUntil = Time.time + 0.12f;
-                nextBlink = Time.time + Random.Range(2.5f, 5f);
-            }
-            if (Time.time < blinkUntil) return;
-            Vector3 head = Point(0.83f);
-            Vector3 face = lookTarget != null ? lookTarget.position - head : transform.forward;
-            face.y = 0f;
-            face = face.sqrMagnitude > 1e-4f ? face.normalized : Vector3.forward;
-            Vector3 side = Vector3.Cross(Vector3.up, face);
-            foreach (float s in Sides)
-                StoryFx.Emit(eyes, head + face * 0.13f * size + side * s * 0.055f * size + Vector3.up * 0.02f, Vector3.zero,
-                             0.05f * size, 0.06f, BrightWorld ? new Color(0.12f, 0.03f, 0.01f, 1f) : Color.white);
         }
 
         void EmitTendril(float dt)

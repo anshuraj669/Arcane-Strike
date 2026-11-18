@@ -62,6 +62,8 @@ namespace ArcaneStrike.Props
         Story.AtticIntro intro;
 
         public bool IsOpen { get; private set; }
+        /// <summary>The lid (it swings open about its hinge).</summary>
+        public Transform Lid => lid;
         /// <summary>Shut fast: the lid won't lift (a box still thick with dust).</summary>
         public bool Locked { get; set; }
         /// <summary>E opens this box by itself (off when something else decides which box a key opens).</summary>

@@ -539,8 +539,8 @@ MonoBehaviour:
   chestBelowEyes: 0.38
   chestBehindEyes: 0.08
   bodyTurn: 3
-  sparkColor: {r: 1, g: 0.8, b: 0.35, a: 1}
-  formingColor: {r: 1, g: 0.92, b: 0.72, a: 0.85}
+  blueSpark: {r: 0.45, g: 0.8, b: 1, a: 1}
+  formingBlue: {r: 0.72, g: 0.92, b: 1, a: 0.85}
   formingGlow: 0.6
   appearances:
   - name: Silver Weaver
@@ -619,12 +619,6 @@ MonoBehaviour:
   - Eight of them! Don't let them get behind you, Weaver!
   model: {fileID: 8022397101854499114, guid: 07f5b69261b8af91087afcbbe3afaeb0, type: 3}
   bossModel: {fileID: 3501992628836765507, guid: 948f5a75fc26de100af315a8e5234ee1, type: 3}
-  rocks:
-  - {fileID: 6984209201130758482}
-  - {fileID: 8801916361742594385}
-  - {fileID: 5316396120259205624}
-  - {fileID: 7096104660675964219}
-  - {fileID: 5106178455817314725}
   nextAt: 0.2
   killHeal: 0.1
 --- !u!114 &69142516
@@ -693,7 +687,7 @@ MonoBehaviour:
     true light in a thousand years.
   hunt: {fileID: 69142515}
   restartScene: AscensionCave
-  nextScene: 
+  nextScene: Chapter2_AtticWake
   keyboardFallback: 1
 --- !u!114 &69142517
 MonoBehaviour:
@@ -2421,6 +2415,7 @@ MonoBehaviour:
   skinMaterial: {fileID: 0}
   spiritColor: {r: 1, g: 0.86, b: 0.55, a: 0.28}
   solidColor: {r: 0.8, g: 0.8, b: 0.82, a: 1}
+  plainColor: {r: 0.78, g: 0.57, b: 0.45, a: 1}
   fingerRadius: 0.0095
   sparkColor: {r: 0.740566, g: 0.68721914, b: 0.17116857, a: 0.9}
   boneWidth: 0.007
@@ -2594,7 +2589,7 @@ MonoBehaviour:
   jointSize: 0.015
   leftColor: {r: 0.3, g: 0.7, b: 1, a: 1}
   rightColor: {r: 1, g: 0.6, b: 0.2, a: 1}
-  showBody: 1
+  showBodyLines: 0
   bodyColor: {r: 0.45, g: 1, b: 0.45, a: 0.8}
 --- !u!114 &1956631153
 MonoBehaviour:
@@ -2662,8 +2657,13 @@ MonoBehaviour:
   port: 5065
   head: {fileID: 0}
   cameraDistance: 0.75
+  screenLift: {x: 0.24, y: -0.06}
   calibratedReach: 0.35
   headOffset: {x: 0, y: -0.15, z: 0}
+  handSteadiness: 1
+  handResponse: 2.5
+  handGlide: 28
+  boneSettle: 0.06
   smoothing: 0.5
   fastMove: 0.04
   timeout: 0.25

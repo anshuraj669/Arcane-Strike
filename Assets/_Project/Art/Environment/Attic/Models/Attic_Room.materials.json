@@ -1914,7 +1914,7 @@
    ],
    "smoothness": 0.36050015687942505,
    "metallic": 0.0,
-   "alpha": 0.3,
+   "alpha": 1.0,
    "emission": [
     0,
     0,
@@ -1958,7 +1958,7 @@
    ],
    "smoothness": 0.36050015687942505,
    "metallic": 0.0,
-   "alpha": 0.3,
+   "alpha": 1.0,
    "emission": [
     0,
     0,
