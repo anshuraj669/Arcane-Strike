@@ -145,3 +145,7 @@ Most environments and characters are made by scripts. To change one:
 - Everything else (the Weaver and his outfit, Ember, the Kalakh, the temple, Monster World, the effects and the story) was made for this project.
 
 Full asset lists are in `Assets/_Project/Art/Environment/Attic/Textures/CREDITS.txt`.
+
+## License
+
+Arcane Strike's own code, art, story and audio are released under the [MIT License](LICENSE). Third-party SDKs and the CC0 textures and models keep their own licenses; see [LICENSE](LICENSE) for details.
